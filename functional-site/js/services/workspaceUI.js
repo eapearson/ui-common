@@ -326,7 +326,6 @@ app.service('modals', function() {
         var save_btn = modal_footer.find('.btn-primary');
         save_btn.attr('disabled', true);
 
-
         var copyWS = $('<button class="btn btn-link pull-left">Copy</button>');
         copyWS.click(function() {
             manage_modal.closePrompt();
@@ -408,14 +407,17 @@ app.service('modals', function() {
                 }
             })
 
-            modal_body.append(copyWS);
-            modal_body.append(deleteWS);    
+            if (USER_ID) {
+                modal_body.append(copyWS);
+                modal_body.append(deleteWS);
+            }
+
 
 
             modal_body.find('.ws-info').append(table)
 
             // if user is logged in (going to allow write access viewing soon)
-            //if (USER_ID ) {
+            if (USER_ID ) {
                 var prom = kb.ws.get_permissions({workspace: ws_name});
 
                 //var newPerms;
@@ -450,7 +452,7 @@ app.service('modals', function() {
                         '<b>Error:</b> Can not fetch WS permissions: '+
                             e.error.message+'</div>');
                 });
-            //} 
+            } 
 
 
         }).fail(function(e){
