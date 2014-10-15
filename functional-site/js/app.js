@@ -683,7 +683,7 @@ app.run(function ($rootScope, $state, $stateParams, $location) {
     $rootScope.$state = $state;
     $rootScope.$stateParams = $stateParams;
     $rootScope.kb = kb;     
-    $rootScope.Object = Object;       
+    $rootScope.Object = Object;
 
 });
 
@@ -691,12 +691,6 @@ app.run(function ($rootScope, $state, $stateParams, $location) {
 /*
  *   landing page app helper functions
  */ 
-function get_selected_ws() {
-    if (state.get('selected')) {
-        return state.get('selected')[0];
-    }
-}
-
 
 function removeCards() {
     if (cardManager)

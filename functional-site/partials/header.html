@@ -1,0 +1,37 @@
+<a href="http://www.kbase.us" class="pull-left">
+    <img id="logo" src="assets/img/kbase_logo.png" width="46"/>
+</a>
+
+<div class="collapse navbar-collapse">
+    <ul class="nav navbar-nav"> 
+        <li ng-class="{ active: $state.includes('narratives')}">
+            <a ui-sref="narratives.featured" >Narratives</a>
+        </li>
+        <!--
+        <li ng-class="{ active: $state.includes('analysis')}">
+            <a ui-sref="analysis.apps">Apps</a>
+        </li>-->
+        <li ng-class="{ active: $state.includes('ws')}">
+            <a ui-sref="ws">Workspaces</a>
+        </li>
+        <li ng-class="{ active: $state.includes('search')}">
+            <a ng-click="newSearch()" ng-controller="searchBarController">Search Data</a>
+        </li>
+        <li><a href="//kbase.us/services/docs/uploader/uploader.html">Upload</a></li>
+    </ul>
+
+
+    <ul class="nav navbar-nav pull-right">
+        <li class="dropdown help-dropdown">
+            <a id="kbase_help_menu_label" href="#kbase_help_menu" class="dropdown-toggle" data-toggle="dropdown" onclick="return false;">Help <b class="caret"></b></a>
+            <ul id="kbase_help_menu" class="dropdown-menu" role="menu" aria-labelledby="kbase_help_menu_label">
+                <li><a href="http://kbase.us/for-users/narrative-quick-start/">Narrative Quick Start Guide</a></li>
+                <!--<li><a href="#/landing-pages-help">Landing Page Documentation</a></li>-->
+                <li><a href="http://kbase.us/get-started/data-search-quick-start/">Search Quick Start Guide</a></li>
+                <li><a href="mailto:help@kbase.us">Email help@kbase.us</a></li>
+            </ul>                        
+        </li>
+        
+    </ul>
+ <div id="signin-button" class="pull-right"></div>  
+</div> 

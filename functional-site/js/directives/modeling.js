@@ -18,7 +18,6 @@ angular.module('modeling-directives')
                                             {name: 'Selection', content: selectionTable, active: true} 
                                         ]});
 
-
             var maps = [];
 
             function events() {

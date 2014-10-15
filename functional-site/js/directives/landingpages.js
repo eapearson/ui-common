@@ -10,6 +10,21 @@
 
 angular.module('lp-directives', []);
 angular.module('lp-directives')
+.directive('kbWidget', function() {
+    return {
+        link: function(scope, element, attrs) {
+            // This is a wrapper for the KBase jQuery plugin-style "widgets"
+
+            var ws_name = attrs.ws;
+            var obj_name = attrs.obj;
+            var widget = attrs.kbWidget;
+
+            // instantiate widget
+            $(element)[widget]({ws: ws_name, name: obj_name});
+        }
+    }
+})
+
 .directive('objectlist', function($location) {
     return {
         link: function(scope, element, attr) {

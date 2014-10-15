@@ -51,13 +51,7 @@ angular.module('narrative-directives')
     }
 })
 
-.directive('kbWidget', function() {
-    return {
-        link: function(scope, element, attrs) {
-            // instantiation of a kbase widget
-        }
-    }
-})
+
 
 .directive('animateOnChange', function($animate) {
   return {
