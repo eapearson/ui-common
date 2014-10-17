@@ -1,12 +1,6 @@
 
-/*  NCTour - a twitter bootstrap "plugin" for doing dom-based, interactive tours
- *
- *  Author: Neal Conrad <nealconrad@gmail.com>
- * 
- *  Requirements: 
- *      - jQuery (tested on 10.8?)
- *      - bootstrap 3.x
- *      - nc-tour.css (for styling)
+/*  
+ * Voyage - a Bootstrap "plugin" for doing DOM-based, interactive tours
  *
  *  Todo:
  *   - add ability to change times (using bootstrap event broadcasts)
@@ -20,29 +14,29 @@ function Tour(settings) {
     var exit_callback = settings.exit_callback;
     var position = settings.position
 
-    var options = ('<div class="tour">\
-                        <a class="glyphicon glyphicon-remove pull-right text-muted btn-exit-tour"></a>\
-                        <div class="tour-options">\
-                            <div class="tour-controls">\
-                                <a class="btn btn-default btn-xs btn-prev-tour">\
-                                    <span class="glyphicon glyphicon-backward"></span>\
-                                </a>\
-                                <a class="btn btn-default btn-xs btn-pause-tour">\
-                                    <span class="glyphicon glyphicon-pause"></span>\
-                                </a>\
-                                <a class="btn btn-default btn-primary btn-xs btn-play-tour">\
-                                    <span class="glyphicon glyphicon-play"></span>\
-                                </a>\
-                                <a class="btn btn-default btn-xs btn-next-tour">\
-                                    <span class="glyphicon glyphicon-forward"></span>\
-                                </a>\
-                            </div>\
-                            <div class="tour-controls2">\
-                                <a class="btn btn-primary btn-start-tour">Start Tour</a>\
-                                <a class="btn btn-danger btn-exit-tour hide">Exit Tour</a>\
-                            </div>\
-                        </div>\
-                    </div>');
+    var options = $('<div class="tour">'+
+                        '<a class="glyphicon glyphicon-remove pull-right text-muted btn-exit-tour"></a>'+
+                        '<div class="tour-options">'+
+                            '<div class="tour-controls">'+
+                                '<a class="btn btn-default btn-xs btn-prev-tour">'+
+                                    '<span class="glyphicon glyphicon-backward"></span>'+
+                                '</a>'+
+                                '<a class="btn btn-default btn-xs btn-pause-tour">'+
+                                    '<span class="glyphicon glyphicon-pause"></span>'+
+                                '</a>'+
+                                '<a class="btn btn-default btn-primary btn-xs btn-play-tour">'+
+                                    '<span class="glyphicon glyphicon-play"></span>'+
+                                '</a>'+
+                                '<a class="btn btn-default btn-xs btn-next-tour">'+
+                                    '<span class="glyphicon glyphicon-forward"></span>'+
+                                '</a>'+
+                            '</div>'+
+                            '<div class="tour-controls2">'+
+                                '<a class="btn btn-primary btn-start-tour">Start Tour</a>'+
+                                '<a class="btn btn-danger btn-exit-tour hide">Exit Tour</a>'+
+                            '</div>'+
+                        '</div>'+
+                    '</div>');
 
     $('body').append('<div class="modal-backdrop tour-modal-backdrop in"></div>')
     $('body').prepend(options)

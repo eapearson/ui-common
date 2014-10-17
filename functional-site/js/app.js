@@ -128,11 +128,9 @@ var app = angular.module('landing-pages',
         })*/
 
 
-           
-
-
 
     // model viewer routing
+    /*
     $stateProvider
         .state('ws.mv', {
           url: "mv/",
@@ -152,7 +150,7 @@ var app = angular.module('landing-pages',
         }).state('ws.mv.modeleditor', {
           url: "model-editor/:ws/:id/",
           templateUrl: 'views/ws/model-editor.html',
-        });
+        });*/
 
 
 
