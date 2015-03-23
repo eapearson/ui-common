@@ -1,4 +1,4 @@
-(function ($) {
+(function ($, Global) {
     'use strict';
     var SessionSync = Object.create({}, {
         init: {
@@ -29,6 +29,33 @@
         getKBaseSession: {
             value: function () {
                 return this.refreshSession();
+            }
+        },
+        
+        getUsername: {
+            value: function () {
+                var session = this.getKBaseSession();
+                if (session) {
+                    return session.user_id;
+                }
+            }
+        },
+        
+        getRealname: {
+            value: function () {
+                var session = this.getKBaseSession();
+                if (session) {
+                    return session.name;
+                }
+            }
+        },
+        
+        getAuthToken: {
+            value: function () {
+                var session = this.getKBaseSession();
+                if (session) {
+                    return session.token;
+                }
             }
         },
 
@@ -226,4 +253,5 @@
 
     });
     $.KBaseSessionSync = SessionSync.init();
-}(jQuery));
+    Global.KBaseSessionSync = $.KBaseSessionSync;
+}(jQuery, window));

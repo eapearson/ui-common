@@ -1,0 +1,27 @@
+.SystemNotificationsBadge-widget {
+    border-right: 1px #e0e0e0 solid;
+    border-left: 1px #e0e0e0 solid;
+    
+    
+}
+.SystemNotificationsBadge-widget .-container {
+    line-height: 1.3em;
+    border: 0px red solid; 
+    xfont-size: 90%;
+    margin-left: 1em;
+    margin-right: 1em;
+    display: inline-block;
+    vertical-align: middle;
+}
+.SystemNotificationsBadge-widget .currentOutages,
+.SystemNotificationsBadge-widget .currentOutages a {
+    color: red;
+}
+.SystemNotificationsBadge-widget .futureOutages,
+.SystemNotificationsBadge-widget .futureOutages a {
+    color: orange;
+}
+.SystemNotificationsBadge-widget .pastUpdates,
+.SystemNotificationsBadge-widget .pastUpdates a {
+    color: blue;
+}

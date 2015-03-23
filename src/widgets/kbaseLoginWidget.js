@@ -1,5 +1,5 @@
-define(['kb.widget.base', 'kb.session', 'jquery', 'postal', 'q', 'kb.appstate', 'kb.utils', 'kb.user_profile'], 
-function (BaseWidget, Session, $, Postal, Q, AppState, Utils, UserProfile) {
+define(['kb.widget.base', 'kb.session', 'postal', 'kb.appstate', 'kb.utils', 'kb.user_profile'], 
+function (BaseWidget, Session, Postal, AppState, Utils, UserProfile) {
     'use strict';
     // make a widget ... on the fly?
     var W = Object.create(BaseWidget, {
@@ -21,6 +21,12 @@ function (BaseWidget, Session, $, Postal, Q, AppState, Utils, UserProfile) {
                         var password = widget.container.find('form [name="password"]').val();
                         widget.login(username, password);
                     });
+                    
+                this.setupSubscriptions();
+                
+                if (Session.isLoggedIn()) {
+                    this.fetchUserProfile();
+                }
                 
                 return this;
             }
@@ -66,6 +72,13 @@ function (BaseWidget, Session, $, Postal, Q, AppState, Utils, UserProfile) {
                 this.container.find('[data-element="avatar"]').attr('src', url);
             }
         },
+        renderUserLabel: {
+            value: function (profile) {
+                var node = this.container.find('[data-element="user-label"]');
+                var label = profile.getProp('user.realname') + '<br><i style="font-size=90%;">' + profile.getProp('user.username') + '</i>';
+                node.html(label);
+            }
+        },
         render: {
             value: function () {
                 if (Session.isLoggedIn()) {
@@ -74,6 +87,7 @@ function (BaseWidget, Session, $, Postal, Q, AppState, Utils, UserProfile) {
                     AppState.whenItem('userprofile')
                         .then(function (profile) {
                             this.renderAvatar(profile);
+                            this.renderUserLabel(profile);
                         }.bind(this))
                         .done();
                     this.container.find('[data-menu-item="logout"]').on('click', function (e) {
@@ -135,6 +149,61 @@ function (BaseWidget, Session, $, Postal, Q, AppState, Utils, UserProfile) {
                     Postal.channel('session').publish('login.failure', {error: errObject});
                 })
                 .done();
+            }
+        },
+        // NEW from login func site
+        
+        setupSubscriptions: {
+            value: function () {
+                Postal.channel('session').subscribe('profile.loaded', function (data) {
+                    this.setState('profile', data.profile);
+                }.bind(this));
+
+                Postal.channel('session').subscribe('profile.saved', function () {
+                    this.fetchUserProfile();
+                }.bind(this));
+                
+                Postal.channel('session').subscribe('login.success', function (data) {
+                    this.setState('session', data.session);
+                    this.fetchUserProfile();
+                }.bind(this));
+
+                Postal.channel('session').subscribe('logout.success', function () {
+                    this.setState('session', null);
+                }.bind(this));
+            }
+        },
+        
+        // TODO: this should be in app.js or anywhere else...
+        fetchUserProfile: {
+            value: function () {
+                var userProfile = Object.create(UserProfile).init({username: Session.getUsername()});
+                userProfile.loadProfile()
+                    .then(function (profile) {
+                        switch (profile.getProfileStatus()) {
+                            case 'stub':
+                            case 'profile':
+                                AppState.setItem('userprofile', profile);
+                                Postal.channel('session').publish('profile.loaded', {profile: profile});
+                                break;
+                            case 'none':
+                                profile.createStubProfile({createdBy: 'session'})
+                                        .then(function (profile) {
+                                            AppState.setItem('userprofile', profile);
+                                            Postal.channel('session').publish('profile.loaded', {profile: profile});
+                                        })
+                                        .catch(function (err) {
+                                            Postal.channel('session').publish('profile.loadfailure', {error: err});
+                                        })
+                                        .done();
+                                break;
+                        }
+                    })
+                    .catch(function (err) {
+                        var errMsg = 'Error getting user profile';
+                        Postal.channel('session').publish('profile.loadfailure', {error: err, message: errMsg});
+                    })
+                    .done();
             }
         }
     });

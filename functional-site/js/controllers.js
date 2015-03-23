@@ -7,7 +7,7 @@
 app
 .controller('methodAccordion', function ($scope, narrative, $http) {
 })
-.controller('Analysis', function($scope, $state, $stateParams, $location, narrative, $http) {
+.controller('Analysis', function($rootScope, $scope, $state, $stateParams, $location, narrative, $http) {
     // service for narrative (builder) state
     $scope.narrative = narrative;
 
@@ -18,7 +18,7 @@ app
     // let's make this happen: 
     // http://ngmodules.org/modules/angularjs-json-rpc
     if (!narrative.ws_objects) {
-        var p = kb.ws.list_objects({workspaces: [$scope.ddSelected]});
+        var p = $rootScope.kb.ws.list_objects({workspaces: [$scope.ddSelected]});
         $.when(p).done(function(data){
             $scope.$apply(function() {
                 narrative.ws_objects = data;
@@ -40,7 +40,7 @@ app
         })
     }
 
-    var prom = kb.ws.list_workspace_info({perm: 'w'});
+    var prom = $rootScope.kb.ws.list_workspace_info({perm: 'w'});
     $.when(prom).then(function(workspaces){
         var workspaces = workspaces.sort(compare)
 
@@ -64,7 +64,7 @@ app
 
     // update workspace objects if dropdown changes
     $scope.$watch('ddSelected', function(new_ws) {
-        var p = kb.ws.list_objects({workspaces: [new_ws]});
+        var p = $rootScope.kb.ws.list_objects({workspaces: [new_ws]});
         $.when(p).done(function(data){
             $scope.$apply(function() {
                 narrative.ws_objects = data;
@@ -159,20 +159,20 @@ app
     });
 })
 
-.controller('GenomeDetail', function($scope, $stateParams) {
+.controller('GenomeDetail', function($rootScope, $scope, $stateParams) {
     window.location.replace("#/dataview/"+$stateParams.ws+'/'+$stateParams.id);
     $scope.params = {'genomeID' : $stateParams.id,
                      'workspaceID' : $stateParams.ws,
-                     'kbCache' : kb}
+                     'kbCache' : $rootScope.kb}
 })
 
-.controller('GeneDetail', function($scope, $stateParams) {
+.controller('GeneDetail', function($rootScope, $scope, $stateParams) {
     window.location.replace("#/dataview/"+$stateParams.ws+'/'+$stateParams.gid+'?sub=Feature&subid='+$stateParams.fid);
     $scope.params = {'genomeID' : $stateParams.gid,
                      'featureID' : $stateParams.fid,
                      'workspaceID' : $stateParams.ws,
                      'version' : $stateParams.ver,
-                     'kbCache' : kb}
+                     'kbCache' : $rootScope.kb}
 })
 
 
@@ -206,18 +206,18 @@ app
                      'ws': $stateParams.ws};
 })
 
-.controller('MAKDetail', function($scope, $stateParams) {
+.controller('MAKDetail', function($rootScope, $scope, $stateParams) {
     window.location.replace("#/dataview/"+$stateParams.ws+'/'+$stateParams.id);
     $scope.params = {'id': $stateParams.id,
                      'workspace': $stateParams.ws,
-					 'kbCache' : kb};
+					 'kbCache' : $rootScope.kb};
 })
 
-.controller('FloatDataTable', function($scope, $stateParams) {
+.controller('FloatDataTable', function($rootScope, $scope, $stateParams) {
     window.location.replace("#/dataview/"+$stateParams.ws+'/'+$stateParams.id);
     $scope.params = {'id': $stateParams.id,
                      'workspace': $stateParams.ws,
-					 'kbCache' : kb};
+					 'kbCache' : $rootScope.kb};
 })
 
 .controller('RegpreciseDetail', function($scope, $stateParams) {
@@ -310,30 +310,30 @@ app
     $scope.ws = $stateParams.ws;
 })
 
-.controller('WsRefViewer', function($scope, $stateParams) {
+.controller('WsRefViewer', function($rootScope, $scope, $stateParams) {
     $scope.params = {
 	'id': $stateParams.id,
 	'ws':$stateParams.ws,
 	'version':$stateParams.version,
-        'kbCache' : kb }
+        'kbCache' : $rootScope.kb }
 })
-.controller('WsRefUsersViewer', function($scope, $stateParams) {
+.controller('WsRefUsersViewer', function($rootScope, $scope, $stateParams) {
     $scope.params = {
 	'id': $stateParams.id,
 	'ws':$stateParams.ws,
 	'version':$stateParams.version,
-        'kbCache' : kb }
+        'kbCache' : $rootScope.kb }
 })
 
-.controller('WsObjGraphView', function($scope, $stateParams) {
-    $scope.params = { 'ws':$stateParams.ws, 'kbCache' : kb }
+.controller('WsObjGraphView', function($rootScope, $scope, $stateParams) {
+    $scope.params = { 'ws':$stateParams.ws, 'kbCache' : $rootScope.kb }
 })
-.controller('WsObjGraphCenteredView', function($scope, $stateParams) {
-    $scope.params = { 'ws':$stateParams.ws, 'id': $stateParams.id, 'kbCache' : kb }
+.controller('WsObjGraphCenteredView', function($rootScope, $scope, $stateParams) {
+    $scope.params = { 'ws':$stateParams.ws, 'id': $stateParams.id, 'kbCache' : $rootScope.kb }
 })
 
 .controller('People', function($scope, $stateParams, $location) {
-    $scope.params = { 'userid':$stateParams.userid, 'kbCache' : kb }
+    $scope.params = { 'userid':$stateParams.userid}
    
     // NB need to use KBaseSessionSync here and not kb -- because kb is only valid at page load
     // time. On angular path changes, it will not have been updated. So, e.g., after a user logs 
@@ -357,7 +357,7 @@ app
     
     // Set up the navbar menu
     require(['kb.widget.navbar'], function (NAVBAR) {
-      NAVBAR.clearMenu()
+      NAVBAR.clear()
       .addDefaultMenu({
         search: true, narrative: true
       });
@@ -380,24 +380,13 @@ app
         url: 'https://atlassian.kbase.us/secure/CreateIssueDetails!init.jspa?pid=10200&issuetype=1&priority=3&components=10108&assignee=eapearson&summary=Bug%20on%20User%20Page'
       });
        */
-      
-      /*
-      .addHelpMenuItem({
-        name: 'navtest',
-        label: 'Navbar Test',
-        icon: 'bug',
-        url: '#/navtest/x'
-      })
-      */
-    
-      
     });
     
    
 })
 
 .controller('Dashboard', function($scope, $stateParams, $location) {
-    $scope.params = { 'kbCache' : kb }
+    $scope.params = {}
     
     if (!$.KBaseSessionSync.isLoggedIn()) {
         $location.url('/login/');
@@ -449,33 +438,14 @@ app
        // Set up the main State machine for this view.
        $scope.viewState = Object.create(StateMachine).init();
 			 
-        // a cheap hartbeat for now... and just for the dashboard.
-        var heartbeat = 0;
-        $scope.heartbeatTimer = window.setInterval(function () {
-                heartbeat++;
-                postal.channel('app').publish('heartbeat', {heartbeat: heartbeat});
-        }, 100);
-
-        // Now remove them.
-        $scope.$on('$destroy', function () {
-                       // tear down the state machine
-                       // Umm, this happen naturally when the object goes out of scope.
-
-                // But the heartbeat timer will need to be stopped manually.
-                window.clearInterval($scope.heartbeatTimer);
-        });
+       
       
     });
      
 })
 
-.controller('NavTest', function($scope, $stateParams) {
-    $scope.params = { 'appid':$stateParams.appid, 'kbCache' : kb }
-   
-})
-
-.controller('App', function($scope, $stateParams) {
-    $scope.params = { 'appid':$stateParams.appid, 'kbCache' : kb }
+.controller('App', function($rootScope, $scope, $stateParams) {
+    $scope.params = { 'appid':$stateParams.appid, 'kbCache' : $rootScope.kb }
     $( "#sortable-landing" ).sortable({placeholder: "drag-placeholder", 
         handle: '.panel-heading',
         cancel: '.panel-title,.panel-subtitle,.label,.glyphicon',
@@ -495,11 +465,11 @@ app
 })
 
 
-.controller('Taxonomy', function($scope, $stateParams) {
+.controller('Taxonomy', function($rootScope, $scope, $stateParams) {
     $scope.params = {
 	'taxonname': $stateParams.taxonname,
 	'ws':$stateParams.ws,
-        'kbCache' : kb }
+        'kbCache' : $rootScope.kb }
 })
 
 
@@ -539,8 +509,8 @@ app
 })
 
 
-.controller('Login', function($scope, $stateParams, $location, kbaseLogin) {
-    
+.controller('Login', function($scope, $stateParams, $location) {
+    console.log('Login controller invoked');
     // If we are logged in and landing here we redirect to the dashboard.
     if ($.KBaseSessionSync.isLoggedIn()) {
         if ($stateParams.nextPath) {
@@ -569,6 +539,7 @@ app
     } else {
         $scope.nextPath = $stateParams.nextPath;
     }
+    
     
     // callback for ng-click 'loginUser':
     $scope.loginUser = function (user, nextPath, nextURL) {
@@ -731,7 +702,7 @@ app
 
     $scope.fba_refs = [];
 
-    $scope.ref_obj_prom = kb.ws.list_referencing_objects($scope.selected)
+    $scope.ref_obj_prom = $rootScope.kb.ws.list_referencing_objects($scope.selected)
     $.when($scope.ref_obj_prom).done(function(data) {
         // only care about first object
         var data = data[0]
@@ -743,8 +714,8 @@ app
             if (type == "KBaseFBA.FBA") {
                 $scope.fba_refs.push({ws: meta[7], 
                                name: meta[1], 
-                               date: kb.ui.formateDate(meta[3]),
-                               timestamp: kb.ui.getTimestamp(meta[3])
+                               date: $rootScope.kb.ui.formateDate(meta[3]),
+                               timestamp: $rootScope.kb.ui.getTimestamp(meta[3])
                               });
             }
         }

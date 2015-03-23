@@ -1,0 +1,55 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : Mar 14, 2015, Mar 14, 2015 7:35:51 AM
+    Author     : Erik Pearson
+    A more precise grid layout
+*/
+.kb-row {
+    font-size: 0;
+}
+
+.-col {
+    display: inline-block;
+    font-size: 14px;
+}
+
+.-col.-span-1-2 {
+    width: 50%;
+}
+
+.-col.-span-1-3 {
+    width: 33.3333%;
+}
+
+.-col.-span-2-3 {
+    width: 66.6666%;
+}
+.-col.-span-1-4 {
+    width: 25%;
+}
+.-col.-span-3-4 {
+    width: 75%;
+}
+.-col.-span-1-5 {
+    width: 20%;
+}
+.-col.-span-1-5 {
+    width: 40%;
+}
+.-col.-span-1-6 {
+    width: 16.6666%;
+}
+.-col.-span-1-7 {
+    width: 14.2857%;
+}
+.-col.-span-2-7 {
+    width: 28.5714%;
+}
+.-col.-span-3-7 {
+    width: 42.8571%;
+}
+

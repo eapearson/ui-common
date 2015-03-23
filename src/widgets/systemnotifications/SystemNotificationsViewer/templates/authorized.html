@@ -1,0 +1,213 @@
+<div class="collapse" id="more-info-{{env.instanceId}}"> 
+    <div class="well">
+        <p>This is the system notifications viewer...</p>
+    </div>
+</div>
+<style type="text/css">
+    .notification .id {
+        display: inline;
+    }
+    .notification .severity {
+        display: inline;
+    }
+    .notification .modal-dialog .notification {
+        font-style: italic;
+    }
+    .notification .modal-dialog .detail {
+        background-color: silver;
+        padding: 0.3em;
+    }
+    .notification .updatedAt {
+        border-top: 1px silver solid;
+        margin-top: 0.3em;
+        padding-top: 0.3em;
+    }
+    .notification .title {
+        font-weight: bold;
+    }
+    .pastUpdates .startAt {
+        font-style: italic;
+    }
+    .currentOutage .startAt, .currentOutage .endAt {
+        font-style: italic;
+    }
+</style>
+<div class="currentOutage">
+    {% for notification in state.currentOutages|sort(false, false, 'title') %}
+    <div class="notification alert alert-danger alert-kbase alert-compact">
+        <div class="kb-row">
+            <div class="-col -span-1-2">
+                <div class="label label-danger">ongoing {{notification.type}}</div>
+            </div>
+            <div class="-col -span-1-2"style="text-align: right;">
+                <button type="button" class="btn btn-link btn-compact" data-toggle="modal" data-target="[data-element='modal-{{env.generatedId}}-{{notification.id}}']">
+                    ...
+                </button>
+            </div>
+        </div>
+        <div class="title"
+             data-toggle="modal" 
+             data-target="[data-element='modal-{{env.generatedId}}-{{notification.id}}']"
+             style="cursor: pointer;">{{notification.title}}</div>
+        <div class="startAt">
+            started {{notification.startAt|isoDate|niceElapsed}}
+        </div>
+        <div class="endAt">
+            ending {{notification.endAt|isoDate|niceElapsed}}
+        </div>
+        <div class="notification">{{notification.notification}}</div>
+
+        <div class="updatedAt">last updated {{notification.updatedAt|isoDate|niceElapsed}}</div>            
+
+        <div class="modal fade" tabindex="-1" role="dialog" data-element="modal-{{env.generatedId}}-{{notification.id}}">
+            <div class="modal-dialog modal-kbase">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">
+                            <span>&times</span>
+                        </button>
+                        <div class="label label-danger" style="float:right; margin-right: 2em;">ongoing {{notification.type}}</div>
+                        <h4 class="modal-title">{{notification.title}}</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="notification">{{notification.notification}}</div>
+
+                        <div class="description">{{notification.description}}</div>
+
+                        <div class="detail">
+                            <div class="addedAt">added: {{notification.addedAt|isoDate|niceElapsed}}</div>
+                            <div class="updatedAt">updated: {{notification.updatedAt|isoDate|niceElapsed}}</div>            
+                            <div class="startAt">start: {{notification.startAt|isoDate|niceElapsed}}</div>
+                            <div class="startAt">end: {{notification.endAt|isoDate|niceElapsed}}</div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <a class="btn btn-link btn-compact" href="http://kbase.us/contact-us">Contact Us</a>
+                        <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+
+
+<div>
+    {% for notification in state.futureOutages|sort(false, false, 'title') %}
+    <div class="notification alert alert-warning alert-kbase alert-compact">
+        <div>
+            <div class="label label-warning">scheduled {{notification.type}}</div>
+        </div>
+        <div>
+            {{notification.startAt|niceTimerange(notification.endAt)}} 
+        </div>
+        <div>
+            starting {{notification.startAt|niceElapsed}} 
+        </div>
+        <div class="title">{{notification.title}}</div>
+        <div class="notification">{{notification.notification}}</div>
+
+        <div class="updatedAt">last updated {{notification.updatedAt|isoDate|niceElapsed}}</div>            
+        <div style="text-align: right;">
+            <button type="button" class="btn btn-link" data-toggle="modal" data-target="[data-element='modal-{{env.generatedId}}-{{notification.id}}']">
+                more...
+            </button>
+        </div>
+        <div class="modal fade" tabindex="-1" role="dialog" data-element="modal-{{env.generatedId}}-{{notification.id}}">
+            <div class="modal-dialog modal-kbase">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">
+                            <span>&times</span>
+                        </button>
+                        <div class="label label-warning" style="float:right; margin-right: 2em;">scheduled {{notification.type}}</div>
+                        <h4 class="modal-title">{{notification.title}}</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="notification">{{notification.notification}}</div>
+
+                        <div class="description">{{notification.description}}</div>
+
+                        <div class="detail">
+                            <div class="addedAt">added {{notification.addedAt|isoDate|niceElapsed}}</div>
+                            <div class="updatedAt">updated {{notification.updatedAt|isoDate|niceElapsed}}</div>            
+                            <div class="startAt">from {{notification.startAt|isoDate|niceTimestamp}}</div>
+                            <div class="endAt">to {{notification.endAt|isoDate|niceTimestamp}}</div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <a class="btn btn-link" href="http://kbase.us/contact-us">Contact Us</a>
+                        <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+
+
+<div class="pastUpdates">
+    {% for notification in state.pastUpdates|sort(false, false, 'title') %}
+    <div class="notification alert alert-info alert-kbase alert-compact">
+        <!--<div>
+            <div class="id">{{notification.id}}</div>
+            <div class="severity">{{notification.type}}</div>
+        </div>-->
+        <div class="title" 
+             data-toggle="modal" 
+             data-target="[data-element='modal-{{env.generatedId}}-{{notification.id}}']"
+             style="cursor: pointer;">{{notification.title}}</div>
+
+        <!--                                                       
+        <div class="notification">{{notification.notification}}</div>
+        <div class="addedAt">added: {{notification.addedAt|isoDate|niceElapsed}}</div>
+        <div class="updatedAt">updated: {{notification.updatedAt|isoDate|niceElapsed}}</div>            
+        <div class="startAt">start: {{notification.startAt|isoDate|niceElapsed}}</div>
+        <div class="startAt">end: {{notification.endAt|isoDate|niceElapsed}}</div>
+        <div>-->
+        <div class="kb-row">
+            <div class="-col -span-3-4">
+                <div class="startAt">happened {{notification.startAt|isoDate|niceElapsed}}</div>
+            </div>
+            <div class="-col -span-1-4"style="text-align: right;">
+                <button type="button" class="btn btn-link btn-compact" data-toggle="modal" data-target="[data-element='modal-{{env.generatedId}}-{{notification.id}}']">
+                    ...
+                </button>
+            </div>
+        </div>
+        <div class="modal fade" tabindex="-1" role="dialog" data-element="modal-{{env.generatedId}}-{{notification.id}}">
+            <div class="modal-dialog modal-kbase">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">
+                            <span>&times</span>
+                        </button>
+                        <div class="label label-info" style="float:right; margin-right: 2em;">{{notification.type}}</div>
+                        <h4 class="modal-title">{{notification.title}}</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="notification">{{notification.notification}}</div>
+
+                        <div class="description">{{notification.description}}</div>
+
+                        <div class="detail">
+                            <div class="addedAt">added: {{notification.addedAt|isoDate|niceElapsed}}</div>
+                            <div class="updatedAt">updated: {{notification.updatedAt|isoDate|niceElapsed}}</div>            
+                            <div class="startAt">start: {{notification.startAt|isoDate|niceElapsed}}</div>
+                            <div class="startAt">end: {{notification.endAt|isoDate|niceElapsed}}</div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <a class="btn btn-link btn-compact" href="http://kbase.us/contact-us">Contact Us</a>
+                        <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>

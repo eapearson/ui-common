@@ -50,19 +50,34 @@
    font-size: 18px;
 }
 
+.btn-compact {
+    padding: 3px 6px;
+}
+
 .form-control-kbase {
    border-radius: 1px;
 }
 .well-kbase {
    border-radius: 1px;
 }
-.alert-kbase {
+.kb-bootstrap alert, .alert-kbase {
    border-radius: 1px;
 }
+.alert-compact {
+    padding: 6px;
+    margin-bottom: 8px;
+}
 
-.modal-kbase {
+.xmodal-kbase {
     width: 263px;
 }
 .modal-kbase .modal-content {
     border-radius: 1px;
+}
+.panel-kbase {
+    border-radius: 1px;
+}
+.panel-kbase .btn {
+    border-radius: 1px;
+    
 }

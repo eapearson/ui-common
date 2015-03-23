@@ -61,6 +61,7 @@ require.config({
       'kb.asyncqueue': '/src/kbaseAsyncQueue',
       'kb.statemachine': '/src/kbaseStateMachine',  
       'kb.logger': '/src/kbaseLogger',
+      'kb.props': '/src/kbaseProps',
       
       // kbase app
       'kb.appstate': '/src/kbaseAppState',
@@ -80,6 +81,9 @@ require.config({
       
       'kb.session': '/src/kbaseSession',
       'kb.config': '/src/kbaseConfig',
+      'kb.systemnotifications': '/src/kbaseSystemNotifications',
+      
+      // Global widgets
       'kb.widget.navbar': '/src/widgets/kbaseNavbar',
       'kb.widget.base': '/src/widgets/kbaseBaseWidget',
       'kb.widget.login': '/src/widgets/kbaseLoginWidget',
@@ -101,7 +105,11 @@ require.config({
       
       // KBase clients. Wrappers around the service clients to provide packaged operations with promises.
       'kb.client.workspace': '/src/clients/kbaseWorkspaceClient',
-      'kb.client.methods': '/src/clients/kbaseClientMethods'
+      'kb.client.methods': '/src/clients/kbaseClientMethods',
+      
+      // Notification widgets.
+      'kb.widget.systemnotificationsviewer': '/src/widgets/systemnotifications/SystemNotificationsViewer',
+      'kb.widget.systemnotificationsbadge': '/src/widgets/systemnotifications/SystemNotificationsBadge'
    },
    shim: {
       // Better standard naming: Prefix with kbc_ (KBase Client), followed

@@ -68,13 +68,14 @@
 }
 
 /* Own */
-#kbase-navbar .navbar-title {
-  padding-left: 20px;
+.navbar-kbase .navbar-title {
+  margin-left: 1em;
+  padding-left: 1em;
   border-left: 2px solid #e0e0e0;
   font-size: 120%;
   font-weight: bold;
 }
-#kbase-navbar .navbar-title .title {
+.navbar-kbase .navbar-title .title {
   font-weight: bold;
   font-size: 120%;
 }
@@ -180,4 +181,93 @@ The content area is normal flow and just needs to have a matching top margin.
 }
 .navbar-kbase .dropdown-menu li a {
     vertical-align: middle;
+}
+
+
+.kb-nav {
+    height: 70px;
+    width: 100%;
+    position: fixed;
+    display: inline-block;
+    line-height: 70px;
+    left: 0px;
+    top: 0px;
+    background-color: #FFF;
+    border-bottom: 5px solid #E0E0E0;
+    z-index: 3;
+    font-size: 0px;
+    box-sizing: content-box;
+}
+
+
+.kb-nav-right {
+    display: inline-block;
+    position: absolute;
+    right: 0;
+}
+
+.kb-nav-cell {
+    height: 70px;
+    display: inline-block;
+    border: 0px red solid;
+    font-size: 12px;
+    vertical-align: top;
+    text-justify: justify;
+}
+
+.kb-nav-cell.menu {
+    margin-left: 1em;
+    margin-right: 1em;
+}
+.kb-nav-cell.logo {
+    margin-right: 1em;
+}
+.kb-nav-cell.title {
+    margin-left: 1em;
+    padding-left: 1em;
+    border-left: 1px solid #e0e0e0;
+    
+}
+.kb-nav-cell.title .title {
+    font-size: 150%;
+    font-weight: bold;
+}
+.kb-nav-cell.buttons {
+}
+.kb-nav-cell.notifications {
+}
+.kb-nav-cell.login {
+    margin-right: 1em; 
+    margin-left: 1em;
+}
+.kb-nav-cell.login .dropdown > .btn {
+    border: none;
+}
+/* instead of adding pull-right to the menu markup */
+.kb-nav-cell.login .dropdown-menu {
+    left: inherit;
+    right: 0px;
+}
+
+/* Hamburger menu adjustments */
+.kb-nav .dropdown-menu  .navbar-icon {
+  display:inline-block; 
+  width: 26px; 
+  text-align: center;
+  vertical-align: middle;
+  margin-right: 10px;
+}
+.kb-nav .dropdown-menu .navbar-icon .fa {
+  font-size: 150%;
+}
+.kb-nav .dropdown-menu li a {
+    vertical-align: middle;
+}
+
+/* Navbar Buttons */
+.kb-nav-cell.buttons .btn.kb-nav-btn .fa::before { /* color nav icons */
+  color: #2196F3;
+}
+.kb-nav-cell.buttons .btn.kb-nav-btn:hover {
+  background-color: #F5F5F5;
 }

@@ -564,6 +564,10 @@ define(['q'], function (Q) {
                 if (!dateString) {
                     return null;
                 }
+                if (typeof dateString === 'object') {
+                    // assume for now already a date.
+                    return dateString;
+                }
                 var isoRE = /(\d\d\d\d)-(\d\d)-(\d\d)T(\d\d):(\d\d):(\d\d)([\+\-])(\d\d)(:?[\:]*)(\d\d)/;
                 var dateParts = isoRE.exec(dateString);
                 if (!dateParts) {
@@ -605,16 +609,20 @@ define(['q'], function (Q) {
                     var date = new Date(dateObj);
                 } else if (typeof dateObj === 'number') {
                     var date = new Date(dateObj);
+                } else if (dateObj === null) {
+                    // shouldn't get here, but return something sensible.
+                    return '';
                 } else {
                     var date = dateObj;
                 }
+               
                 if (nowDateObj === undefined) {
                     var now = new Date();
                 } else if (typeof nowDateObj === 'string') {
                     var now = new Date(nowDateObj);
                 } else {
                     var now = nowDateObj;
-                }
+                } 
 
                 var shortMonths = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
@@ -688,6 +696,8 @@ define(['q'], function (Q) {
                 } else {
                     var date = dateObj;
                 }
+                
+                var now = new Date();
 
                 var shortMonths = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
                 var minutes = date.getMinutes();
@@ -703,8 +713,63 @@ define(['q'], function (Q) {
                 } else {
                     var time = date.getHours() + ":" + minutes + "am";
                 }
-                var timestamp = shortMonths[date.getMonth()] + " " + date.getDate() + ", " + date.getFullYear() + " at " + time;
+                var year = '';
+                if (now.getFullYear() !== date.getFullYear()) {
+                    year = ', ' + date.getFullYear();
+                }
+                var timestamp = shortMonths[date.getMonth()] + " " + date.getDate() + year + " at " + time;
                 return timestamp;
+            }
+        },
+        niceTime: {
+            value: function (date) {
+                var time;
+                var minutes = date.getMinutes();
+                if (minutes < 10) {
+                    minutes = "0" + minutes;
+                }
+                if (date.getHours() >= 12) {
+                    if (date.getHours() !== 12) {
+                        time = (date.getHours() - 12) + ":" + minutes + "pm";
+                    } else {
+                        time = "12:" + minutes + "pm";
+                    }
+                } else {
+                    time = date.getHours() + ":" + minutes + "am";
+                }
+                return time;
+            }
+        },
+        niceDate: {
+            value: function (date) {
+                var now = new Date();
+
+                var shortMonths = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+               
+                var year = '';
+                if (now.getFullYear() !== date.getFullYear()) {
+                    year = ', ' + date.getFullYear();
+                }
+                var datePart = shortMonths[date.getMonth()] + " " + date.getDate() + year;
+                
+                return datePart;
+            }
+        },
+        niceTimerange: {
+            value: function (from, to) {
+                 // same day
+                var timePart;
+                if (from.getDate() === to.getDate()) {
+                    if (from.getTime() === to.getTime()) {
+                        timePart = ' at ' + his.niceTime(from);
+                    } else {
+                        timePart = ' from ' + this.niceTime(from) + ' to ' + this.niceTime(to);
+                    }
+                    return this.niceDate(from) + timePart;
+                } else {
+                    return 'from ' + this.niceDate(from) + ' at ' + this.niceTime(from) + ' to ' + this.niceDate(to) + ' at ' + this.niceTime(to);
+                }
+                
             }
         },
         /**

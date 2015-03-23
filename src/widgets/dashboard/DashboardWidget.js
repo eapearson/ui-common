@@ -619,14 +619,14 @@ define(['nunjucks', 'jquery', 'q', 'kb.session', 'kb.utils', 'kb.user_profile', 
                     this.setInitialState({
                         force: true
                     })
-                            .then(function () {
-                                this.status = 'dirty';
-                                // this.refresh();
-                            }.bind(this))
-                            .catch(function (err) {
-                                this.setError(err);
-                            }.bind(this))
-                            .done();
+                    .then(function () {
+                        this.status = 'dirty';
+                        // this.refresh();
+                    }.bind(this))
+                    .catch(function (err) {
+                        this.setError(err);
+                    }.bind(this))
+                    .done();
                 }
             },
             onLoggedOut: {
