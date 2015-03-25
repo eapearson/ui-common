@@ -1,5 +1,57 @@
 /*global define: true */
 /*jslint browser:true  vars: true */
+/**
+ * Manage session state for the application, including login, logout, sesssion 
+ * query, validation.
+ * 
+ * @module Session
+ * @author Erik Pearson <eapearson@lbl.gov>
+ * @version 0.1.1
+ * 
+ * @todo testing
+ * @todo documentation
+ */
+
+
+/**
+* The canonical kbase session object, based on the kbase session
+* cookie, but removing a duplicated field and adding the parsed
+* token.
+* 
+* @typedef {Object} SessionObject
+* @property {string} user_id
+* @property {string} realname
+* @property {string} token
+* @property {string} sessionId
+* @property {TokenObject} tokenObject
+*/
+
+/**
+* The token object as supplied by the Globus auth service. 
+* @todo: document the remainder of the fields
+* 
+* @typedef {Object} TokenObject
+* @property {string} un
+* @property {string} expiry
+* 
+*/
+
+/**
+ * An object representation of the Globus authentication token.
+ * 
+ * @typedef {Object} GlobusAuthToken
+ * 
+ */
+
+/**
+ * Information required to authenticate with the KBase auth service.
+ * 
+ * @typedef {Object} LoginCredentials
+ * @property {string} username - the username
+ * @property {string} password - the password
+ * 
+ */
+
 define(['jquery', 'q', 'kb.cookie', 'kb.config', 'kb.logger'],
     function ($, Q, Cookie, Config, Logger) {
         'use strict';
@@ -7,7 +59,7 @@ define(['jquery', 'q', 'kb.cookie', 'kb.config', 'kb.logger'],
             // Property Constants
 
             version: {
-                value: '0.1.0',
+                value: '0.1.1',
                 writable: false
             },
 
@@ -71,31 +123,7 @@ define(['jquery', 'q', 'kb.cookie', 'kb.config', 'kb.logger'],
             },
             // API Methods
 
-
             // Implementation Methods
-
-            /**
-             * The canonical kbase session object, based on the kbase session
-             * cookie, but removing a duplicated field and adding the parsed
-             * token.
-             * 
-             * @typedef {Object} SessionObject
-             * @property {string} user_id
-             * @property {string} realname
-             * @property {string} token
-             * @property {string} sessionId
-             * @property {TokenObject} tokenObject
-             */
-
-            /**
-             * The token object as supplied by the Globus auth service. 
-             * @todo: document the remainder of the fields
-             * 
-             * @typedef {Object} TokenObject
-             * @property {string} un
-             * @property {string} expiry
-             * 
-             */
 
             /**
              * Attempt to set the internal session object from the given 
@@ -228,25 +256,7 @@ define(['jquery', 'q', 'kb.cookie', 'kb.config', 'kb.logger'],
                 }
             },
 
-            /**
-             * 
-             * The traditional KBase session layout, reflecting the fields set
-             * in the browser cookie.
-             * 
-             * 
-             * @typedef {Object} KBaseSessionObject
-             * @property {string} token - The Globus auth token
-             * @property {string} un - username as extracted from the Globus auth token
-             * @property {string} user_id - same as un
-             * @property {string} name - The user "full name" (globus) or
-             * "user name" (kbase). Deprecated - user name should be taken from
-             * the user profile. (See xxx)
-             * @property {string} kbase_sessionid - Issued by the auth server,
-             * used to uniquely identify this session amongst all other extant
-             * sessions. ???
-             * @todo Where is kbase_sessionid used??? Not in ui-common ...
-             * 
-             */
+            
 
             /**
              * Returns the "KBase Session", for legacy usage. The legacy method
@@ -256,7 +266,7 @@ define(['jquery', 'q', 'kb.cookie', 'kb.config', 'kb.logger'],
              * @function getKBaseSesssion
              * @public
              * 
-             * @returns {KBaseSessionObject}
+             * @returns {KBaseSessionObject|null}
              */
             getKBaseSession: {
                 value: function () {
@@ -267,6 +277,21 @@ define(['jquery', 'q', 'kb.cookie', 'kb.config', 'kb.logger'],
                     return this.makeKBaseSession();
                 }
             },
+            
+            
+            /**
+             * Constructs a legacy KBase session from the internal representation
+             * of a session. The legacy session object suffers from inconsistent
+             * naming and duplicate properties, but code relies on it.
+             * 
+             * TODO: remove when it becomes irrelevant -- code should be using the session API not the raw session.
+             * 
+             * @function makeKBaseSession
+             * @private
+             * 
+             * @returns {KBaseSession} a legacy KBase session object
+             * 
+             */
             makeKBaseSession: {
                 value: function () {
                     if (!this.sessionObject) {
@@ -281,12 +306,7 @@ define(['jquery', 'q', 'kb.cookie', 'kb.config', 'kb.logger'],
                     };
                 }
             },
-            /**
-             * An object representation of the Globus authentication token.
-             * 
-             * @typedef {Object} GlobusAuthToken
-             * 
-             */
+
 
             /**
              * Decodes a Globus authentication token, transforming the token
@@ -355,6 +375,8 @@ define(['jquery', 'q', 'kb.cookie', 'kb.config', 'kb.logger'],
             },
             /**
              * Determines if the session has expired by inspection of the expiry.
+             * 
+             * TODO: We should NOT do this in client code. But for now, we are stuck with it.
              * 
              * @function hasExpired
              * @private
@@ -440,20 +462,20 @@ define(['jquery', 'q', 'kb.cookie', 'kb.config', 'kb.logger'],
             removeSession: {
                 value: function () {
                     Cookie.removeItem(this.cookieName, '/');
+                    
+                    // The following are here for legacy purposes. Old cookies
+                    // used .kbase.us rather than the host.
+                    // TODO: remove when it is irrelevant
                     Cookie.removeItem(this.cookieName, '/', 'kbase.us');
                     Cookie.removeItem(this.narrCookieName, '/', 'kbase.us');
+                    
                     // Remove the localStorage session for compatability.
                     localStorage.removeItem(this.cookieName);
 
                     this.sessionObject = null;
                 }
             },
-            /**
-             * typedef {Object} LoginCredentials
-             * @property {string} username - the username
-             * @property {string} password - the password
-             * 
-             */
+
 
             /**
              * Authenticate a user give a username and password with the kbase
@@ -476,12 +498,10 @@ define(['jquery', 'q', 'kb.cookie', 'kb.config', 'kb.logger'],
                         // Validate params.
                         if (!options.username || options.username.length === 0) {
                             reject('Username is empty: It is required for login');
-                            //  options.error('Username is empty: It is required for login');
                             return;
                         }
                         if (!options.password || options.password.length === 0) {
                             reject('Password is empty: It is required for login');
-                            //options.error('Password is empty: It is required for login');
                             return;
                         }
 
@@ -516,14 +536,9 @@ define(['jquery', 'q', 'kb.cookie', 'kb.config', 'kb.logger'],
                                     if (!options.disableCookie) {
                                         this.setSessionCookie();
                                     }
-                                    // options.success(this.makeKBaseSession());
                                     resolve(this.makeKBaseSession());
                                 } else {
                                     reject(data.error_msg);
-                                    //options.error({
-                                    //    status: 0,
-                                    //    message: data.error_msg
-                                    //});
                                 }
                             }.bind(this),
                             error: function (jqXHR, textStatus, errorThrown) {
@@ -555,7 +570,6 @@ define(['jquery', 'q', 'kb.cookie', 'kb.config', 'kb.logger'],
                                 this.error = {
                                     message: errmsg
                                 }
-                                // options.error(errmsg);
                                 reject(errmsg);
                             }.bind(this)
                         });
@@ -563,6 +577,16 @@ define(['jquery', 'q', 'kb.cookie', 'kb.config', 'kb.logger'],
                 }
             },
             
+            /**
+             * Perform the effective "logout", which simply removes all traces
+             * of the session in the browser state. Returns a promise which is
+             * resolved after the session state is cleared. 
+             * 
+             * @function logout
+             * @public
+             * 
+             * @return {Promise<undefined|Error>} a promise with no value
+             */
             logout: {
                 value: function () {
                     return Q.Promise(function (resolve) {
@@ -572,6 +596,15 @@ define(['jquery', 'q', 'kb.cookie', 'kb.config', 'kb.logger'],
                 }
             },
 
+            /**
+             * Determines whether the current session, if it exists, is 
+             * authenticated or not.
+             * 
+             * @function isLoggedIn
+             * @public
+             * 
+             * @returns {boolean} true if the session is authenticated, false otherwise.
+             */
             isLoggedIn: {
                 value: function () {
                     if (this.sessionObject && this.sessionObject.token) {
@@ -580,11 +613,37 @@ define(['jquery', 'q', 'kb.cookie', 'kb.config', 'kb.logger'],
                     return false;
                 }
             },
+            
+            /**
+             * Get a property from the current session.
+             * 
+             * @function getProp
+             * @public
+             * @deprecated Use the specific property methods 
+             * 
+             * @param {PropertyPath|String} propPath - the path of the property to get
+             * @param {Any} defaultValue? - a default value to return if the property
+             * is not found or there is no current session
+             * 
+             * @returns {Any} the value found at the property, the default value, or
+             * undefined.
+             */
             getProp: {
-                value: function (propName, defaultValue) {
-                    return Util.getProp(this.sessionObject, propName, defaultValue);
+                value: function (propPath, defaultValue) {
+                    return Util.getProp(this.sessionObject, propPath, defaultValue);
                 }
             },
+            
+            /**
+             * Get the username (aka user id) from the session. The username is
+             * known both from the login event which generated the session, as 
+             * well as fron the Globus authentication token.
+             * 
+             * @function getUsername
+             * @public 
+             * 
+             * @returns {String|undefined} - the username, if any
+             */
             getUsername: {
                 value: function () {
                     if (this.sessionObject) {
@@ -592,6 +651,18 @@ define(['jquery', 'q', 'kb.cookie', 'kb.config', 'kb.logger'],
                     }
                 }
             },
+            
+            /**
+             * Get the "realname" from the session; this is the actual name of 
+             * the user as provided to the authentication service and as extracted
+             * from the Globus auth token upon login and stored separately in the 
+             * session.
+             * 
+             * @function getRealname
+             * @public
+             * 
+             * @returns {String|indefined} - the username, if any
+             */
             getRealname: {
                 value: function () {
                     if (this.sessionObject) {
@@ -599,6 +670,16 @@ define(['jquery', 'q', 'kb.cookie', 'kb.config', 'kb.logger'],
                     }
                 }
             },
+            
+            /**
+             * Get the KBase session id from the current session. The KBase session
+             * id is issued by the auth service upon successful login.
+             * 
+             * @function getSessionId
+             * @public
+             * 
+             * @returns {String|undefined} - the KBase session id, if any
+             */
             getSessionId: {
                 value: function () {
                     if (this.sessionObject) {
@@ -606,6 +687,17 @@ define(['jquery', 'q', 'kb.cookie', 'kb.config', 'kb.logger'],
                     }
                 }
             },
+            
+            /**
+             * Get the Globus authentication token from the session. The 
+             * Globus auth token is provided after a successful authentication
+             * request performed by the auth server.
+             * 
+             * @function getAuthToken
+             * @public
+             * 
+             * @returns {String|undefined} - the Globus auth token, if any
+             */
             getAuthToken: {
                 value: function () {
                     if (this.sessionObject) {
@@ -615,6 +707,12 @@ define(['jquery', 'q', 'kb.cookie', 'kb.config', 'kb.logger'],
             }
         });
         
+        /*
+         * It doesn't make any sense to have more than one Session object 
+         * in the web app, so this singleton model ensures this behavior.
+         * TODO: It may be getter to implement this via the App state, so that
+         * this module stays "pure".
+         */
         var SingletonSession = Object.create(Session).init();
         return SingletonSession;
     });

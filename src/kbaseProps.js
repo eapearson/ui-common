@@ -12,11 +12,7 @@
  * @todo move any kbase api methods into kb.utils.api
  */
 
-/**
- * Any Javsascript type.
- * 
- * @typedef {(object|string|number|boolean|undefined|function)} Any
- */
+
 
 /**
  * An ordered list of properties that specify a path into an object. Each

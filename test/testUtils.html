@@ -46,6 +46,8 @@
                     type: 'property',
                     propertyName: 'version',
                     id: 'version',
+                    name: 'Test version property',
+                    description: 'DESC',
                     tests: tests,
                     object: O
                 }).runTests();
@@ -69,6 +71,8 @@
                     type: 'property',
                     propertyName: 'version',
                     id: 'version2',
+                    name: 'Test version property',
+                    description: 'DESC',
                     tests: tests,
                     object: Object.create(O)
                 }).runTests();
@@ -79,29 +83,29 @@
         <div data-test="isEqual"></div>
         <script>
             require(['kb.utils', 'kb.test'], function (O, Tester) {
+                return;
                 // boolean
                 var tests = [
-                    {
+                    {   input: [true, true],
                         expects: {
-                            input: [true, true],
                             output: true
                         }
                     },
                     {
+                        input: [true, false],
                         expects: {
-                            input: [true, false],
                             output: false
                         }
                     },
                     {
+                        input: [false, true], 
                         expects: {
-                            input: [false, true], 
                             output: false
                         }
                     },
                     {
+                        input: [false, false], 
                         expects: {
-                            input: [false, false], 
                             output: true
                         }   
                     },
@@ -110,8 +114,8 @@
                 for (var i = 0; i < 10; i++) {
                     for (var j = 1; j < 10; j++) {
                         tests.push({
+                            input: [i, j], 
                             expects: {
-                                input: [i, j], 
                                 output: (i === j)
                             }
                         });
@@ -123,8 +127,8 @@
                 for (var i = 0; i < s1.length; i++) {
                     for (var j = 1; j < s2.length; j++) {
                         tests.push({
+                            input: [s1[i], s2[j]], 
                             expects:{
-                                input: [s1[i], s2[j]], 
                                 output: (s1[i] === s2[j])
                             }
                         });
@@ -156,8 +160,8 @@
                         var o2 = objs[j];
                         var ov2 = {prop1: o2[0].val, prop2: o2[1].val, prop3: o2[2].val};
                         tests.push({
-                            expects: {
-                                input: [ov1, ov2], 
+                            input: [ov1, ov2],
+                            expects: { 
                                 output: (o1[0].i === o2[0].i && o1[1].i === o2[1].i && o1[2].i === o2[2].i)
                             }
                         });
@@ -168,21 +172,24 @@
                 // array
 
                 tests.push({
+                    input: [['cat', 1, false], ['cat', 1, false]],
                     expects: {
-                        input: [['cat', 1, false], ['cat', 1, false]], 
                         output: true
                     }
                 });
                 tests.push({
+                    input: [['cat', 1, false], ['dog', 1, false]], 
                     expects: {
-                        input: [['cat', 1, false], ['dog', 1, false]], 
                         output: false
                     }
                 });
 
                 // complex mixed
                 var T = Object.create(Tester).init({
+                    type: 'method', 
                     id: 'isEqual',
+                    name: 'Object Equality - simple types',
+                    description: 'DESC',
                     tests: tests,
                     object: O,
                     method: 'isEqual'
@@ -254,43 +261,44 @@
 
                 var tests = [
                     {
+                        input: [{name: 'Erik'}, 'name', 'Alex'],
+                        description: 'Set a simple property on a simple object',
                         expects: {
-                            input: [{name: 'Erik'}, 'name', 'Alex'],
                             mutation: {name: 'Alex'},
-                            output: 'Alex',
-                            description: 'Set a simple property on a simple object'
+                            output: 'Alex'
                         }
                     },
                     {
+                        input: [{}, 'name', 'Erik'],
+                        description: 'Set a simple property on an empty object',
                         expects: {
-                            input: [{}, 'name', 'Erik'],
                             mutation: {name: 'Erik'},
-                            output: 'Erik',
-                            description: 'Set a simple property on an empty object'
+                            output: 'Erik'
                         }
                     },
                     {
+                        input: [getUserDb(), 'alex.name', 'Becky'],
+                        description: 'Set a property with path on a complex object',
                         expects: {
-                            input: [getUserDb(), 'alex.name', 'Becky'],
                             mutation: getUserDb2(),
                             output: 'Becky',
-                            expect: 'success',
-                            description: 'Set a property with path on a complex object'
+                            expect: 'success'
                         }
                     },
                     {
+                        input: [getUserDb(), 'becky.name', 'Becky'],
+                        description: 'Set a nonexistent property with path on a complex object',
                         expects: {
-                            input: [getUserDb(), 'becky.name', 'Becky'],
                             mutation: getUserDb3(),
                             output: 'Becky',
-                            expect: 'success',
-                            description: 'Set a nonexistent property with path on a complex object'
+                            expect: 'success'
                         }
                     }
                 ];
 
                 var T = Object.create(Tester).init({
                     id: 'setProp',
+                    name: 'Test setProp', 
                     tests: tests,
                     object: O,
                     method: 'setProp'
@@ -324,22 +332,22 @@
 
                 var tests = [
                     {
+                        input: [{name: 'Erik'}, 'name'], 
                         expects: {
-                            input: [{name: 'Erik'}, 'name'], 
                             output: 'Erik', 
                             status: 'success'
                         }
                     },
                     {
+                        input: [{name: 'Erik'}, 'x', 'Alex'], 
                         expects: {
-                            input: [{name: 'Erik'}, 'x', 'Alex'], 
                             output: 'Alex', 
                             status: 'success'
                         }
                     },
                     {
-                        expects: {
-                            input: [{name: 'Erik'}, 'x'], 
+                        input: [{name: 'Erik'}, 'x'],
+                        expects: { 
                             output: function () {
                                 return undefined;
                             }, 
@@ -347,8 +355,8 @@
                         }
                     },
                     {
-                        expects: {
-                            input: [{name: 'Erik'}, 'name'], 
+                        input: [{name: 'Erik'}, 'name'],
+                        expects: { 
                             output: 'Erik', 
                             status: 'success'
                         }
@@ -356,23 +364,27 @@
                    
                     
                     {
-                        expects: {
+                         description: 'Get nested property with string path',
                             input: [getUserDb(), 'erik.location.city'],
+                        expects: {
+                           
                             output: 'Berkeley',
                             status: 'success'
                         }
                     },
                     {
+                        description: 'Get nested property with array path',
+                        input: [getUserDb(), ['erik', 'location', 'city']],
                         expects: {
-                            input: [getUserDb(), ['erik', 'location', 'city']],
                             output: 'Berkeley',
                             status: 'success'
                         }
                     },
                    
                     {
+                        description: 'Get nested property which does not exist with default value',
+                        input: [getUserDb(), 'erik.location.state', 'California'],
                         expects: {
-                            input: [getUserDb(), 'erik.location.state', 'California'],
                             output: 'California',
                             status: 'success'
                         }
@@ -382,6 +394,8 @@
 
                 var T = Object.create(Tester).init({
                     id: 'getProp',
+                    name: 'Get properties with getProp',
+                    description: 'Test all supported use cases for getting a property out of an object',
                     tests: tests,
                     object: O,
                     method: 'getProp'
@@ -413,31 +427,31 @@
                 }
                 var tests = [
                     {
+                        input: [{name: 'Erik'}, 'name'], 
                         expects: {
-                            input: [{name: 'Erik'}, 'name'], 
                             output: true, 
                             status: 'success'
                         }
                     },
                     {
-                        expects: {
-                            input: [{name: 'Erik'}, 'age'], 
+                        input: [{name: 'Erik'}, 'age'],
+                        expects: { 
                             output: false, 
                             status: 'success'
                         }
                     },
                     
                     {
+                        input: [getUserDb(), 'erik.location.city'],
                         expects: {
-                            input: [getUserDb(), 'erik.location.city'],
                             output: true,
                             status: 'success'
                         }
                     },
                    
                     {
+                        input: [getUserDb(), 'erik.location.state'],    
                         expects: {
-                            input: [getUserDb(), 'erik.location.state'],
                             output: false,
                             status: 'success'
                         }
@@ -446,6 +460,7 @@
 
                 var T = Object.create(Tester).init({
                     id: 'hasProp',
+                    name: 'Test whether an object has a property with hasProp',
                     tests: tests,
                     object: O,
                     method: 'hasProp'
@@ -502,16 +517,16 @@
                 }
                 var tests = [
                     {
+                        input: [getUserDb(), 'alex'],
                         expects: {
-                            input: [getUserDb(), 'alex'],
                             mutation: getUserDb2(),
                             output: true,
                             status: 'success'
                         }
                     },
                     {
+                        input: [getUserDb(), 'erik.location.city'],
                         expects: {
-                            input: [getUserDb(), 'erik.location.city'],
                             mutation: getUserDb3(),
                             output: true,
                             status: 'success'                            
@@ -521,6 +536,7 @@
 
                 var T = Object.create(Tester).init({
                     id: 'deleteProp',
+                    name: 'Remove a property from an object with isBlank', 
                     tests: tests,
                     object: O,
                     method: 'deleteProp'
@@ -584,24 +600,24 @@
                 }
                 var tests = [
                     {
+                        input: [getUserDb(), 'erik.age'],
                         expects: {
-                            input: [getUserDb(), 'erik.age'],
                             mutation: getUserDb2(),
                             output: 53,
                             status: 'success'
                         }
                     },
                     {
+                        input: [getUserDb(), 'alex.age', 5],
                         expects: {
-                            input: [getUserDb(), 'alex.age', 5],
                             mutation: getUserDb3(),
                             output: 55,
                             status: 'success'
                         }
                     },
                     {
+                        input: [getUserDb(), 'erik.age', -23],
                         expects: {
-                            input: [getUserDb(), 'erik.age', -23],
                             mutation: getUserDb4(),
                             output: 29,
                             status: 'success'
@@ -627,78 +643,89 @@
                 var x;
                 var tests = [
                     {
+                        description: 'An undefined variable is blank',
+                        input: [x],
                         expects: {
-                            input: [x],
                             output: true,
                             status: 'success'
                         }
                     },
                     {
+                        description: 'The null value is blank',
+                        input: [null],
                         expects: {
-                            input: [null],
                             output: true,
                             status: 'success'
                         }
                     },
                     {
+                        description: 'An empty string is blank',
+                        input: [''],
                         expects: {
-                            input: [''],
                             output: true,
                             status: 'success'
                         }
                     },
                     {
+                        description: 'An empty simple object is blank',
+                        input: [{}],
                         expects: {
-                            input: [{}],
                             output: true,
                             status: 'success'
                         }
                     },
                     {
+                        description: 'An empty array is blank',
+                        input: [[]],
                         expects: {
-                            input: [[]],
                             output: true,
                             status: 'success'
                         }
                     },
                     {
+                        description: 'A function even if it returns nothing is not blank',
+                        input: [function () {}],
                         expects: {
-                            input: [function () {}],
                             output: false,
                             status: 'success'
                         }
                     },
                     {
+                        description: 'The value false is not blank',
+                        input: [false],
                         expects: {
-                            input: [false],
                             output: false,
                             status: 'success'
                         }
                     },
                     {
+                        description: 'A non-empty string is not blank',
+                        input: ['hello'],
                         expects: {
-                            input: ['hello'],
                             output: false,
                             status: 'success'
                         }
                     },
                     {
+                        description: 'A simple object is not blank',
+                        input: [{a: 'b'}],
                         expects: {
-                            input: [{a: 'b'}],
                             output: false,
                             status: 'success'
                         }
                     },
                     {
+                        description: 'A simple array is not blank',
+                        input: [[1]],
                         expects: {
-                            input: [[1]],
                             output: false,
                             status: 'success'
                         }
                     },
                     {
+                        desscription: 'The value "true" is not blank',
+                        input: [true],
                         expects: {
-                            input: [true],
                             output: false,
                             status: 'success'
                         }
@@ -707,6 +734,7 @@
 
                 var T = Object.create(Tester).init({
                     id: 'isBlank',
+                    name: 'Test if the given value is considered blank',
                     tests: tests,
                     object: O,
                     method: 'isBlank'
@@ -778,36 +806,40 @@
 
                 var tests = [
                     {
+                        input: [getUserDb(), getUserDb2()],
                         expects: {
-                            input: [getUserDb(), getUserDb2()],
                             mutation: getUserDb3(),
-                            output: getUserDb3(),
+                            output: {
+                                value: getUserDb3()
+                            },
                             status: 'success'
                         }
                     },
                     {
+                        input: [{}, getUserDb()],
                         expects: {
-                            input: [{}, getUserDb()],
-                            output: getUserDb(),
+                            output: {
+                                value: getUserDb()
+                            },
                             mutation: getUserDb(),
                             status: 'success'
                         }
                     },
                     {
+                        input: [getUserDb(), getUserDb4()],
                         expects: {
-                            input: [getUserDb(), getUserDb4()],
-                            output: getUserDb5(),
+                            output: {
+                                value: getUserDb5()
+                            },
                             mutation: getUserDb5(),
                             status: 'success'
                         }
                     }
-
-
-
                 ];
 
                 var T = Object.create(Tester).init({
                     id: 'merge',
+                    name: 'Merge two simple objects',
                     tests: tests,
                     object: O,
                     method: 'merge'
@@ -823,16 +855,22 @@
             require(['kb.utils', 'kb.test'], function (O, Tester) {
                 var tests = [
                     {
+                        input: ['2015-04-25T14:44:56-08:00'],
+                        description: 'A proper ISO 8601 timestamp with a full offset',
                         expects: {
-                            input: ['2015-04-25T14:44:56-08:00'],
-                            output: new Date('2015-04-25T14:44:56-08:00'),
+                            output: {
+                                value: new Date('2015-04-25T14:44:56-08:00')
+                            },
                             status: 'success'
                         }
                     },
                     {
+                        input: ['2015-04-25T14:44:56-0800'],
+                        description: 'An ISO 8601 timestamp with out the colon separator in the offset',
                         expects: {
-                            input: ['2015-04-25T14:44:56-0800'],
-                            output: new Date('2015-04-25T14:44:56-08:00'),
+                            output: {
+                                value: new Date('2015-04-25T14:44:56-08:00')
+                            },
                             status: 'success'
                         }
                     }
@@ -840,14 +878,14 @@
 
                 var T = Object.create(Tester).init({
                     id: 'iso8601ToDate',
+                    name: 'Convert 8601 timestamps to javascript Date object', 
                     tests: tests,
                     object: O,
                     method: 'iso8601ToDate'
                 }).runTests();
             });
         </script>  
-
-
+        
         <h2>niceElapsedTime</h2>
         <div data-test="niceElapsedTime"></div>
         <script>
@@ -855,181 +893,181 @@
                 var tests = [
                     // Within the last minute, seconds...
                     {
+                        input: ['2015-04-25T12:00:00-08:00', '2015-04-25T12:00:05-08:00'],
                         expects: {
-                            input: ['2015-04-25T12:00:00-08:00', '2015-04-25T12:00:05-08:00'],
                             output: '5 seconds ago',
                             status: 'success'
                         }
                     },
                     {
+                        input: ['2015-04-25T12:00:00-08:00', '2015-04-25T12:00:01-08:00'],
                         expects: {
-                            input: ['2015-04-25T12:00:00-08:00', '2015-04-25T12:00:01-08:00'],
                             output: '1 second ago',
                             status: 'success'
                         }
                     },
                     {
+                        input: ['2015-04-25T12:00:00-08:00', '2015-04-25T11:59:55-08:00'],
                         expects: {
-                            input: ['2015-04-25T12:00:00-08:00', '2015-04-25T11:59:55-08:00'],
                             output: 'in 5 seconds',
                             status: 'success'
                         }
                     },
                     {
+                        input: ['2015-04-25T12:00:00-08:00', '2015-04-25T11:59:59-08:00'],
                         expects: {
-                            input: ['2015-04-25T12:00:00-08:00', '2015-04-25T11:59:59-08:00'],
                             output: 'in 1 second',
                             status: 'success'
                         }
                     },
                     // Within 60 minutes.
                     {
+                        input: ['2015-04-25T12:00:00-08:00', '2015-04-25T12:00:00-08:00'],
                         expects: {
-                            input: ['2015-04-25T12:00:00-08:00', '2015-04-25T12:00:00-08:00'],
                             output: 'now',
                             status: 'success'
                         }
                     },
                     {
+                        input: ['2015-04-25T12:00:00-08:00', '2015-04-25T12:01:00-08:00'],
                         expects: {
-                            input: ['2015-04-25T12:00:00-08:00', '2015-04-25T12:01:00-08:00'],
                             output: '1 minute ago',
                             status: 'success'
                         }
                     },
                     {
+                        input: ['2015-04-25T12:00:00-08:00', '2015-04-25T12:05:00-08:00'],
                         expects: {
-                            input: ['2015-04-25T12:00:00-08:00', '2015-04-25T12:05:00-08:00'],
                             output: '5 minutes ago',
                             status: 'success'
                         }
                     },
                     {
+                        input: ['2015-04-25T12:00:00-08:00', '2015-04-25T11:59:00-08:00'],
                         expects: {
-                            input: ['2015-04-25T12:00:00-08:00', '2015-04-25T11:59:00-08:00'],
                             output: 'in 1 minute',
                             status: 'success'
                         }
                     },
                     {
+                        input: ['2015-04-25T12:00:00-08:00', '2015-04-25T11:55:00-08:00'],
                         expects: {
-                            input: ['2015-04-25T12:00:00-08:00', '2015-04-25T11:55:00-08:00'],
                             output: 'in 5 minutes',
                             status: 'success'
                         }
                     },
                     // rounding?
                     {
+                        input: ['2015-04-25T12:00:00-08:00', '2015-04-25T12:01:15-08:00'],
                         expects: {
-                            input: ['2015-04-25T12:00:00-08:00', '2015-04-25T12:01:15-08:00'],
                             output: '1 minute ago',
                             status: 'success'
                         }
                     },
                     {
+                        input: ['2015-04-25T12:00:00-08:00', '2015-04-25T12:01:29-08:00'],
                         expects: {
-                            input: ['2015-04-25T12:00:00-08:00', '2015-04-25T12:01:29-08:00'],
                             output: '1 minute ago',
                             status: 'success'
                         }
                     },
                     {
+                        input: ['2015-04-25T12:00:00-08:00', '2015-04-25T12:01:31-08:00'],
                         expects: {
-                            input: ['2015-04-25T12:00:00-08:00', '2015-04-25T12:01:31-08:00'],
                             output: '2 minutes ago',
                             status: 'success'
                         }
                     },
                     {
+                        input: ['2015-04-25T12:00:00-08:00', '2015-04-25T12:01:45-08:00'],
                         expects: {
-                            input: ['2015-04-25T12:00:00-08:00', '2015-04-25T12:01:45-08:00'],
                             output: '2 minutes ago',
                             status: 'success'
                         }
                     },
                     // Hours
                     {
+                        input: ['2015-04-25T12:00:00-08:00', '2015-04-25T13:00:00-08:00'],
                         expects: {
-                            input: ['2015-04-25T12:00:00-08:00', '2015-04-25T13:00:00-08:00'],
                             output: '1 hour ago',
                             status: 'success'
                         }
                     },
                     {
+                        input: ['2015-04-25T12:00:00-08:00', '2015-04-25T14:00:00-08:00'],
                         expects: {
-                            input: ['2015-04-25T12:00:00-08:00', '2015-04-25T14:00:00-08:00'],
                             output: '2 hours ago',
                             status: 'success'
                         }
                     },
                     {
+                        input: ['2015-04-25T12:00:00-08:00', '2015-04-25T11:00:00-08:00'],
                         expects: {
-                            input: ['2015-04-25T12:00:00-08:00', '2015-04-25T11:00:00-08:00'],
                             output: 'in 1 hour',
                             status: 'success'
                         }
                     },
                     {
+                        input: ['2015-04-25T12:00:00-08:00', '2015-04-25T10:00:00-08:00'],
                         expects: {
-                            input: ['2015-04-25T12:00:00-08:00', '2015-04-25T10:00:00-08:00'],
                             output: 'in 2 hours',
                             status: 'success'
                         }
                     },
                     // days
                     {
-                        expects: {
                             input: ['2015-04-25T12:00:00-08:00', '2015-04-26T12:00:00-08:00'],
+                        expects: {
                             output: '1 day ago',
                             status: 'success'
                         }
                     },
                     {
-                        expects: {
                             input: ['2015-04-25T12:00:00-08:00', '2015-04-27T12:00:00-08:00'],
+                        expects: {
                             output: '2 days ago',
                             status: 'success'
                         }
                     },
                     {
-                        expects: {
                             input: ['2015-04-25T12:00:00-08:00', '2015-04-24T12:00:00-08:00'],
+                        expects: {
                             output: 'in 1 day',
                             status: 'success'
                         }
                     },
                     {
-                        expects: {
                             input: ['2015-04-25T12:00:00-08:00', '2015-04-23T12:00:00-08:00'],
+                        expects: {
                             output: 'in 2 days',
                             expect: 'success'
                         }
                     },
                     {
-                        expects: {
                             input: ['2015-04-10T12:00:00-08:00', '2015-04-04T12:00:00-08:00'],
+                        expects: {
                             output: 'in 6 days',
                             status: 'success'
                         }
                     },
                     {
-                        expects: {
                             input: ['2015-04-10T12:00:00-08:00', '2015-04-03T12:00:00-08:00'],
+                        expects: {
                             output: 'Apr 10',
                             status: 'success'
                         }
                     },
                     // Any date this same year
                     {
-                        expects: {
                             input: ['2015-04-10T12:00:00-08:00', '2015-04-17T12:00:00-08:00'],
+                        expects: {
                             output: 'Apr 10',
                             status: 'success'
                         }
                     },
                     {
-                        expects: {
                             input: ['2014-04-10T12:00:00-08:00', '2015-04-27T12:00:00-08:00'],
+                        expects: {
                             output: 'Apr 10, 2014',
                             status: 'success'
                         }

@@ -1,0 +1,26 @@
+/**
+ * Any Javsascript type.
+ * 
+ * @typedef {(object|string|number|boolean|undefined|function)} Any
+ */
+
+
+/**
+* 
+* The traditional KBase session layout, reflecting the fields set
+* in the browser cookie.
+* 
+* 
+* @typedef {Object} KBaseSessionObject
+* @property {string} token - The Globus auth token
+* @property {string} un - username as extracted from the Globus auth token
+* @property {string} user_id - same as un
+* @property {string} name - The user "full name" (globus) or
+* "user name" (kbase). Deprecated - user name should be taken from
+* the user profile. (See xxx)
+* @property {string} kbase_sessionid - Issued by the auth server,
+* used to uniquely identify this session amongst all other extant
+* sessions. ???
+* @todo Where is kbase_sessionid used??? Not in ui-common ...
+* 
+*/

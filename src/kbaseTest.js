@@ -211,12 +211,28 @@ define(['underscore', 'q'], function (_, Q) {
                         result.message = 'output does not match expected';
                     }                
                 } else if (typeof test.expects.output === 'object') {
-                    result.message = test.expects.output.name;
-                    if (test.expects.output.test.call({}, output)) {
-                        result.status = 'success';
+                    // NB the output value can't be simply the object. If an object
+                    // it must be wrapped.
+                    if (test.expects.output.value) {
+                        result.expected = test.expects.output.value;
+                        if (_.isEqual(output, test.expects.output.value)) {
+                            result.status = 'success';
+                            result.message = 'output matches expected';
+                        } else {
+                            result.status = 'failure';
+                            result.message = 'output does not match expected';
+                        }
+                    } else if (test.expects.output.test) {
+                        result.message = test.expects.output.name;
+                        if (test.expects.output.test.call({}, output)) {
+                            result.status = 'success';
+                        } else {
+                            result.status = 'failure';
+                        }
                     } else {
-                        result.status = 'failure';
-                    }                    
+                        result.status = 'error';
+                        result.message = 'test misconfigured -- output object is not a simple object, value, or test';
+                    }
                 } else {
                     // simple equality test.
                     result.expected = test.expects.output;
@@ -284,7 +300,7 @@ define(['underscore', 'q'], function (_, Q) {
                         }
                     } else {
                         result.status = 'success';
-                        result.message = 'No mutations found, none expected'
+                        result.message = 'No mutations found, none expected';
                     }
                 }
                 return result;
@@ -317,24 +333,24 @@ define(['underscore', 'q'], function (_, Q) {
                     if (test.expects.exception) {
                         if (this.exceptionMatch(ex, test.expects.exception)) {
                             result.status = 'success';
-                            result.message = 'exception encountered, and it matches the expectation';
+                            result.message = 'Exception encountered, and it matches the expectation';
                         } else {
                             result.status = 'failure';
-                            result.message = 'exception encountered, and it fails the expectation';
+                            result.message = 'Exception encountered, and it fails the expectation';
                         }
                     } else {
                         result.status = 'failure';
                         console.log('EX');
                         console.log(ex);
-                        result.message = 'test not supplied, but exception encountered';
+                        result.message = 'Exception test not supplied, but exception encountered';
                     }
                 } else {
                     if (test.expects.exception) {
                         result.status = 'failure';
-                        result.message = 'test supplied, but no exception encountered';
+                        result.message = 'Exception test supplied, but no exception encountered';
                     } else {
                         result.status = 'success';
-                        result.message = 'no exception encountered, and non expected';
+                        result.message = 'No exception encountered, and non expected';
                     }
                 }
                 return result;
@@ -371,7 +387,7 @@ define(['underscore', 'q'], function (_, Q) {
             value: function (test) {
                 // var result = [];
                 // TODO: this should be test.input, not test.expects.input
-                // test.originalInput = JSON.parse(JSON.stringify(test.expects.input));
+                test.originalInput = JSON.parse(JSON.stringify(test.input));
                 //if (!this.testPromise) {
                 //    this.testPromise = function (obj, input) {
                 //        return Q.Promise(function (resolve) {
@@ -379,10 +395,33 @@ define(['underscore', 'q'], function (_, Q) {
                 //        });
                 //    };
                 //}
-                var whenResult = test.whenResult || this.whenResult;
+                
+                if (!test.object) {
+                    throw new Error('Invalid method test - no object');
+                }
+                if (!test.method) {
+                    if (this.method) {
+                        test.method = this.method;
+                    } else {
+                        throw new Error('Invalid method test - no method');
+                    }
+                }
+                
+                if (!test.whenResult) {
+                    if (this.whenresult) {
+                        test.whenResult = this.whenResult;
+                    } else {
+                        test.whenResult = function (test) {
+                            return Q.Promise(function (resolve) {
+                                resolve(test.object[test.method].apply({}, test.input));
+                            }.bind(this));
+                        }.bind(this);
+                    }
+                }
+                
                 return Q.Promise(function (resolve) {
                     var start = new Date();
-                    whenResult(test)
+                    test.whenResult(test)
                         .then(function (output) {
                             var results = [];
                             results.push(this.runMethodOutputTest(test, output));
@@ -398,8 +437,8 @@ define(['underscore', 'q'], function (_, Q) {
                             resolve(test);
                         }.bind(this))
                         .catch(function (err) {
-                            // console.log('in method test EX');
-                            // console.log(err);
+                             //console.log('in method test EX');
+                             //console.log(err);
                             test.result.results = [this.runMethodExceptionTest(test, err)];
                             var elapsed = (new Date()).getTime() - start.getTime();
                             test.elapsed = elapsed;
@@ -456,8 +495,10 @@ define(['underscore', 'q'], function (_, Q) {
                 } else {
                     status = 'failure';
                 }
+                
                 return {
-                    expected: test.expectedValue,
+                    type: 'property',
+                    expected: test.expects.propertyValue,
                     actual: value,
                     status: status
                 };
@@ -465,8 +506,15 @@ define(['underscore', 'q'], function (_, Q) {
         },
         runPropertyTest: {
             value: function (test) {
-                var actual = this.getObject()[this.propertyName];
-                return [this.runPropertyComparisonTest(test, actual)];
+                return Q.Promise(function (resolve) {
+                    var start = new Date();
+                    var actual = this.getObject()[this.propertyName];
+                    
+                    test.result.results = [this.runPropertyComparisonTest(test, actual)];
+                    var elapsed = (new Date()).getTime() - start.getTime();
+                    test.elapsed = elapsed;
+                    resolve(test);
+                }.bind(this));
             }
         },
         runTest: {
@@ -475,8 +523,7 @@ define(['underscore', 'q'], function (_, Q) {
                 case 'property':
                     return this.runPropertyTest(test);
                 case 'method':
-                    var r = this.runMethodTest(test);
-                    return r;
+                    return this.runMethodTest(test);
                 default:
                     return this.runMethodTest(test);
                 }
@@ -535,7 +582,7 @@ define(['underscore', 'q'], function (_, Q) {
                                             expected: JSON.stringify(result.expected),
                                             actual: JSON.stringify(result.actual),
                                             subtest: result.type,
-                                            message: 'Expected test result of ' + expectedStatus + ', but got ' + result.status + '.' + result.message
+                                            message: 'Expected test result of ' + expectedStatus + ', but got ' + result.status + '. ' + result.message
                                         });
                                     } 
                                 }.bind(this));
