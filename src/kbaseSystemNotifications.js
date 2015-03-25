@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-define(['kb.utils'], function (Utils) {
+define(['q', 'kb.utils', 'kb.config'], function (Q, Utils, Config) {
     'use strict';
     var Notification = Object.create({}, {
         setProp: {
@@ -252,9 +252,15 @@ define(['kb.utils'], function (Utils) {
     });
 
     var Notifications = Object.create({}, {
-        create: {
+        init: {
             value: function () {
                 this.notifications = {};
+                
+                if (!Config.hasConfig('systemnotifications_url')) {
+                    throw new Error('Notifications requires a data source url; none provided in the the site configuration');
+                }
+                this.dataSourceURL = Config.getConfig('systemnotifications_url');
+                
                 return this;
             }
         },
@@ -301,13 +307,18 @@ define(['kb.utils'], function (Utils) {
                 }.bind(this));
                 return o;
             }
+        },
+        fetchNotifications: {
+            value: function () {
+                
+            }
         }
     });
 
     return {
         Notification: Notification,
         Notifications: Notifications,
-        systemNotifications: Notifications.create()
+        systemNotifications: Notifications.init()
     };
 });
 

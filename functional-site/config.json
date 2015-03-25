@@ -18,6 +18,7 @@
       "trees": "https://kbase.us/services/trees", 
       "user_profile": "https://kbase.us/services/user_profile/rpc", 
       "dashboard_metrics_url": "/userMetrics",
+      "systemnotifications_url": "https://kbase.us/wp-json/kbase/notifications",
       "session": {
          "cookie": {
             "max-age": 5184000
@@ -55,6 +56,7 @@
       "trees": "https://kbase.us/services/trees", 
       "user_profile": "https://kbase.us/services/user_profile/rpc", 
       "dashboard_metrics_url": "/userMetrics",
+      "systemnotifications_url": "https://staging.kbase.us/wp-json/kbase/notifications",
       "kbase_clients": {
          "defaults": {
             "timeout": 900000
@@ -92,6 +94,7 @@
       "trees": "https://kbase.us/services/trees", 
       "user_profile": "https://kbase.us/services/user_profile/rpc", 
       "dashboard_metrics_url": "/userMetrics",
+      "systemnotifications_url": "https://staging.kbase.us/wp-json/kbase/notifications",
       "kbase_clients": {
          "defaults": {
             "timeout": 900000

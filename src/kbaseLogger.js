@@ -21,7 +21,6 @@ define(['kb.props'], function (Props) {
     var Logger = Object.create(Base, {
         init: {
             value: function (cfg) {
-                
                 this.source = cfg.source;
             }
         },
@@ -83,13 +82,12 @@ define(['kb.props'], function (Props) {
         },
         isLogging: {
             value: function (type) {
-                console.log('Is Logging?'); console.log(type);
-                return this.config.getProp(['excludeType', type], true);
+                return !this.config.getProp(['excludeType', type], false);
             }
         },
         logError: {
             value: function (msg) {
-                if (this.isLogging['error']) {
+                if (this.isLogging('error')) {
                     msg.type = 'ERROR';
                     this.log(msg);
                 }
@@ -98,8 +96,7 @@ define(['kb.props'], function (Props) {
         },
         logWarning: {
             value: function (msg) {
-                console.log('logging warning?');
-                if (this.isLogging['warning']) {
+                if (this.isLogging('warning')) {
                     msg.type = 'WARNING';
                     this.log(msg);
                 }
@@ -108,7 +105,7 @@ define(['kb.props'], function (Props) {
         },
         logInfo: {
             value: function (msg) {
-                if (this.isLogging['info']) {
+                if (this.isLogging('info')) {
                     msg.type = 'INFO';
                     this.log(msg);
                 }
@@ -117,7 +114,7 @@ define(['kb.props'], function (Props) {
         },
         logDeprecation: {
             value: function (msg) {
-                if (this.isLogging['deprecation']) {
+                if (this.isLogging('deprecation')) {
                     msg.type = 'DEPRECATION';
                     this.log(msg);
                 }
@@ -126,7 +123,7 @@ define(['kb.props'], function (Props) {
         },
         logDebug: {
             value: function (msg) {
-                if (this.isLogging['debug']) {
+                if (this.isLogging('debug')) {
                     msg.type = 'DEBUG';
                     this.log(msg);
                 }

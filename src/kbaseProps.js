@@ -73,7 +73,6 @@ define([], function () {
                 var i;
                 var obj = this.state;
                 for (i = 0; i < props.length; i += 1) {
-                    console.log(obj);
                     if ((obj === undefined) ||
                             (typeof obj !== 'object') ||
                             (obj === null)) {

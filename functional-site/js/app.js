@@ -677,7 +677,7 @@ $.ajaxSetup({
  */
 // just by loading the AppState for the first time, it will be initialized and usable.
 window.require(['kb.widget.navbar', 'kb.appstate', 'kb.logger'], function (Navbar, AppState, Logger) {
-    // Logger.dontLog('warning');
+    Logger.dontLog('warning');
     
     app.run(function ($rootScope, $state, $stateParams, $location) {
         //  Things that need to happen when a view changes.
