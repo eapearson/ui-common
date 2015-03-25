@@ -10,100 +10,137 @@
 
 angular.module('dashboard-directives', []);
 angular.module('dashboard-directives')
-        .directive('dashboardnarratives', function ($rootScope) {
-            "use strict";
-            return {
-                link: function (scope, ele, attrs) {
-                    require(['kb.widget.dashboard.narratives'], function (W) {
-                        var widget = Object.create(W).init({
-                            container: $(ele),
-                            viewState: scope.viewState
-                        }).start();
-                        scope.$on('$destroy', function () {
-                            if (widget) {
-                                try {
-                                    widget.stop();
-                                } finally {
-                                    // What do do here?
-                                }
+    .directive('dashboardnarratives', function ($rootScope) {
+        "use strict";
+        return {
+            link: function (scope, ele, attrs) {
+                require(['kb.widget.dashboard.narratives'], function (W) {
+                    var widget = Object.create(W).init({
+                        container: $(ele),
+                        viewState: scope.viewState
+                    }).start();
+                    scope.$on('$destroy', function () {
+                        if (widget) {
+                            try {
+                                widget.stop();
+                            } finally {
+                                // What do do here?
                             }
-                        });
+                        }
                     });
-                }
-            };
-        })
-        .directive('dashboardsharednarratives', function ($rootScope) {
-            "use strict";
-            return {
-                link: function (scope, ele, attrs) {
-                    require(['kb.widget.dashboard.sharedNarratives'], function (W) {
-                        var widget = Object.create(W).init({
-                            container: $(ele),
-                            viewState: scope.viewState
-                        }).start();
-                        scope.$on('$destroy', function () {
-                            if (widget) {
-                                try {
-                                    widget.stop();
-                                } finally {
-                                    // What do do here?
-                                }
+                });
+            }
+        };
+    })
+    .directive('dashboardsharednarratives', function ($rootScope) {
+        "use strict";
+        return {
+            link: function (scope, ele, attrs) {
+                require(['kb.widget.dashboard.sharedNarratives'], function (W) {
+                    var widget = Object.create(W).init({
+                        container: $(ele),
+                        viewState: scope.viewState
+                    }).start();
+                    scope.$on('$destroy', function () {
+                        if (widget) {
+                            try {
+                                widget.stop();
+                            } finally {
+                                // What do do here?
                             }
-                        });
+                        }
                     });
-                }
-            };
-        })
-        .directive('dashboardpublicnarratives', function ($rootScope) {
-            "use strict";
-            return {
-                link: function (scope, ele, attrs) {
-                    require(['kb.widget.dashboard.publicNarratives'], function (W) {
-                        var widget = Object.create(W).init({
-                            container: $(ele),
-                            viewState: scope.viewState
-                        }).start();
-                        scope.$on('$destroy', function () {
-                            if (widget) {
-                                try {
-                                    widget.stop();
-                                } finally {
-                                    // What do do here?
-                                }
+                });
+            }
+        };
+    })
+    .directive('dashboardpublicnarratives', function ($rootScope) {
+        "use strict";
+        return {
+            link: function (scope, ele, attrs) {
+                require(['kb.widget.dashboard.publicNarratives'], function (W) {
+                    var widget = Object.create(W).init({
+                        container: $(ele),
+                        viewState: scope.viewState
+                    }).start();
+                    scope.$on('$destroy', function () {
+                        if (widget) {
+                            try {
+                                widget.stop();
+                            } finally {
+                                // What do do here?
                             }
-                        });
+                        }
                     });
-                }
-            };
-        })
-        .directive('dashboardprofile', function ($rootScope) {
-            "use strict";
-            return {
-                link: function (scope, ele, attrs) {
-                    require(['kb.widget.dashboard.profile', 'jquery'], function (W, $) {
-                        var widget = Object.create(W).init({
-                            container: $(ele),
-                            viewState: scope.viewState
-                        }).start();
-                        scope.$on('$destroy', function () {
-                            if (widget) {
-                                try {
-                                    widget.stop();
-                                } finally {
-                                    // What do do here?
-                                }
+                });
+            }
+        };
+    })
+    .directive('dashboardprofile', function ($rootScope) {
+        "use strict";
+        return {
+            link: function (scope, ele, attrs) {
+                require(['kb.widget.dashboard.profile', 'jquery'], function (W, $) {
+                    var widget = Object.create(W).init({
+                        container: $(ele),
+                        viewState: scope.viewState
+                    }).start();
+                    scope.$on('$destroy', function () {
+                        if (widget) {
+                            try {
+                                widget.stop();
+                            } finally {
+                                // What do do here?
                             }
-                        });
+                        }
                     });
-                }
-            };
-        })
+                });
+            }
+        };
+    })
 
-        .directive('dashboardapps', function ($rootScope) {
-            "use strict";
-            return {
-                link: function (scope, ele, attrs) {
-                    require(['kb.widget.dashboard.apps'], function (Widget) {
+    .directive('dashboardapps', function ($rootScope) {
+        "use strict";
+        return {
+            link: function (scope, ele, attrs) {
+                require(['kb.widget.dashboard.apps'], function (Widget) {
+                    var widget = Object.create(Widget).init({
+                        container: $(ele),
+                        viewState: scope.viewState
+                    }).start();
+                    scope.$on('$destroy', function () {
+                        if (widget) {
+                            try {
+                                widget.stop();
+                            } finally {
+                                // What do do here?
+                            }
+                        }
+                    });
+                });
+            }
+        };
+    })
+
+    /*.directive('dashboarddata', function ($rootScope) {
+     return {
+     link: function (scope, ele, attrs) {
+     require(['kb.widget.dashboard.data'], function (Widget) {
+     Object.create(Widget).init({
+     container: $(ele),
+     viewState: scope.viewState
+     }).go();
+     });
+     }
+     };
+     })
+     */
+    .directive('dashboardmetrics', function ($rootScope) {
+        "use strict";
+        return {
+            link: function (scope, ele, attrs) {
+                try {
+                    require(['kb.widget.dashboard.metrics'], function (Widget) {
                         var widget = Object.create(Widget).init({
                             container: $(ele),
                             viewState: scope.viewState
@@ -117,30 +154,27 @@ angular.module('dashboard-directives')
                                 }
                             }
                         });
-                    });
+                    },
+                        function (err) {
+                            $(ele).html('Exception rendering widget: ' + err);
+                            console.log('EX in require in dashboardmetrics');
+                            console.log(err);
+                        });
+                } catch (ex) {
+                    $(ele).html('Exception rendering widget: ' + ex);
+                    console.log('EX in dashboardmetrics');
+                    console.log(ex);
                 }
-            };
-        })
-
-        /*.directive('dashboarddata', function ($rootScope) {
-         return {
-         link: function (scope, ele, attrs) {
-         require(['kb.widget.dashboard.data'], function (Widget) {
-         Object.create(Widget).init({
-         container: $(ele),
-         viewState: scope.viewState
-         }).go();
-         });
-         }
-         };
-         })
-         */
-        .directive('dashboardmetrics', function ($rootScope) {
-            "use strict";
-            return {
-                link: function (scope, ele, attrs) {
-                    try {
-                        require(['kb.widget.dashboard.metrics'], function (Widget) {
+            }
+        };
+    })
+    .directive('dashboardnotifications', function ($rootScope) {
+        "use strict";
+        return {
+            link: function (scope, ele, attrs) {
+                try {
+                    require(['kb.widget.systemnotifications.viewer'], 
+                        function (Widget) {
                             var widget = Object.create(Widget).init({
                                 container: $(ele),
                                 viewState: scope.viewState
@@ -155,43 +189,43 @@ angular.module('dashboard-directives')
                                 }
                             });
                         },
-                                function (err) {
-                                    $(ele).html('Exception rendering widget: ' + err);
-                                    console.log('EX in require in dashboardmetrics');
-                                    console.log(err);
-                                });
-                    } catch (ex) {
-                        $(ele).html('Exception rendering widget: ' + ex);
-                        console.log('EX in dashboardmetrics');
-                        console.log(ex);
-                    }
+                        function (err) {
+                            $(ele).html('Exception rendering widget: ' + err);
+                            console.log('EX in require in dashboardmetrics');
+                            console.log(err);
+                        });
+                } catch (ex) {
+                    $(ele).html('Exception rendering widget: ' + ex);
+                    console.log('EX in dashboardmetrics');
+                    console.log(ex);
                 }
-            };
-        })
-        .directive('dashboardcollaboratornetwork', function ($rootScope) {
-            "use strict";
-            return {
-                link: function (scope, ele, attrs) {
-                    require(['kb.widget.dashboard.collaborators'], function (Widget) {
-                        try {
-                            var widget = Object.create(Widget).init({
-                                container: $(ele),
-                                userId: scope.params.userid,
-                                viewState: scope.viewState
-                            }).start();
-                            scope.$on('$destroy', function () {
-                                if (widget) {
-                                    try {
-                                        widget.stop();
-                                    } finally {
-                                        // What do do here?
-                                    }
+            }
+        };
+    })
+    .directive('dashboardcollaboratornetwork', function ($rootScope) {
+        "use strict";
+        return {
+            link: function (scope, ele, attrs) {
+                require(['kb.widget.dashboard.collaborators'], function (Widget) {
+                    try {
+                        var widget = Object.create(Widget).init({
+                            container: $(ele),
+                            userId: scope.params.userid,
+                            viewState: scope.viewState
+                        }).start();
+                        scope.$on('$destroy', function () {
+                            if (widget) {
+                                try {
+                                    widget.stop();
+                                } finally {
+                                    // What do do here?
                                 }
-                            });
-                        } catch (ex) {
-                            $(ele).html('Error: ' + ex);
-                        }
-                    });
-                }
-            };
-        });
+                            }
+                        });
+                    } catch (ex) {
+                        $(ele).html('Error: ' + ex);
+                    }
+                });
+            }
+        };
+    });

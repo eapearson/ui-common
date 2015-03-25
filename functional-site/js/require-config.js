@@ -108,8 +108,8 @@ require.config({
       'kb.client.methods': '/src/clients/kbaseClientMethods',
       
       // Notification widgets.
-      'kb.widget.systemnotificationsviewer': '/src/widgets/systemnotifications/SystemNotificationsViewer',
-      'kb.widget.systemnotificationsbadge': '/src/widgets/systemnotifications/SystemNotificationsBadge'
+      'kb.widget.systemnotifications.viewer': '/src/widgets/systemnotifications/SystemNotificationsViewer',
+      'kb.widget.systemnotifications.badge': '/src/widgets/systemnotifications/SystemNotificationsBadge'
    },
    shim: {
       // Better standard naming: Prefix with kbc_ (KBase Client), followed

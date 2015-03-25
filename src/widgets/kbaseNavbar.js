@@ -1,6 +1,6 @@
 /*global define: true */
 /*jslint browser:true  vars: true */
-define(['jquery', 'kb.session', 'kb.config', 'kb.widget.base', 'kb.widget.login', 'kb.widget.systemnotificationsbadge'],
+define(['jquery', 'kb.session', 'kb.config', 'kb.widget.base', 'kb.widget.login', 'kb.widget.systemnotifications.badge'],
     function ($, Session, Config, BaseWidget, LoginWidget, NotificationBadge) {
         "use strict";
         var Navbar = Object.create(BaseWidget, {

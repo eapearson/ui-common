@@ -32,6 +32,16 @@
         font-style: italic;
     }
 </style>
+
+{% set totalNotifications = state.currentOutages|length + 
+                            state.futureOutages|length + 
+                            state.pastUpdates|length %}
+                            
+{% if totalNotifications == 0 %}
+<div class="no-notifications">
+    There are no current, future, or recent notifications
+</div>
+{% else %}
 <div class="currentOutage">
     {% for notification in state.currentOutages|sort(false, false, 'title') %}
     <div class="notification alert alert-danger alert-kbase alert-compact">
@@ -211,3 +221,4 @@
     </div>
     {% endfor %}
 </div>
+{% endif %}
