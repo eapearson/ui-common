@@ -11,12 +11,28 @@ require(['kb.systemnotifications'], function (SystemNotifications) {
         updatedAt: '2015-03-31T14:04:00-08:00',
         updatedBy: 'eap',
         title: 'System Maintenance Window',
-        notification: 'KBase will be undergoing maintenance and unavailable during this period',
+        notification: 'KBase will be undergoing maintenance and may be unavailable during this period',
         description: 'As part of our ongoing effort to improve our infrastructure, we will put KBase into maintenance mode for up to two hours in order to dust off the disk drives.',
         url: 'http://kbase.us/read/more/about/me.html',
-        type: 'outage',
+        type: 'maintenance',
         status: 'active',
         startAt: '2015-04-12T14:00:00-08:00',
+        endAt: '2015-04-12T16:00:00-08:00'
+    });
+    
+    tn.addNotification({
+        id: 6,
+        addedAt: '2015-03-12T14:04:00-08:00',
+        addedBy: 'eap',
+        updatedAt: '2015-03-31T14:04:00-08:00',
+        updatedBy: 'eap',
+        title: 'System Maintenance Window',
+        notification: 'KBase will be undergoing maintenance and may be unavailable during this period',
+        description: 'As part of our ongoing effort to improve our infrastructure, we have put KBase into maintenance mode, for a few days, to tighten up some loose screws.',
+        url: 'http://kbase.us/read/more/about/me.html',
+        type: 'maintenance',
+        status: 'active',
+        startAt: '2015-03-12T14:00:00-08:00',
         endAt: '2015-04-12T16:00:00-08:00'
     });
 
@@ -31,10 +47,10 @@ require(['kb.systemnotifications'], function (SystemNotifications) {
         notification: 'Sorry, the system is down. The rabbit chewed off the power cord.',
         description: 'Our bunny got hungry and ate the entire power cord. This is a special order from Saturn, and will take several days to order, ship, and install.',
         url: 'http://kbase.us/read/more/about/me.html',
-        type: 'outage',
+        type: 'issue',
         status: 'active',
-        startAt: '2015-03-11T14:04:00-08:00',
-        endAt: '2015-03-17T14:04:00-08:00'
+        startAt: '2015-03-24T14:04:00-08:00',
+        endAt: '2015-03-26T14:04:00-08:00'
     });
 
     // This is an update.

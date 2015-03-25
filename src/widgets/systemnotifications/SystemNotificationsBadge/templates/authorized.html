@@ -1,9 +1,21 @@
-<div class="currentOutages">
-    <a href="#/dashboard">{{state.currentOutages|length}} outages now</a>
+{% if state.issues.current|length > 0 %}
+<div class="-issues -current">
+    <a href="#/dashboard">{{state.issues.current|length}} issues ongoing</a>
 </div>
-<div class="futureOutages">
-    <a href="#/dashboard">{{state.futureOutages|length}} outages scheduled</a>
+{% endif %}
+{% if state.maintenance.current|length > 0 %}
+<div class="-maintenance -current">
+    <a href="#/dashboard">{{state.maintenance.current|length}} maintenance ongoing</a>
 </div>
-<div class="pastUpdates">
-    <a href="#/dashboard">{{state.pastUpdates|length}} recent updates</a>
+{% endif %}
+
+{% if state.maintenance.future|length > 0 %}
+<div class="-maintenance -future">
+    <a href="#/dashboard">{{state.maintenance.future|length}} maintenance upcoming</a>
 </div>
+{% endif %}
+{% if state.updates.recent|length > 0 %}
+<div class="-updates -recent">
+    <a href="#/dashboard">{{state.updates.recent|length}} recent updates</a>
+</div>
+{% endif %}

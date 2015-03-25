@@ -13,15 +13,15 @@
     display: inline-block;
     vertical-align: middle;
 }
-.SystemNotificationsBadge-widget .currentOutages,
-.SystemNotificationsBadge-widget .currentOutages a {
+.SystemNotificationsBadge-widget .-issues,
+.SystemNotificationsBadge-widget .-issues a {
     color: red;
 }
-.SystemNotificationsBadge-widget .futureOutages,
-.SystemNotificationsBadge-widget .futureOutages a {
+.SystemNotificationsBadge-widget .-maintenance,
+.SystemNotificationsBadge-widget .-maintenance a {
     color: orange;
 }
-.SystemNotificationsBadge-widget .pastUpdates,
-.SystemNotificationsBadge-widget .pastUpdates a {
+.SystemNotificationsBadge-widget .-update,
+.SystemNotificationsBadge-widget .-pastUpdates a {
     color: blue;
 }
