@@ -519,6 +519,7 @@ define(['nunjucks', 'jquery', 'q', 'postal', 'kb.session', 'kb.utils', 'kb.logge
                         if (typeof error === 'string') {
                             errorText = error;
                         } else if (typeof error === 'object') {
+                            
                             if (error instanceof Error) {
                                 errorText = error.message;
                             } else {

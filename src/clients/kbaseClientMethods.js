@@ -1,25 +1,25 @@
-define(['q', 'kb.session', 'kb.utils', 'kb.utils.api', 'kb.client.workspace', 'kb.client.user_profile', 'kb.client.narrative_method_store', 'kb.config'],
-   function (Q, Session, Utils, APIUtils, Workspace, UserProfile, NarrativeMethodStore, Config) {
+define(['q', 'kb.session', 'kb.utils', 'kb.utils.api', 'kb.client.workspace', 'kb.client.user_profile', 'kb.client.narrative_method_store', 'kb.runtime'],
+   function (Q, Session, Utils, APIUtils, Workspace, UserProfile, NarrativeMethodStore, Runtime) {
 
       return Object.create({}, {
          init: {
             value: function (cfg) {
-               if (Config.hasConfig('workspace_url')) {
-                  this.workspaceClient = new Workspace(Config.getConfig('workspace_url'), {
+               if (Runtime.config.hasConfig('workspace_url')) {
+                  this.workspaceClient = new Workspace(Runtime.config.getConfig('workspace_url'), {
                      token: Session.getAuthToken()
                   });
                } else {
                   throw 'The workspace client url is not defined';
                }
-               if (Config.hasConfig('user_profile_url')) {
-                  this.userProfileClient = new UserProfile(Config.getConfig('user_profile_url'), {
+               if (Runtime.config.hasConfig('user_profile_url')) {
+                  this.userProfileClient = new UserProfile(Runtime.config.getConfig('user_profile_url'), {
                      token: Session.getAuthToken()
                   });
                } else {
                   throw 'The user profile client url is not defined';
                }
-               if (Config.hasConfig('narrative_method_store_url')) {
-                  this.narrativeMethodStoreClient = new NarrativeMethodStore(Config.getConfig('narrative_method_store_url'), {
+               if (Runtime.config.hasConfig('narrative_method_store_url')) {
+                  this.narrativeMethodStoreClient = new NarrativeMethodStore(Runtime.config.getConfig('narrative_method_store_url'), {
                      token: Session.getAuthToken()
                   });
                } else {

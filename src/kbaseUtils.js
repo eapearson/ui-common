@@ -71,8 +71,8 @@ define(['q'], function (Q) {
                 var i;
                 for (i = 0; i < props.length; i += 1) {
                     if ((obj === undefined) ||
-                            (typeof obj !== 'object') ||
-                            (obj === null)) {
+                        (typeof obj !== 'object') ||
+                        (obj === null)) {
                         return defaultValue;
                     }
                     obj = obj[props[i]];
@@ -112,8 +112,8 @@ define(['q'], function (Q) {
                 var i;
                 for (i = 0; i < propPath.length; i += 1) {
                     if ((obj === undefined) ||
-                            (typeof obj !== 'object') ||
-                            (obj === null)) {
+                        (typeof obj !== 'object') ||
+                        (obj === null)) {
                         return false;
                     }
                     obj = obj[propPath[i]];
@@ -253,7 +253,7 @@ define(['q'], function (Q) {
                     return;
                 }
                 var propKey = path.pop(),
-                        key;
+                    key;
                 while (path.length > 0) {
                     key = path.shift();
                     if (obj[key] === undefined) {
@@ -301,12 +301,12 @@ define(['q'], function (Q) {
                         throw new TypeError('Invalid KBase Client call; method "' + method + '" not found in client "' + client.constructor + '"');
                     }
                     client[method](arg1,
-                            function (result) {
-                                resolve(result);
-                            },
-                            function (err) {
-                                reject(err);
-                            });
+                        function (result) {
+                            resolve(result);
+                        },
+                        function (err) {
+                            reject(err);
+                        });
                 });
             }
         },
@@ -328,7 +328,7 @@ define(['q'], function (Q) {
         getSchemaNode: {
             value: function (schema, propPath) {
                 var props = propPath.split('.'),
-                        i;
+                    i;
                 // doesn't handle arrays now.
                 for (i = 0; i < props.length; (i += 1)) {
                     var prop = props[i];
@@ -615,14 +615,14 @@ define(['q'], function (Q) {
                 } else {
                     var date = dateObj;
                 }
-               
+
                 if (nowDateObj === undefined) {
                     var now = new Date();
                 } else if (typeof nowDateObj === 'string') {
                     var now = new Date(nowDateObj);
                 } else {
                     var now = nowDateObj;
-                } 
+                }
 
                 var shortMonths = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
@@ -689,14 +689,20 @@ define(['q'], function (Q) {
          */
         niceTimestamp: {
             value: function (dateObj) {
+                var date;
                 if (typeof dateObj === 'string') {
-                    var date = new Date(dateObj);
+                    date = new Date(dateObj);
                 } else if (typeof dateObj === 'number') {
-                    var date = new Date(dateObj);
+                    date = new Date(dateObj);
+                } else if (typeof dateObj === 'object') {
+                    if (dateObj === null) {
+                        return '';
+                    }
+                    date = dateObj;
                 } else {
-                    var date = dateObj;
+                    return '';
                 }
-                
+
                 var now = new Date();
 
                 var shortMonths = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -741,35 +747,48 @@ define(['q'], function (Q) {
             }
         },
         niceDate: {
+               
             value: function (date) {
                 var now = new Date();
 
                 var shortMonths = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-               
+
                 var year = '';
                 if (now.getFullYear() !== date.getFullYear()) {
                     year = ', ' + date.getFullYear();
                 }
                 var datePart = shortMonths[date.getMonth()] + " " + date.getDate() + year;
-                
+
                 return datePart;
             }
         },
         niceTimerange: {
             value: function (from, to) {
-                 // same day
                 var timePart;
-                if (from.getDate() === to.getDate()) {
-                    if (from.getTime() === to.getTime()) {
-                        timePart = ' at ' + his.niceTime(from);
-                    } else {
-                        timePart = ' from ' + this.niceTime(from) + ' to ' + this.niceTime(to);
-                    }
-                    return this.niceDate(from) + timePart;
-                } else {
-                    return 'from ' + this.niceDate(from) + ' at ' + this.niceTime(from) + ' to ' + this.niceDate(to) + ' at ' + this.niceTime(to);
-                }
                 
+                if (from && from !== null) {
+                    if (to && to !== null) {
+                        if (from.getDate() === to.getDate()) {
+                            if (from.getTime() === to.getTime()) {
+                                timePart = ' at ' + this.niceTime(from);
+                            } else {
+                                timePart = ' from ' + this.niceTime(from) + ' to ' + this.niceTime(to);
+                            }
+                            return this.niceDate(from) + timePart;
+                        } else {
+                            return 'from ' + this.niceDate(from) + ' at ' + this.niceTime(from) + ' to ' + this.niceDate(to) + ' at ' + this.niceTime(to);
+                        }
+                    } else {
+                        return 'from ' + this.niceDate(from) + ' at ' + this.niceTime(from);
+                    }
+                } else {
+                    if (to && to !== null) {
+                        return ' to ' + this.niceDate(to) + ' at ' + this.niceTime(to);
+                    } else {
+                        // I guess this means ... always?
+                        return 'aways';
+                    }
+                }
             }
         },
         /**
@@ -819,17 +838,29 @@ define(['q'], function (Q) {
          */
         // TODO: is this really used? It does not appear to be.
         getJSON: {
-            value: function (path, timeout) {
+            value: function (url, timeout) {
                 // web just wrap the jquery ajax promise in a REAL Q promise.
                 // JQuery ajax config handles the json conversion.
                 // If we want more control, we could just handle the jquery promise
                 // first, and then return a promise.
-                return Q($.ajax(path, {
-                    type: 'GET',
-                    dataType: 'json',
-                    timeout: timeout || 10000
-                }));
 
+                return Q.Promise(function (resolve, reject, notify) {
+                    $.ajax(url, {
+                        type: 'GET',
+                        dataType: 'json',
+                        timeout: timeout || 1000,
+                        success: function (data, textStatus, jqXHR) {
+                            resolve(data);
+                        },
+                        error: function (jqHXR, textStatus, errorThrown) {
+                            reject({
+                                textStatus: textStatus,
+                                errorThrown: errorThrown,
+                                jqHXR: jqHXR
+                            });
+                        }
+                    })
+                });
             }
         },
         /**

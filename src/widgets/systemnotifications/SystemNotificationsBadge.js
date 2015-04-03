@@ -1,4 +1,4 @@
-define(['kb.systemnotifications', 'kb.widget.base', 'kb.utils'], function (Notifications, BaseWidget, Utils) {
+define(['kb.systemnotifications', 'kb.widget.base', 'kb.utils', 'kb.appstate'], function (Notifications, BaseWidget, Utils, AppState) {
     var W = Object.create(BaseWidget, {
         init: {
             value: function (cfg) {
@@ -23,63 +23,89 @@ define(['kb.systemnotifications', 'kb.widget.base', 'kb.utils'], function (Notif
                 return this;
             }
         },
+        /*
+         afterStart: {
+            value: function () {
+                AppState.listenForItem('notifications', {
+                    owner: this,
+                    onSet: function (notifications) {
+                        this.updateState(notifications);
+                    },
+                    onError: function (err) {
+                        this.owner.setError(err);
+                    }
+                });            
+            }
+        },
+        */
+        updateState: {
+            value: function (notifications) {
+                // now we transform into something for our template...
+
+                // Get any in-progress outages
+                var now = new Date();
+                var currentMaintenance = notifications.filter(function (n) {
+                    if ( (n.startAt.getTime() <= now.getTime()) &&
+                        (!n.endAt || (n.endAt.getTime() >= now.getTime())) && 
+                        n.type === 'system-maintenance') {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                });
+
+                var currentIssues = notifications.filter(function (n) {
+                    if ( (n.startAt.getTime() <= now.getTime()) &&
+                         (!n.endAt || (n.endAt.getTime() >= now.getTime())) && 
+                         n.type === 'system-issue') {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                });
+
+
+                // Get any upcoming outages.
+                var futureMaintenance = notifications.filter(function (n) {
+                   if ( (n.startAt.getTime() > now.getTime()) &&
+                        n.type === 'system-maintenance'  ) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                });
+
+                // Get up to 3 past updates
+                var recentUpdates = notifications.filter(function (n) {
+                   if ( (n.startAt.getTime() < now.getTime()) &&
+                        n.type === 'system-update' ) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                });
+
+                this.setState('issues.current', currentIssues);
+                this.setState('maintenance.current', currentMaintenance);
+                this.setState('maintenance.future', futureMaintenance);
+                this.setState('updates.recent', recentUpdates);
+            }
+        },
         setInitialState: {
             value: function (options) {
                 // The base method just resolves immediately (well, on the next turn.) 
-                return Q.Promise(function (resolve, reject, notify) {
-                    var notifications = Notifications.systemNotifications.getJSON();
-                    
-                    // now we transform into something for our template...
-                    
-                    // Get any in-progress outages
-                    var now = new Date();
-                    var currentMaintenance = notifications.filter(function (n) {
-                        if ( (n.startAt.getTime() <= now.getTime()) &&
-                            (!n.endAt || (n.endAt.getTime() >= now.getTime())) && 
-                            n.type === 'maintenance') {
-                            return true;
-                        } else {
-                            return false;
+                return Q.Promise(function (resolve) {
+                   AppState.listenForItem('notifications', {
+                        widget: this,
+                        runCount: 0,
+                        onSet: function (notifications) {
+                            this.widget.updateState(notifications.getJSON());
+                            if (this.runCount === 0) {
+                                resolve();
+                            }
+                            this.runCount += 1;
                         }
                     });
-                    
-                    var currentIssues = notifications.filter(function (n) {
-                        if ( (n.startAt.getTime() <= now.getTime()) &&
-                            (!n.endAt || (n.endAt.getTime() >= now.getTime())) && 
-                            n.type === 'issue') {
-                            return true;
-                        } else {
-                            return false;
-                        }
-                    });
-                    
-                                       
-                    // Get any upcoming outages.
-                    var futureMaintenance = notifications.filter(function (n) {
-                       if ( (n.startAt.getTime() > now.getTime()) &&
-                            n.type === 'maintenance'  ) {
-                            return true;
-                        } else {
-                            return false;
-                        }
-                    });
-                    
-                    // Get up to 3 past updates
-                    var recentUpdates = notifications.filter(function (n) {
-                       if ( (n.startAt.getTime() < now.getTime()) &&
-                            n.type === 'update' ) {
-                            return true;
-                        } else {
-                            return false;
-                        }
-                    });
-                    
-                    this.setState('issues.current', currentIssues);
-                    this.setState('maintenance.current', currentMaintenance);
-                    this.setState('maintenance.future', futureMaintenance);
-                    this.setState('updates.recent', recentUpdates);
-                    
-                    resolve();
                 }.bind(this));
             }
         }

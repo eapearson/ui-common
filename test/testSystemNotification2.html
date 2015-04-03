@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>System Notifications Test</title>
+        <!-- load just the basic support -->
+        <link rel="stylesheet" type="text/css" href="/ext/bootstrap/3.3.2/css/bootstrap.min.css" />
+        <link rel="stylesheet" href="/ext/font-awesome/4.2.0/css/font-awesome.min.css" type="text/css" />
+
+        <script src="/ext/jquery/jquery-1.10.2.min.js"></script>
+        <script src="/ext/q/q.min.js"></script>
+        <script src="/ext/underscore/1.7.0/underscore-min.js"></script>
+        <script src="/ext/postal/postal-0.12.4.min.js"></script>
+        <script src="/ext/postal/postal.request-response-0.3.1.min.js"></script>
+        <script src="/ext/postal/postal-deluxe.js"></script>
+        <script src="/ext/requirejs/2.1.15/require.js"></script>
+        <script src="/ext/bootstrap/3.3.2/js/bootstrap.js"></script>
+        <link rel="stylesheet" type="text/css" href="/functional-site/assets/css/kb-bootstrap.css" />
+        <link rel="stylesheet" type="text/css" href="/functional-site/assets/css/kb-grid.css" />
+        <script src="/ext/kbase-clients/kbase-client-api.min.js"></script>
+        <script src="/functional-site/js/require-config.js"></script>
+        <style type="text/css">
+            .navbar-kbase {
+                background-color: #FFF;
+            }
+        </style>
+    </head>
+
+    <body class="kb-bootstrap">
+       
+        <div id="navbar"></div>
+        <div class="container" style="position: relative; top: 70px;">
+            <div class="row">
+                <div class="col-sm-9">
+                    <h1>System Notifications Viewer Test</h1>
+                    <p>This page is for designing and testing the notifications viewer.</p>
+                </div>
+                <div class="col-sm-3">
+                    <script>
+                        require(['kb.systemnotifications'], function (N) {
+                            //var tn = SystemNotifications.systemNotifications;
+                            
+                            //tn.fetchCurrentIssues();
+                            //tn.fetchMaintenance();
+                            //tn.fetchRecentUpdates();
+                           // N.CurrentIssues.fetch();
+                            //N.Maintenance.fetch();
+                            //N.RecentUpdates.fetch();
+                            //N.AllNotifications.fetch();
+                            N.AllNotifications.fetch()
+                                .then(function (n) {
+                                    console.log('Got Them!');
+                                    console.log (n);
+                                })
+                                .catch(function (err) {
+                                    console.log('ERROR');
+                                    console.log(err);
+                                })
+                                .done();
+                        });
+                    </script>
+
+                </div>
+            </div> 
+        </div>
+        <script>
+            
+        </script>
+    </body>
+</html>

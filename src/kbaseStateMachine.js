@@ -89,17 +89,17 @@ define(['kb.utils', 'kb.asyncqueue', 'q'], function (Utils, AsyncQueue, Q) {
                     var newListeners = [];
                     this.listeners[key].forEach(function (item) {
                         this.queue.addItem({
-                            onRun: (function (fun, value, oldvalue, machine) {
+                            onRun: (function (item, value, oldvalue, machine) {
                                 return function () {
                                     try {
-                                        fun(value, oldvalue, machine);
+                                        item.onSet(value, oldvalue, machine);
                                     } catch (ex) {
                                         //TODO: need a sensible way to manage exception reporting.
                                         //console.log('EX running onrun handler');
                                         //console.log(ex);
                                     }
                                 };
-                            }(item.onSet, value, (oldState && oldState.value), this))
+                            }(item, value, (oldState && oldState.value), this))
                         });
                         if (!item.oneTime) {
                             newListeners.push(item);
@@ -281,28 +281,22 @@ define(['kb.utils', 'kb.asyncqueue', 'q'], function (Utils, AsyncQueue, Q) {
             value: function (key, cfg) {
                 // A cheap call supplies just a function.
                 //TODO: really support this?
-                if (typeof cfg === 'function') {
-                    cfg = {onSet: cfg};
-                }
+                //if (typeof cfg === 'function') {
+                //    cfg = {onSet: cfg};
+                //}
+                cfg.callCount = 0;
                 // If the item is available, provide immediate callback.
                 var item = Utils.getProp(this.state, key);
                 if (item) {
-                    if (cfg.hear) {
-                        cfg.hear(item.value);
-                        if (cfg.oneTime) {
-                            return;
-                        }
-                    } else {
-                        switch (item.status) {
-                        case 'set':
-                            cfg.onSet(item.value);
-                            break;
-                        case 'error':
-                            cfg.onError(item.error);
-                            break;
-                        default:
-                            throw 'Invalid status: ' + item.status;
-                        }
+                    switch (item.status) {
+                    case 'set':
+                        cfg.onSet(item.value);
+                        break;
+                    case 'error':
+                        cfg.onError(item.error);
+                        break;
+                    default:
+                        throw 'Invalid status: ' + item.status;
                     }
                 }
                 if (this.listeners[key] === undefined) {

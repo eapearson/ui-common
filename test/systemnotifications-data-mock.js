@@ -1,4 +1,4 @@
-require(['kb.systemnotifications'], function (SystemNotifications) {
+require(['kb.systemnotifications', 'postal'], function (SystemNotifications, Postal) {
    
     'use strict';
     var tn = SystemNotifications.systemNotifications;
@@ -102,4 +102,7 @@ require(['kb.systemnotifications'], function (SystemNotifications) {
     });
 
     var ns = tn.getNotifications();
+    
+    Postal.channel('notifications').publish('updated', tn);
+    
 });

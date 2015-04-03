@@ -31,9 +31,13 @@
 * @todo: document the remainder of the fields
 * 
 * @typedef {Object} TokenObject
+* @property {string} tokenid
 * @property {string} un
 * @property {string} expiry
-* 
+* @property {string} token_type
+* @property {string} client_id
+* @property {string} SigningSubject
+* @property {string} sig
 */
 
 /**
@@ -52,8 +56,8 @@
  * 
  */
 
-define(['jquery', 'q', 'kb.cookie', 'kb.config', 'kb.logger'],
-    function ($, Q, Cookie, Config, Logger) {
+define(['jquery', 'q', 'kb.cookie', 'kb.runtime', 'kb.logger'],
+    function ($, Q, Cookie, Runtime, Logger) {
         'use strict';
         var Session = Object.create({}, {
             // Property Constants
@@ -116,7 +120,7 @@ define(['jquery', 'q', 'kb.cookie', 'kb.config', 'kb.logger'],
                     // The sessionObject is created in this method.
                     this.setSession(this.importSessionFromCookie());
                     // 1 hour is the default cookie max age.
-                    this.cookieMaxAge = Config.getConfig('session.cookie.max-age', 60 * 60);
+                    this.cookieMaxAge = Runtime.config.getConfig('session.cookie.max-age', 60 * 60);
 
                     return this;
                 }
@@ -519,7 +523,7 @@ define(['jquery', 'q', 'kb.cookie', 'kb.config', 'kb.logger'],
                         $.support.cors = true;
                         $.ajax({
                             type: 'POST',
-                            url: Config.getConfig('login_url'),
+                            url: Runtime.config.getConfig('login_url'),
                             data: loginParams,
                             dataType: 'json',
                             crossDomain: true,

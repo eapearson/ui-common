@@ -1,7 +1,7 @@
 /*global define: true */
 /*jslint browser:true  vars: true */
-define(['jquery', 'kb.session', 'kb.config', 'kb.widget.base', 'kb.widget.login', 'kb.widget.systemnotifications.badge'],
-    function ($, Session, Config, BaseWidget, LoginWidget, NotificationBadge) {
+define(['jquery', 'kb.session', 'kb.runtime', 'kb.widget.base', 'kb.widget.login', 'kb.widget.systemnotifications.badge'],
+    function ($, Session, Runtime, BaseWidget, LoginWidget, NotificationBadge) {
         "use strict";
         var Navbar = Object.create(BaseWidget, {
             /**
@@ -288,14 +288,14 @@ define(['jquery', 'kb.session', 'kb.config', 'kb.widget.base', 'kb.widget.login'
                         name: 'contactus',
                         label: 'Contact Us',
                         icon: 'envelope-o',
-                        url: Config.getConfig('docsite.baseUrl') + Config.getConfig('docsite.paths.contact'),
+                        url: Runtime.config.getConfig('docsite.baseUrl') + Runtime.config.getConfig('docsite.paths.contact'),
                         place: 'end'
                     });
                     this.addHelpMenuItem({
                         name: 'about',
                         label: 'About KBase',
                         icon: 'info-circle',
-                        url: Config.getConfig('docsite.baseUrl') + Config.getConfig('docsite.paths.about'),
+                        url: Runtime.config.getConfig('docsite.baseUrl') + Runtime.config.getConfig('docsite.paths.about'),
                     });
                     return this;
                 }

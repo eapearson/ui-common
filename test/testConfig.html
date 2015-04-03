@@ -1,0 +1,1104 @@
+<html>
+    <head>
+        <!-- load just the basic support -->
+        <script src="/ext/jquery/jquery-1.10.2.min.js"></script>
+        <script src="/ext/q/q.min.js"></script>
+        <script src="/ext/underscore/1.7.0/underscore-min.js"></script>
+        <script src="/ext/postal/postal-0.12.4.min.js"></script>
+        <script src="/ext/postal/postal.request-response-0.3.1.min.js"></script>
+        <script src="/ext/postal/postal-deluxe.js"></script>
+        <script src="/ext/requirejs/2.1.15/require.js"></script>
+        <script src="/functional-site/js/require-config.js"></script>
+        <script src="/ext/kbase-clients/kbase-client-api.min.js"></script>
+    </head>
+
+    <body>
+        <h1>Testing for KBase Config Module</h1>
+        <p>The KBase Config module provides an interface to the application-wide
+            configuration object. It is implemented as a singleton object -- an 
+            object which is used to create a new object and initialize it. Due to 
+            the usage of the requirejs json plugin in the module, the sitewide
+            configuration is loaded by the time the module is usable in a require
+            call.
+        </p>
+        <p>
+            Hmm, 
+        </p>
+        <h2>Presence of the Module</h2>
+        <div data-test="presence">
+            <div>Result:</div>
+            <div data-field="result"></div>
+        </div>
+        <script>
+            require(['kb.utils'], function (O) {
+                if (O) {
+                    document.querySelector('[data-test="presence"] [data-field="result"]').innerHTML = 'success';
+                } else {
+                    document.querySelector('[data-test="presence"] [data-field="result"]').innerHTML = 'failure';
+                }
+            });
+        </script>
+
+        <h2>Version - static</h2>
+        <div data-test="version"></div>
+        <script>
+            require(['kb.utils', 'kb.test'], function (O, Tester) {
+                var tests = [
+                    {
+                        expects: {
+                            propertyValue: '0.0.2',
+                            status: 'success'
+                        }
+                    }
+                ];
+                
+                 var T = Object.create(Tester).init({
+                    type: 'property',
+                    propertyName: 'version',
+                    id: 'version',
+                    name: 'Test version property',
+                    description: 'DESC',
+                    tests: tests,
+                    object: O
+                }).runTests();
+            });
+        </script>
+
+        <h2>Version - new object</h2>
+        <div data-test="version2"></div>
+        <script>
+            require(['kb.utils', 'kb.test'], function (O, Tester) {
+                 var tests = [
+                    {
+                        expects: {
+                            propertyValue: '0.0.2',
+                            status: 'success'
+                        }
+                    }
+                ];
+                
+                 var T = Object.create(Tester).init({
+                    type: 'property',
+                    propertyName: 'version',
+                    id: 'version2',
+                    name: 'Test version property',
+                    description: 'DESC',
+                    tests: tests,
+                    object: Object.create(O)
+                }).runTests();
+            });
+        </script>
+
+        <h2>Object Equality - simple types</h2>
+        <div data-test="isEqual"></div>
+        <script>
+            require(['kb.utils', 'kb.test'], function (O, Tester) {
+                return;
+                // boolean
+                var tests = [
+                    {   input: [true, true],
+                        expects: {
+                            output: true
+                        }
+                    },
+                    {
+                        input: [true, false],
+                        expects: {
+                            output: false
+                        }
+                    },
+                    {
+                        input: [false, true], 
+                        expects: {
+                            output: false
+                        }
+                    },
+                    {
+                        input: [false, false], 
+                        expects: {
+                            output: true
+                        }   
+                    },
+                ];
+                // integer
+                for (var i = 0; i < 10; i++) {
+                    for (var j = 1; j < 10; j++) {
+                        tests.push({
+                            input: [i, j], 
+                            expects: {
+                                output: (i === j)
+                            }
+                        });
+                    }
+                }
+                // string
+                var s1 = ['cat', 'dog', 'snake'];
+                var s2 = ['cat', 'dog', 'snake'];
+                for (var i = 0; i < s1.length; i++) {
+                    for (var j = 1; j < s2.length; j++) {
+                        tests.push({
+                            input: [s1[i], s2[j]], 
+                            expects:{
+                                output: (s1[i] === s2[j])
+                            }
+                        });
+                    }
+                }
+
+                // object
+                var x;
+                var strings = ['cat', 'dog', 'snake', x];
+                var ints = [];
+                for (var i = 0; i < 10; i++) {
+                    ints.push(i);
+                }
+                ints.push(x);
+                var bools = [true, false, x];
+
+                var objs = [];
+                for (var i = 0; i < strings.length; i++) {
+                    for (var j = 0; j < ints.length; j++) {
+                        for (var k = 0; k < bools.length; k++) {
+                            objs.push([{i: i, val: strings[i]}, {i: j, val: ints[j]}, {i: k, val: bools[k]}]);
+                        }
+                    }
+                }
+                for (var i = 0; i < objs.length; i++) {
+                    for (var j = 0; j < objs.length; j++) {
+                        var o1 = objs[i];
+                        var ov1 = {prop1: o1[0].val, prop2: o1[1].val, prop3: o1[2].val};
+                        var o2 = objs[j];
+                        var ov2 = {prop1: o2[0].val, prop2: o2[1].val, prop3: o2[2].val};
+                        tests.push({
+                            input: [ov1, ov2],
+                            expects: { 
+                                output: (o1[0].i === o2[0].i && o1[1].i === o2[1].i && o1[2].i === o2[2].i)
+                            }
+                        });
+                    }
+                }
+
+
+                // array
+
+                tests.push({
+                    input: [['cat', 1, false], ['cat', 1, false]],
+                    expects: {
+                        output: true
+                    }
+                });
+                tests.push({
+                    input: [['cat', 1, false], ['dog', 1, false]], 
+                    expects: {
+                        output: false
+                    }
+                });
+
+                // complex mixed
+                var T = Object.create(Tester).init({
+                    type: 'method', 
+                    id: 'isEqual',
+                    name: 'Object Equality - simple types',
+                    description: 'DESC',
+                    tests: tests,
+                    object: O,
+                    method: 'isEqual'
+                }).runTests();
+            });
+        </script>
+
+        <h2>Test the xxxProps series</h2> 
+
+        <h2>setProp</h2>
+        <div data-test="setProp"></div>
+        <script>
+            require(['kb.utils', 'kb.test'], function (O, Tester) {
+                // simple set and get properties
+
+                function getUserDb() {
+                    return  {
+                        erik: {
+                            name: 'Erik',
+                            location: {
+                                city: 'Berkeley'
+                            }
+                        },
+                        alex: {
+                            name: 'Alex',
+                            location: {
+                                city: 'San Jose'
+                            }
+                        }
+                    };
+                }
+
+                function getUserDb2() {
+                    return  {
+                        erik: {
+                            name: 'Erik',
+                            location: {
+                                city: 'Berkeley'
+                            }
+                        },
+                        alex: {
+                            name: 'Becky',
+                            location: {
+                                city: 'San Jose'
+                            }
+                        }
+                    };
+                }
+
+                function getUserDb3() {
+                    return  {
+                        erik: {
+                            name: 'Erik',
+                            location: {
+                                city: 'Berkeley'
+                            }
+                        },
+                        alex: {
+                            name: 'Alex',
+                            location: {
+                                city: 'San Jose'
+                            }
+                        },
+                        becky: {
+                            name: 'Becky'
+                        }
+                    };
+                }
+
+                var tests = [
+                    {
+                        input: [{name: 'Erik'}, 'name', 'Alex'],
+                        description: 'Set a simple property on a simple object',
+                        expects: {
+                            mutation: {name: 'Alex'},
+                            output: 'Alex'
+                        }
+                    },
+                    {
+                        input: [{}, 'name', 'Erik'],
+                        description: 'Set a simple property on an empty object',
+                        expects: {
+                            mutation: {name: 'Erik'},
+                            output: 'Erik'
+                        }
+                    },
+                    {
+                        input: [getUserDb(), 'alex.name', 'Becky'],
+                        description: 'Set a property with path on a complex object',
+                        expects: {
+                            mutation: getUserDb2(),
+                            output: 'Becky',
+                            expect: 'success'
+                        }
+                    },
+                    {
+                        input: [getUserDb(), 'becky.name', 'Becky'],
+                        description: 'Set a nonexistent property with path on a complex object',
+                        expects: {
+                            mutation: getUserDb3(),
+                            output: 'Becky',
+                            expect: 'success'
+                        }
+                    }
+                ];
+
+                var T = Object.create(Tester).init({
+                    id: 'setProp',
+                    name: 'Test setProp', 
+                    tests: tests,
+                    object: O,
+                    method: 'setProp'
+                }).runTests();
+            });
+        </script>
+
+
+        <h2>getProp</h2>
+        <div data-test="getProp"></div>
+        <script>
+            require(['kb.utils', 'kb.test'], function (O, Tester) {
+                // simple set and get properties
+
+                function getUserDb() {
+                    return  {
+                        erik: {
+                            name: 'Erik',
+                            location: {
+                                city: 'Berkeley'
+                            }
+                        },
+                        alex: {
+                            name: 'Alex',
+                            location: {
+                                city: 'San Jose'
+                            }
+                        }
+                    };
+                }
+
+                var tests = [
+                    {
+                        input: [{name: 'Erik'}, 'name'], 
+                        expects: {
+                            output: 'Erik', 
+                            status: 'success'
+                        }
+                    },
+                    {
+                        input: [{name: 'Erik'}, 'x', 'Alex'], 
+                        expects: {
+                            output: 'Alex', 
+                            status: 'success'
+                        }
+                    },
+                    {
+                        input: [{name: 'Erik'}, 'x'],
+                        expects: { 
+                            output: function () {
+                                return undefined;
+                            }, 
+                            status: 'success'
+                        }
+                    },
+                    {
+                        input: [{name: 'Erik'}, 'name'],
+                        expects: { 
+                            output: 'Erik', 
+                            status: 'success'
+                        }
+                    },
+                   
+                    
+                    {
+                         description: 'Get nested property with string path',
+                            input: [getUserDb(), 'erik.location.city'],
+                        expects: {
+                           
+                            output: 'Berkeley',
+                            status: 'success'
+                        }
+                    },
+                    {
+                        description: 'Get nested property with array path',
+                        input: [getUserDb(), ['erik', 'location', 'city']],
+                        expects: {
+                            output: 'Berkeley',
+                            status: 'success'
+                        }
+                    },
+                   
+                    {
+                        description: 'Get nested property which does not exist with default value',
+                        input: [getUserDb(), 'erik.location.state', 'California'],
+                        expects: {
+                            output: 'California',
+                            status: 'success'
+                        }
+                    }
+
+                ];
+
+                var T = Object.create(Tester).init({
+                    id: 'getProp',
+                    name: 'Get properties with getProp',
+                    description: 'Test all supported use cases for getting a property out of an object',
+                    tests: tests,
+                    object: O,
+                    method: 'getProp'
+                }).runTests();
+            });
+        </script>
+
+
+        <h2>hasProp</h2>
+        <div data-test="hasProp"></div>
+        <script>
+            require(['kb.utils', 'kb.test'], function (O, Tester) {
+                // simple set and get properties
+                function getUserDb() {
+                    return  {
+                        erik: {
+                            name: 'Erik',
+                            location: {
+                                city: 'Berkeley'
+                            }
+                        },
+                        alex: {
+                            name: 'Alex',
+                            location: {
+                                city: 'San Jose'
+                            }
+                        }
+                    };
+                }
+                var tests = [
+                    {
+                        input: [{name: 'Erik'}, 'name'], 
+                        expects: {
+                            output: true, 
+                            status: 'success'
+                        }
+                    },
+                    {
+                        input: [{name: 'Erik'}, 'age'],
+                        expects: { 
+                            output: false, 
+                            status: 'success'
+                        }
+                    },
+                    
+                    {
+                        input: [getUserDb(), 'erik.location.city'],
+                        expects: {
+                            output: true,
+                            status: 'success'
+                        }
+                    },
+                   
+                    {
+                        input: [getUserDb(), 'erik.location.state'],    
+                        expects: {
+                            output: false,
+                            status: 'success'
+                        }
+                    }
+                ];
+
+                var T = Object.create(Tester).init({
+                    id: 'hasProp',
+                    name: 'Test whether an object has a property with hasProp',
+                    tests: tests,
+                    object: O,
+                    method: 'hasProp'
+                }).runTests();
+            });
+        </script>  
+
+
+        <h2>deleteProp</h2>
+        <div data-test="deleteProp"></div>
+        <script>
+            require(['kb.utils', 'kb.test'], function (O, Tester) {
+                // simple set and get properties
+                function getUserDb() {
+                    return  {
+                        erik: {
+                            name: 'Erik',
+                            location: {
+                                city: 'Berkeley'
+                            }
+                        },
+                        alex: {
+                            name: 'Alex',
+                            location: {
+                                city: 'San Jose'
+                            }
+                        }
+                    };
+                }
+                function getUserDb2() {
+                    return  {
+                        erik: {
+                            name: 'Erik',
+                            location: {
+                                city: 'Berkeley'
+                            }
+                        }
+                    };
+                }
+                function getUserDb3() {
+                    return  {
+                        erik: {
+                            name: 'Erik',
+                            location: {
+                            }
+                        },
+                        alex: {
+                            name: 'Alex',
+                            location: {
+                                city: 'San Jose'
+                            }
+                        }
+                    };
+                }
+                var tests = [
+                    {
+                        input: [getUserDb(), 'alex'],
+                        expects: {
+                            mutation: getUserDb2(),
+                            output: true,
+                            status: 'success'
+                        }
+                    },
+                    {
+                        input: [getUserDb(), 'erik.location.city'],
+                        expects: {
+                            mutation: getUserDb3(),
+                            output: true,
+                            status: 'success'                            
+                        }
+                    }
+                ];
+
+                var T = Object.create(Tester).init({
+                    id: 'deleteProp',
+                    name: 'Remove a property from an object with isBlank', 
+                    tests: tests,
+                    object: O,
+                    method: 'deleteProp'
+                }).runTests();
+            });
+        </script>  
+
+
+        <h2>incrProp</h2>
+        <div data-test="incrProp"></div>
+        <script>
+            require(['kb.utils', 'kb.test'], function (O, Tester) {
+                // simple set and get properties
+                function getUserDb() {
+                    return  {
+                        erik: {
+                            name: 'Erik',
+                            age: 52
+                        },
+                        alex: {
+                            name: 'Alex',
+                            age: 50
+                        }
+                    };
+                }
+                function getUserDb2() {
+                    return  {
+                        erik: {
+                            name: 'Erik',
+                            age: 53
+                        },
+                        alex: {
+                            name: 'Alex',
+                            age: 50
+                        }
+                    };
+                }
+                function getUserDb3() {
+                    return  {
+                        erik: {
+                            name: 'Erik',
+                            age: 52
+                        },
+                        alex: {
+                            name: 'Alex',
+                            age: 55
+                        }
+                    };
+                }
+                function getUserDb4() {
+                    return  {
+                        erik: {
+                            name: 'Erik',
+                            age: 29
+                        },
+                        alex: {
+                            name: 'Alex',
+                            age: 50
+                        }
+                    };
+                }
+                var tests = [
+                    {
+                        input: [getUserDb(), 'erik.age'],
+                        expects: {
+                            mutation: getUserDb2(),
+                            output: 53,
+                            status: 'success'
+                        }
+                    },
+                    {
+                        input: [getUserDb(), 'alex.age', 5],
+                        expects: {
+                            mutation: getUserDb3(),
+                            output: 55,
+                            status: 'success'
+                        }
+                    },
+                    {
+                        input: [getUserDb(), 'erik.age', -23],
+                        expects: {
+                            mutation: getUserDb4(),
+                            output: 29,
+                            status: 'success'
+                        }
+                    }
+                ];
+
+                var T = Object.create(Tester).init({
+                    id: 'incrProp',
+                    tests: tests,
+                    object: O,
+                    method: 'incrProp'
+                }).runTests();
+            });
+        </script>  
+
+
+        <h2>isBlank</h2>
+        <div data-test="isBlank"></div>
+        <script>
+            require(['kb.utils', 'kb.test'], function (O, Tester) {
+
+                var x;
+                var tests = [
+                    {
+                        description: 'An undefined variable is blank',
+                        input: [x],
+                        expects: {
+                            output: true,
+                            status: 'success'
+                        }
+                    },
+                    {
+                        description: 'The null value is blank',
+                        input: [null],
+                        expects: {
+                            output: true,
+                            status: 'success'
+                        }
+                    },
+                    {
+                        description: 'An empty string is blank',
+                        input: [''],
+                        expects: {
+                            output: true,
+                            status: 'success'
+                        }
+                    },
+                    {
+                        description: 'An empty simple object is blank',
+                        input: [{}],
+                        expects: {
+                            output: true,
+                            status: 'success'
+                        }
+                    },
+                    {
+                        description: 'An empty array is blank',
+                        input: [[]],
+                        expects: {
+                            output: true,
+                            status: 'success'
+                        }
+                    },
+                    {
+                        description: 'A function even if it returns nothing is not blank',
+                        input: [function () {}],
+                        expects: {
+                            output: false,
+                            status: 'success'
+                        }
+                    },
+                    {
+                        description: 'The value false is not blank',
+                        input: [false],
+                        expects: {
+                            output: false,
+                            status: 'success'
+                        }
+                    },
+                    {
+                        description: 'A non-empty string is not blank',
+                        input: ['hello'],
+                        expects: {
+                            output: false,
+                            status: 'success'
+                        }
+                    },
+                    {
+                        description: 'A simple object is not blank',
+                        input: [{a: 'b'}],
+                        expects: {
+                            output: false,
+                            status: 'success'
+                        }
+                    },
+                    {
+                        description: 'A simple array is not blank',
+                        input: [[1]],
+                        expects: {
+                            output: false,
+                            status: 'success'
+                        }
+                    },
+                    {
+                        desscription: 'The value "true" is not blank',
+                        input: [true],
+                        expects: {
+                            output: false,
+                            status: 'success'
+                        }
+                    }
+                ];
+
+                var T = Object.create(Tester).init({
+                    id: 'isBlank',
+                    name: 'Test if the given value is considered blank',
+                    tests: tests,
+                    object: O,
+                    method: 'isBlank'
+                }).runTests();
+            });
+        </script>  
+
+
+        <h2>merge</h2>
+        <div data-test="merge"></div>
+        <script>
+            require(['kb.utils', 'kb.test'], function (O, Tester) {
+                function getUserDb() {
+                    return  {
+                        erik: {
+                            name: 'Erik',
+                            age: 52
+                        },
+                        alex: {
+                            name: 'Alex',
+                            age: 50
+                        }
+                    };
+                }
+                function getUserDb2() {
+                    return  {
+                        becky: {
+                            name: 'Becky',
+                            age: 48
+                        }
+                    };
+                }
+                function getUserDb3() {
+                    return  {
+                        erik: {
+                            name: 'Erik',
+                            age: 52
+                        },
+                        alex: {
+                            name: 'Alex',
+                            age: 50
+                        },
+                        becky: {
+                            name: 'Becky',
+                            age: 48
+                        }
+                    };
+                }
+                function getUserDb4() {
+                    return {
+                        alex: {
+                            name: 'Alex Pol',
+                            age: 99
+                        }
+                    };
+                }
+                function getUserDb5() {
+                    return  {
+                        erik: {
+                            name: 'Erik',
+                            age: 52
+                        },
+                        alex: {
+                            name: 'Alex Pol',
+                            age: 99
+                        }
+                    };
+                }
+
+                var tests = [
+                    {
+                        input: [getUserDb(), getUserDb2()],
+                        expects: {
+                            mutation: getUserDb3(),
+                            output: {
+                                value: getUserDb3()
+                            },
+                            status: 'success'
+                        }
+                    },
+                    {
+                        input: [{}, getUserDb()],
+                        expects: {
+                            output: {
+                                value: getUserDb()
+                            },
+                            mutation: getUserDb(),
+                            status: 'success'
+                        }
+                    },
+                    {
+                        input: [getUserDb(), getUserDb4()],
+                        expects: {
+                            output: {
+                                value: getUserDb5()
+                            },
+                            mutation: getUserDb5(),
+                            status: 'success'
+                        }
+                    }
+                ];
+
+                var T = Object.create(Tester).init({
+                    id: 'merge',
+                    name: 'Merge two simple objects',
+                    tests: tests,
+                    object: O,
+                    method: 'merge'
+                }).runTests();
+            });
+        </script>  
+
+
+
+        <h2>iso8601ToDate</h2>
+        <div data-test="iso8601ToDate"></div>
+        <script>
+            require(['kb.utils', 'kb.test'], function (O, Tester) {
+                var tests = [
+                    {
+                        input: ['2015-04-25T14:44:56-08:00'],
+                        description: 'A proper ISO 8601 timestamp with a full offset',
+                        expects: {
+                            output: {
+                                value: new Date('2015-04-25T14:44:56-08:00')
+                            },
+                            status: 'success'
+                        }
+                    },
+                    {
+                        input: ['2015-04-25T14:44:56-0800'],
+                        description: 'An ISO 8601 timestamp with out the colon separator in the offset',
+                        expects: {
+                            output: {
+                                value: new Date('2015-04-25T14:44:56-08:00')
+                            },
+                            status: 'success'
+                        }
+                    }
+                ];
+
+                var T = Object.create(Tester).init({
+                    id: 'iso8601ToDate',
+                    name: 'Convert 8601 timestamps to javascript Date object', 
+                    tests: tests,
+                    object: O,
+                    method: 'iso8601ToDate'
+                }).runTests();
+            });
+        </script>  
+        
+        <h2>niceElapsedTime</h2>
+        <div data-test="niceElapsedTime"></div>
+        <script>
+            require(['kb.utils', 'kb.test'], function (O, Tester) {
+                var tests = [
+                    // Within the last minute, seconds...
+                    {
+                        input: ['2015-04-25T12:00:00-08:00', '2015-04-25T12:00:05-08:00'],
+                        expects: {
+                            output: '5 seconds ago',
+                            status: 'success'
+                        }
+                    },
+                    {
+                        input: ['2015-04-25T12:00:00-08:00', '2015-04-25T12:00:01-08:00'],
+                        expects: {
+                            output: '1 second ago',
+                            status: 'success'
+                        }
+                    },
+                    {
+                        input: ['2015-04-25T12:00:00-08:00', '2015-04-25T11:59:55-08:00'],
+                        expects: {
+                            output: 'in 5 seconds',
+                            status: 'success'
+                        }
+                    },
+                    {
+                        input: ['2015-04-25T12:00:00-08:00', '2015-04-25T11:59:59-08:00'],
+                        expects: {
+                            output: 'in 1 second',
+                            status: 'success'
+                        }
+                    },
+                    // Within 60 minutes.
+                    {
+                        input: ['2015-04-25T12:00:00-08:00', '2015-04-25T12:00:00-08:00'],
+                        expects: {
+                            output: 'now',
+                            status: 'success'
+                        }
+                    },
+                    {
+                        input: ['2015-04-25T12:00:00-08:00', '2015-04-25T12:01:00-08:00'],
+                        expects: {
+                            output: '1 minute ago',
+                            status: 'success'
+                        }
+                    },
+                    {
+                        input: ['2015-04-25T12:00:00-08:00', '2015-04-25T12:05:00-08:00'],
+                        expects: {
+                            output: '5 minutes ago',
+                            status: 'success'
+                        }
+                    },
+                    {
+                        input: ['2015-04-25T12:00:00-08:00', '2015-04-25T11:59:00-08:00'],
+                        expects: {
+                            output: 'in 1 minute',
+                            status: 'success'
+                        }
+                    },
+                    {
+                        input: ['2015-04-25T12:00:00-08:00', '2015-04-25T11:55:00-08:00'],
+                        expects: {
+                            output: 'in 5 minutes',
+                            status: 'success'
+                        }
+                    },
+                    // rounding?
+                    {
+                        input: ['2015-04-25T12:00:00-08:00', '2015-04-25T12:01:15-08:00'],
+                        expects: {
+                            output: '1 minute ago',
+                            status: 'success'
+                        }
+                    },
+                    {
+                        input: ['2015-04-25T12:00:00-08:00', '2015-04-25T12:01:29-08:00'],
+                        expects: {
+                            output: '1 minute ago',
+                            status: 'success'
+                        }
+                    },
+                    {
+                        input: ['2015-04-25T12:00:00-08:00', '2015-04-25T12:01:31-08:00'],
+                        expects: {
+                            output: '2 minutes ago',
+                            status: 'success'
+                        }
+                    },
+                    {
+                        input: ['2015-04-25T12:00:00-08:00', '2015-04-25T12:01:45-08:00'],
+                        expects: {
+                            output: '2 minutes ago',
+                            status: 'success'
+                        }
+                    },
+                    // Hours
+                    {
+                        input: ['2015-04-25T12:00:00-08:00', '2015-04-25T13:00:00-08:00'],
+                        expects: {
+                            output: '1 hour ago',
+                            status: 'success'
+                        }
+                    },
+                    {
+                        input: ['2015-04-25T12:00:00-08:00', '2015-04-25T14:00:00-08:00'],
+                        expects: {
+                            output: '2 hours ago',
+                            status: 'success'
+                        }
+                    },
+                    {
+                        input: ['2015-04-25T12:00:00-08:00', '2015-04-25T11:00:00-08:00'],
+                        expects: {
+                            output: 'in 1 hour',
+                            status: 'success'
+                        }
+                    },
+                    {
+                        input: ['2015-04-25T12:00:00-08:00', '2015-04-25T10:00:00-08:00'],
+                        expects: {
+                            output: 'in 2 hours',
+                            status: 'success'
+                        }
+                    },
+                    // days
+                    {
+                            input: ['2015-04-25T12:00:00-08:00', '2015-04-26T12:00:00-08:00'],
+                        expects: {
+                            output: '1 day ago',
+                            status: 'success'
+                        }
+                    },
+                    {
+                            input: ['2015-04-25T12:00:00-08:00', '2015-04-27T12:00:00-08:00'],
+                        expects: {
+                            output: '2 days ago',
+                            status: 'success'
+                        }
+                    },
+                    {
+                            input: ['2015-04-25T12:00:00-08:00', '2015-04-24T12:00:00-08:00'],
+                        expects: {
+                            output: 'in 1 day',
+                            status: 'success'
+                        }
+                    },
+                    {
+                            input: ['2015-04-25T12:00:00-08:00', '2015-04-23T12:00:00-08:00'],
+                        expects: {
+                            output: 'in 2 days',
+                            expect: 'success'
+                        }
+                    },
+                    {
+                            input: ['2015-04-10T12:00:00-08:00', '2015-04-04T12:00:00-08:00'],
+                        expects: {
+                            output: 'in 6 days',
+                            status: 'success'
+                        }
+                    },
+                    {
+                            input: ['2015-04-10T12:00:00-08:00', '2015-04-03T12:00:00-08:00'],
+                        expects: {
+                            output: 'Apr 10',
+                            status: 'success'
+                        }
+                    },
+                    // Any date this same year
+                    {
+                            input: ['2015-04-10T12:00:00-08:00', '2015-04-17T12:00:00-08:00'],
+                        expects: {
+                            output: 'Apr 10',
+                            status: 'success'
+                        }
+                    },
+                    {
+                            input: ['2014-04-10T12:00:00-08:00', '2015-04-27T12:00:00-08:00'],
+                        expects: {
+                            output: 'Apr 10, 2014',
+                            status: 'success'
+                        }
+                    }
+
+                    // Any other date
+
+
+
+                ];
+
+                var T = Object.create(Tester).init({
+                    id: 'niceElapsedTime',
+                    tests: tests,
+                    object: O,
+                    method: 'niceElapsedTime'
+                }).runTests();
+            });
+        </script>  
+
+
+    </body>
+
+</html>

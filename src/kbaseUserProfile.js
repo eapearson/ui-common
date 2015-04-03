@@ -1,19 +1,19 @@
-define(['q', 'kb.utils', 'md5', 'kb.client.user_profile', 'kb.config', 'kb.session'],
-function(Q, Utils, md5,  UserProfileService, Config, Session) {
+define(['q', 'kb.utils', 'md5', 'kb.client.user_profile', 'kb.runtime', 'kb.session'],
+function(Q, Utils, md5,  UserProfileService, Runtime, Session) {
     "use strict"; 
     var UserProfile = Object.create({}, {
 
       init: {
         value: function(cfg) {
-          this.config = Config[Config.setup];
+          this.config = Runtime.config;
           if (! cfg.username) {
             throw 'Cannot create a profile object without a username'; 
           }
           this.username = cfg.username;
           if (Session.isLoggedIn()) {
-            if (Config.hasConfig('user_profile_url')) {
+            if (Runtime.config.hasConfig('user_profile_url')) {
               
-              this.userProfileClient = new UserProfileService(Config.getConfig('user_profile_url'), {
+              this.userProfileClient = new UserProfileService(Runtime.config.getConfig('user_profile_url'), {
                 token: Session.getAuthToken()
               });
             } else {

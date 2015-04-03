@@ -17,13 +17,14 @@ define(['kb.widget.dashboard.base', 'kb.user_profile', 'kb.client.user_profile',
                         // the set/get/has state mechanism that most like-minded
                         // widgets use.
                         AppState.listenForItem('userprofile', {
+                            owner: this,
                             onSet: function (profile) {
-                                this.setState('userProfile', profile);
-                                this.setState('profileCompletion', this.calcProfileCompletion(profile))
-                            }.bind(this),
+                                this.owner.setState('userProfile', profile);
+                                this.owner.setState('profileCompletion', this.owner.calcProfileCompletion(profile))
+                            },
                             onError: function (err) {
-                                this.setError(err);
-                            }.bind(this)
+                                this.owner.setError(err);
+                            }
                         });
 
                         return this;

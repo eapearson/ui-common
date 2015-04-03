@@ -1,12 +1,12 @@
-define(['q', 'kb.session', 'kb.utils', 'kb.utils.api', 'kb.client.workspace', 'kb.config'],
-   function (Q, Session, Utils, APIUtils, Workspace, Config) {
+define(['q', 'kb.session', 'kb.utils', 'kb.utils.api', 'kb.client.workspace', 'kb.runtime'],
+   function (Q, Session, Utils, APIUtils, Workspace, Runtime) {
 
       return Object.create({}, {
          init: {
             value: function (cfg) {
                if (Session.isLoggedIn()) {
-                  if (Config.hasConfig('workspace_url')) {
-                     this.workspaceClient = new Workspace(Config.getConfig('workspace_url'), {
+                  if (Runtime.config.hasConfig('workspace_url')) {
+                     this.workspaceClient = new Workspace(Runtime.config.getConfig('workspace_url'), {
                         token: Session.getAuthToken()
                      });
                   } else {

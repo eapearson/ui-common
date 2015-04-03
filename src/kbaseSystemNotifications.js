@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-define(['q', 'kb.utils', 'kb.config'], function (Q, Utils, Config) {
+define(['q', 'postal', 'kb.utils', 'kb.runtime'], function (Q, Postal, Utils, Runtime) {
     'use strict';
     var Notification = Object.create({}, {
         setProp: {
@@ -15,7 +15,6 @@ define(['q', 'kb.utils', 'kb.config'], function (Q, Utils, Config) {
                 } else {
                     this[key] = value;
                 }
-
             }
         },
         id: {
@@ -200,20 +199,29 @@ define(['q', 'kb.utils', 'kb.config'], function (Q, Utils, Config) {
                 return this._endAt;
             },
             set: function (value) {
-                var v;
-                var t = typeof value;
-                switch (t) {
-                case 'string':
-                    v = Utils.iso8601ToDate(value);
-                    break;
-                case 'undefined':
-                case 'null':
-                    v = value;
-                    break;
-                default:
-                    throw new Error('Invalid type for Notification "endAt" field: ' + t);
+                if (value === undefined) {
+                    // fine, leave undefined.
+                } else {
+                    var t = typeof value;
+                    var newValue;
+                    switch (t) {
+                    case 'string':
+                        newValue = Utils.iso8601ToDate(value);
+                        break;
+                    case 'undefined':
+                    case 'null':
+                        newValue = value;
+                        break;
+                    case 'object':
+                        if (value === null) {
+                            newValue = null;
+                            break;
+                        } 
+                    default:
+                        throw new Error('Invalid type "' + t + '" for Notification "endAt" field with value ' + value);
+                    }
+                    this.setProp('_endAt', newValue);
                 }
-                this.setProp('_endAt', v);
             },
             enumerable: true
         },
@@ -245,22 +253,39 @@ define(['q', 'kb.utils', 'kb.config'], function (Q, Utils, Config) {
                     // props.forEach(function (p) {
                     o[p] = this[p];
                 }
-                
                 return o;
             }
         }
     });
 
     var Notifications = Object.create({}, {
-        init: {
-            value: function () {
+        Notifications_init: {
+            value: function (cfg) {
                 this.notifications = {};
                 
-                if (!Config.hasConfig('systemnotifications_url')) {
+                if (!Runtime.config.hasConfig('systemnotifications_url')) {
                     throw new Error('Notifications requires a data source url; none provided in the the site configuration');
                 }
-                this.dataSourceURL = Config.getConfig('systemnotifications_url');
-                
+                this.dataSourceURL = Runtime.config.getConfig('systemnotifications_url');
+
+                if (!cfg.name) {
+                    throw new Error('Notifications requires a human-legible "name"');
+                }
+                this.name = cfg.name;
+
+                if (!cfg.id) {
+                    throw new Error('Notifications requires an "id"; e.g. to be used for the fetching from the service ');                          }
+                this.id = cfg.id;
+
+                return this;
+            }
+        },
+        clearNotifications: {
+            value: function () {
+                this.notifications = {};
+                Postal.channel('notifications').publish('updated', {
+                    notifications: this
+                });
                 return this;
             }
         },
@@ -270,6 +295,9 @@ define(['q', 'kb.utils', 'kb.config'], function (Q, Utils, Config) {
                     notification: Object.create(Notification).init(notification),
                     timeAdded: (new Date())
                 };
+                Postal.channel('notifications').publish('updated', {
+                    notifications: this
+                });
                 return this;
             }
         },
@@ -308,17 +336,88 @@ define(['q', 'kb.utils', 'kb.config'], function (Q, Utils, Config) {
                 return o;
             }
         },
-        fetchNotifications: {
+        fetch: {
             value: function () {
-                
+                return Q.Promise(function (resolve, reject) {
+                    var url = this.dataSourceURL + '/' + this.id;
+                    // var notificationURL = 'https://staging.kbase.us/wp-json/kbase/notifications/currentissues';
+                    Utils.getJSON(url)
+                        .then(function (data) {
+                            // Postal.channel('notifications').publish(this.queryId, this);
+                            //console.log('got it!' + (typeof data));
+                            //console.log(data);
+                            // resolve(data);
+                            if (data) {
+                                data.forEach(function (n) {
+                                    this.addNotification(n);
+                                }.bind(this));
+                            }
+                            resolve(this);
+                        }.bind(this))
+                        .catch(function (err) {
+                            console.log('ERROR'); console.log(err);
+                        })
+                        .done();
+                }.bind(this));
             }
         }
+    });
+
+    var CurrentIssues = Object.create(Notifications, {
+        init: {
+            value: function (cfg) {
+                this.Notifications_init(cfg);
+                return this;
+            }
+        }
+    }).init({
+        name: 'Current Issues',
+        id: 'currentissues'
+    });
+
+    var Maintenance = Object.create(Notifications, {
+        init: {
+            value: function (cfg) {
+                this.Notifications_init(cfg);
+                return this;
+            }
+        }
+    }).init({
+        name: 'Upcoming Maintenance',
+        id: 'maintenance'
+    });
+
+    var RecentUpdates = Object.create(Notifications, {
+        init: {
+            value: function (cfg) {
+                this.Notifications_init(cfg);
+                return this;
+            }
+        }
+    }).init({
+        name: 'Recent Updates',
+        id: 'recentupdates'
+    });
+    
+    var AllNotifications = Object.create(Notifications, {
+        init: {
+            value: function (cfg) {
+                this.Notifications_init(cfg);
+                return this;
+            }
+        }
+    }).init({
+        name: 'All Notifications',
+        id: 'relevant'
     });
 
     return {
         Notification: Notification,
         Notifications: Notifications,
-        systemNotifications: Notifications.init()
+        // systemNotifications: Notifications.init(),
+        CurrentIssues: CurrentIssues,
+        Maintenance: Maintenance,
+        RecentUpdates: RecentUpdates,
+        AllNotifications: AllNotifications
     };
 });
-

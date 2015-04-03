@@ -82,6 +82,7 @@ require.config({
       'kb.session': '/src/kbaseSession',
       'kb.config': '/src/kbaseConfig',
       'kb.systemnotifications': '/src/kbaseSystemNotifications',
+      'kb.runtime': '/src/kbaseRuntime',
       
       // Global widgets
       'kb.widget.navbar': '/src/widgets/kbaseNavbar',
@@ -109,7 +110,9 @@ require.config({
       
       // Notification widgets.
       'kb.widget.systemnotifications.viewer': '/src/widgets/systemnotifications/SystemNotificationsViewer',
-      'kb.widget.systemnotifications.badge': '/src/widgets/systemnotifications/SystemNotificationsBadge'
+      'kb.widget.systemnotifications.badge': '/src/widgets/systemnotifications/SystemNotificationsBadge',
+      
+      'kb.test.systemnotifications.loader': '/src/test/kbaseSystemNotificationsLoader'
    },
    shim: {
       // Better standard naming: Prefix with kbc_ (KBase Client), followed

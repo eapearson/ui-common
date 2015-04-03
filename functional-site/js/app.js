@@ -676,7 +676,8 @@ $.ajaxSetup({
  
  */
 // just by loading the AppState for the first time, it will be initialized and usable.
-window.require(['kb.widget.navbar', 'kb.appstate', 'kb.logger'], function (Navbar, AppState, Logger) {
+window.require(['postal', 'kb.widget.navbar', 'kb.logger', 'kb.systemnotifications'], 
+function (Postal, Navbar, Logger, Notifications) {
     Logger.dontLog('warning');
     
     app.run(function ($rootScope, $state, $stateParams, $location) {
@@ -711,7 +712,7 @@ window.require(['kb.widget.navbar', 'kb.appstate', 'kb.logger'], function (Navba
         // (and a view would need to redirect to /login if it doesn't want to be seen)
         // in practice they may never be seen thus.
         /*
-         postal.channel('session').subscribe('login.success', function (data) {
+         Postal.channel('session').subscribe('login.success', function (data) {
          // data.session has the session if you need it
          // If we're changing state from the login page, and we have a valid 
          // session (i.e.: we're logging IN and not OUT), then forward us to
@@ -740,7 +741,7 @@ window.require(['kb.widget.navbar', 'kb.appstate', 'kb.logger'], function (Navba
          });
          */
 
-        postal.channel('session').subscribe('login.success', function (data) {
+        Postal.channel('session').subscribe('login.success', function (data) {
             var kb = new KBCacheClient(data.session.getAuthToken());
             // Overwrite the rootscope kb object so that any users will 
             // reflect the new state.
@@ -756,9 +757,38 @@ window.require(['kb.widget.navbar', 'kb.appstate', 'kb.logger'], function (Navba
             }
             $rootScope.$apply();
         });
+        
+        function buildQuery (obj) {
+            var arr = [];
+            for (key in obj) {
+                arr.push(encodeURIComponent(key) + '=' + encodeURIComponent(obj[key]));
+            }
+            return arr.join('&');
+        }
 
-        postal.channel('loginwidget').subscribe('login.prompt', function () {
+        Postal.channel('loginwidget').subscribe('login.prompt', function () {
+            /*
+            var url = window.location.href;
+            var oauthUrl = 'https://globusmock.kbase.us/oauth2/get_code';
+            var state = {
+                original_url: url,
+                time: (new Date()).getTime()
+            };
+            var data = {
+                response_type: 'code',
+                client_id: 'kbaseapi01',
+                redirect_uri: 'https://narrtest3.kbase.us/oauth2/redirect_handler',
+                scope: 'test',
+                state: JSON.stringify(state)
+            };
+            var query = buildQuery(data);
+            
+            window.location.href= oauthUrl + '?' + query;
+            */
+
+            
             var nextPath = $location.url();
+            
             var url = '/login/';
             var params = {};
             if (nextPath) {
@@ -768,10 +798,11 @@ window.require(['kb.widget.navbar', 'kb.appstate', 'kb.logger'], function (Navba
             $state.go('login', params);
             // $location.url(url);
             $rootScope.$apply();
+            
         });
 
-        postal.channel('session').subscribe('logout.request', function (data) {
-            require(['kb.session', 'postal'], function (Session, Postal) {
+        Postal.channel('session').subscribe('logout.request', function (data) {
+            require(['kb.session'], function (Session) {
                 Session.logout()
                     .then(function () {
                         // jigger the kbcacheclient.
@@ -792,7 +823,7 @@ window.require(['kb.widget.navbar', 'kb.appstate', 'kb.logger'], function (Navba
             });
         }.bind(this));
 
-        postal.channel('session').subscribe('logout.success', function (data) {
+        Postal.channel('session').subscribe('logout.success', function (data) {
             // $rootScope.kb = new KBCacheClient(data.session.getKBaseSession());
             var kb = new KBCacheClient(null);
             $rootScope.kb = kb;
@@ -856,7 +887,7 @@ window.require(['kb.widget.navbar', 'kb.appstate', 'kb.logger'], function (Navba
                     // should not appear. This event ensures that the loginwidget rerenders itself
                     // when the view changes.
 
-                    postal.channel('app').publish('location.change');
+                    Postal.channel('app').publish('location.change');
                 });
                 
                 return Q.Promise(function (resolve) {
@@ -869,7 +900,7 @@ window.require(['kb.widget.navbar', 'kb.appstate', 'kb.logger'], function (Navba
                 var heartbeat = 0;
                 $rootScope.heartbeatTimer = window.setInterval(function () {
                     heartbeat++;
-                    postal.channel('app').publish('heartbeat', {heartbeat: heartbeat});
+                    Postal.channel('app').publish('heartbeat', {heartbeat: heartbeat});
                 }, 100);
 
                 // Now remove them.
@@ -884,6 +915,17 @@ window.require(['kb.widget.navbar', 'kb.appstate', 'kb.logger'], function (Navba
 
             });
        
+            Notifications.AllNotifications.fetch()
+                .then(function (notifications) {
+                    Postal.channel('notifications').publish('loaded', {
+                        notifications: notifications
+                    });
+                })
+                .catch(function (err) {
+                    console.log('ERROR getting Notifications');
+                    console.log(err);   
+                })
+                .done();
     });
 
     // angular.bootstrap($('#TheKBaseApp'), ['kbase-app']);
