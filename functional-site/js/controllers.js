@@ -510,7 +510,6 @@ app
 
 
 .controller('Login', function($scope, $stateParams, $location) {
-    console.log('Login controller invoked');
     // If we are logged in and landing here we redirect to the dashboard.
     if ($.KBaseSessionSync.isLoggedIn()) {
         if ($stateParams.nextPath) {
@@ -540,48 +539,6 @@ app
         $scope.nextPath = $stateParams.nextPath;
     }
     
-    
-    // callback for ng-click 'loginUser':
-    $scope.loginUser = function (user, nextPath, nextURL) {
-        require(['kb.session', 'postal', 'jquery'], function (Session, Postal, $) {
-            // TODO: this should not be an ID!!
-            $("#loading-indicator").show();
-            // Angular does not populate the user property if nothing
-            // was filled in.
-            var username = user?user.username:null;
-            var password = user?user.password:null;
-            $("#login_error").hide();
-            // Note that the login page does not handle login success -- the 
-            // app does that. 
-            //kbaseLogin.login(
-             //   username,
-            //    password
-            //);
-            Session.login({
-                username: username,
-                password: password
-            })
-                .then(function (session) {
-                    Postal.channel('session').publish('login.success', {
-                        session: Session,
-                        nextPath: nextPath,
-                        nextURL: nextURL
-                    });
-                   
-                })
-                .catch(function (errorMsg) {
-                    // All error handling is handled locally.
-                    $("#loading-indicator").hide();
-                    if (errorMsg === "LoginFailure: Authentication failed.") {
-                        errorMsg = "Login Failed: your username/password is incorrect.";
-                    }
-                    $("#login_error").html(errorMsg);
-                    $("#login_error").show();
-                })
-                .done();
-        });
-    };
-
     $scope.$on('$destroy', function () {
         // remove the postal subscriptions.
         //subs.forEach(function (sub) {

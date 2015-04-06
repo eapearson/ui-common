@@ -180,7 +180,7 @@ angular.module('dashboard-directives')
                                 viewState: scope.viewState
                             }).start();
                             scope.$on('$destroy', function () {
-                                if (widget) {
+                                if (widget && widget.stop) {
                                     try {
                                         widget.stop();
                                     } finally {

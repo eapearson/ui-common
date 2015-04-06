@@ -24,7 +24,7 @@ var app = angular.module('kbase-app',
         'ws-directives', 'modeling-directives', 'angular-json-rpc',
         'communities-directives', 'narrative-directives',
         'ui.router', 'ngResource', 'kbaseLogin',
-        'ui.bootstrap', 'search'])
+        'ui.bootstrap', 'search', 'login-directives'])
     .config(['$locationProvider', '$stateProvider', '$httpProvider', '$urlRouterProvider',
         function ($locationProvider, $stateProvider, $httpProvider, $urlRouterProvider) {
             // enable CORS
@@ -37,7 +37,7 @@ var app = angular.module('kbase-app',
             $stateProvider
                 .state('login', {
                     url: "/login/?nextPath",
-                    templateUrl: 'views/login.html',
+                    templateUrl: 'views/login/login.html',
                     controller: 'Login'
                 });
 
@@ -741,6 +741,7 @@ function (Postal, Navbar, Logger, Notifications) {
          });
          */
 
+         console.log('setting up login success subscription...');
         Postal.channel('session').subscribe('login.success', function (data) {
             var kb = new KBCacheClient(data.session.getAuthToken());
             // Overwrite the rootscope kb object so that any users will 

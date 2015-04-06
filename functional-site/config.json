@@ -68,13 +68,22 @@
          }
       },
       "docsite": {
-         "baseUrl": "http://kbase.us",
-         "host": "kbase.us",
+         "baseUrl": "http://staging.kbase.us",
+         "host": "staging.kbase.us",
          "paths": {
             "about": "/what-is-kbase",
             "contact": "/contact-us",
-            "browserSupport": "/supported-browsers"
+            "browserSupport": "/supported-browsers",
+            "signinHelp": "/sign-in-help"
          }
+      },
+      "accountsite": {
+          "baseUrl": "https://gologin.kbase.us",
+          "paths": {
+              "signup": "/Signup",
+              "recoverPassword": "/ResetPassword",
+              "manageAccount": "/Dashboard"
+          }
       }
    },
    "dev": {

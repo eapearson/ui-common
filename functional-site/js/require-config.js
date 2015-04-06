@@ -112,6 +112,9 @@ require.config({
       'kb.widget.systemnotifications.viewer': '/src/widgets/systemnotifications/SystemNotificationsViewer',
       'kb.widget.systemnotifications.badge': '/src/widgets/systemnotifications/SystemNotificationsBadge',
       
+      // Login widgets.
+      'kb.widget.login.loginform': '/src/widgets/login/LoginForm',
+      
       'kb.test.systemnotifications.loader': '/src/test/kbaseSystemNotificationsLoader'
    },
    shim: {

@@ -461,6 +461,12 @@ define(['nunjucks', 'jquery', 'q', 'postal', 'kb.session', 'kb.utils', 'kb.logge
                     // should not be blown away.
                     this.context.state = this.state;
                     this.context.params = this.params;
+                    
+                    var cfg = Utils.merge({}, this.globalConfig);
+                    Utils.merge(cfg, this.localConfig);
+                    // Utils.merge(cfg, this.initConfig);
+                    // console.log(this.initConfig);
+                    this.context.config = cfg;
 
                     // We need to ensure that the context reflects the current auth state.
                     this.context.env.loggedIn = Session.isLoggedIn();
