@@ -10,6 +10,24 @@
         <script src="/ext/requirejs/2.1.15/require.js"></script>
         <script src="/functional-site/js/require-config.js"></script>
         <script src="/ext/kbase-clients/kbase-client-api.min.js"></script>
+        <style type="text/css">
+            table.results {
+                width: 100%;
+            }
+            table.results tr td {
+                border: 1px silver solid;
+                padding: 4px;
+            }
+            table.results tr td:nth-child(1) {
+                width: 10%;
+            }
+            table.results tr td:nth-child(2) {
+                width: 10%;
+            }
+            table.results tr td:nth-child(3) {
+                width: 80%;
+            }
+        </style>            
     </head>
 
     <body>
@@ -198,6 +216,81 @@
         </script>
 
         <h2>Test the xxxProps series</h2> 
+        
+        <h2>parsePropertyPath</h2>
+        <div data-test="parsePropertyPath"></div>
+        <script>
+            require(['kb.utils', 'kb.test'], function (O, Tester) {
+                 var tests = [
+                    {   
+                        description: 'Empty string path',
+                        shows: 'An empty string results in an empty array.',
+                        input: [''],
+                        expects: {
+                            output: []
+                        }
+                    },
+                    {   
+                        description: 'Simple one part path',
+                        shows: 'A simple path, consisting of a string with no dots, results in an array of exactly one element, which consists of the original string',
+                        input: ['part1'],
+                        expects: {
+                            output: ['part1']
+                        }
+                    },
+                    {   
+                        description: 'Parse a three-part string path',
+                        shows: 'A path given as a string with two dots results in a path of three components, consisting of the bits between the dots and the begin/end of the string.',
+                        input: ['part1.part2.part3'],
+                        expects: {
+                            output: ['part1', 'part2', 'part3']
+                        }
+                    },
+                    {   
+                        description: 'Parse a 4-part path with array element',
+                        shows: 'A more copmlex path, with two dots and an array element, results in a four part path, where the array element path component consists of an integer.',
+                        input: ['part1.part2[1].part3'],
+                        expects: {
+                            output: ['part1', 'part2', 1, 'part3']
+                        }
+                    },  
+                    // odd cases.
+                    {   
+                        description: 'Parse just dots',
+                        shows: 'A path consisting of just dots and no other characters, collapses to just an empty array.',
+                        input: ['....'],
+                        expects: {
+                            output: []
+                        }
+                    },
+                    {   
+                        description: 'Parse just dots and spaces',
+                        shows: 'A path consisting of dots and any number of spaces, collapses to an empty array', 
+                        input: ['. . .    .'],
+                        expects: {
+                            output: []
+                        }
+                    } ,
+                    {   
+                        description: 'Parse with spaces between dot and property key',
+                        shows: 'Spaces are stripped from the begin and end of path components; which is the same as saying that spaces are allowed before and after dots, and at the begin and end of the path string.',
+                        input: ['part1 . part2 . part3'],
+                        expects: {
+                            output: ['part1', 'part2', 'part3']
+                        }
+                    } 
+                ];
+                Object.create(Tester).init({
+                   type: 'method',
+                   id: 'parsePropertyPath',
+                   name: 'Parse property path',
+                   description: 'Parsing a property path with all variations.',
+                   tests: tests,
+                   object: O,
+                   method: 'parsePropertyPath'
+                }).runTests();
+            });
+        </script>
 
         <h2>setProp</h2>
         <div data-test="setProp"></div>
@@ -310,9 +403,8 @@
         <h2>getProp</h2>
         <div data-test="getProp"></div>
         <script>
-            require(['kb.utils', 'kb.test'], function (O, Tester) {
+            require(['kb.utils', 'kb.test'], function (O, Tester) {                
                 // simple set and get properties
-
                 function getUserDb() {
                     return  {
                         erik: {
@@ -333,6 +425,8 @@
                 var tests = [
                     {
                         input: [{name: 'Erik'}, 'name'], 
+                        description: 'Get a simple property',
+                        shows: 'Given a simple object, requesting a property with a simple path string, that is with no dots, will return the value of that property.',
                         expects: {
                             output: 'Erik', 
                             status: 'success'
@@ -340,6 +434,8 @@
                     },
                     {
                         input: [{name: 'Erik'}, 'x', 'Alex'], 
+                        description: 'Get default property for simple property path which is wrong',
+                        shows: 'Given a simple object and path (no dots), and supplying a default value, and with the path not specifying a property on the object, the default value will be returned.',
                         expects: {
                             output: 'Alex', 
                             status: 'success'
@@ -347,6 +443,8 @@
                     },
                     {
                         input: [{name: 'Erik'}, 'x'],
+                        description: 'Get undefined for a simple property which is not on the object',
+                        shows: 'Given a simple object and a property path for which there is no property on the object, and no default value provided, the undefined value will be returned.',
                         expects: { 
                             output: function () {
                                 return undefined;
@@ -354,20 +452,13 @@
                             status: 'success'
                         }
                     },
-                    {
-                        input: [{name: 'Erik'}, 'name'],
-                        expects: { 
-                            output: 'Erik', 
-                            status: 'success'
-                        }
-                    },
                    
                     
                     {
-                         description: 'Get nested property with string path',
-                            input: [getUserDb(), 'erik.location.city'],
+                        description: 'Get nested property with string path',
+                        shows: '', 
+                        input: [getUserDb(), 'erik.location.city'],
                         expects: {
-                           
                             output: 'Berkeley',
                             status: 'success'
                         }
@@ -639,7 +730,6 @@
         <div data-test="isBlank"></div>
         <script>
             require(['kb.utils', 'kb.test'], function (O, Tester) {
-
                 var x;
                 var tests = [
                     {
@@ -885,6 +975,143 @@
                 }).runTests();
             });
         </script>  
+        
+        <h2>The "nice" series of date &amp; time formatters</h2>
+        <p>
+            This series of methods specializes in readable, compact, yet precise
+            representations of dates and times. They are minimally if at all 
+            configurable - the code is the place to make format changes.
+        </p>
+        <p>
+            For example, 2015-06-21 would be represented as Jun 21, 2015, the time
+            13:00 as 1pm, and the date range 2015-3-3 to 2015-3-7 as Mar 3-7, 2015.
+        </p>
+        
+        <h2>niceDate</h2>
+        <p>Mostly for internal usage, it takes a Date object and produces a 
+            compact date string that makes sense "today" -- that is, in the context
+            of today's date.</p>
+        <div data-test="niceDate"></div>        
+        <script>
+            require(['kb.utils', 'kb.test'], function (O, Tester) {
+                var tests = [
+                    // Within the last minute, seconds...
+                    {
+                        input: [new Date('2015-04-25T00:00-08:00')],
+                        description: 'A date in this year, so should not show the year.',
+                        expects: {
+                            output: 'Apr 25',
+                            status: 'success'
+                        }
+                    },
+                    {
+                        input: [new Date('2014-04-25T00:00-08:00')],
+                        description: 'A date in last, year should show the year.',
+                        expects: {
+                            output: 'Apr 25, 2014',
+                            status: 'success'
+                        }
+                    },
+                    {
+                        input: [new Date('2016-04-25T00:00-08:00')],
+                        description: 'A date in the next year, should show the year',
+                        expects: {
+                            output: 'Apr 25, 2016',
+                            status: 'success'
+                        }
+                    }
+
+                ];
+
+                var T = Object.create(Tester).init({
+                    id: 'niceDate',
+                    name: 'Format a nice, compact date',
+                    description: 'Creates a human-(english speaking)-readable date in a compact style, leaving out the year if in this year.',
+                    tests: tests,
+                    object: O,
+                    method: 'niceDate'
+                }).runTests();
+            });
+        </script>  
+        
+        
+         <h2>niceTime</h2>
+        <p>Mostly for internal usage, it takes a Date object and produces a 
+            compact time string.</p>
+        <div data-test="niceTime"></div>        
+        <script>
+            require(['kb.utils', 'kb.test'], function (O, Tester) {
+                // In order to make reliaby
+                
+                var tests = [
+                    // Within the last minute, seconds...
+                    {
+                        input: [new Date('2015-04-25T01:00')],
+                        description: '1 in the morning',
+                        shows: 'A time less less than 12:00 shows as "am"',
+                        expects: {
+                            output: '1am',
+                            status: 'success'
+                        }
+                    },
+                    {
+                        input: [new Date('2014-04-25T13:00')],
+                        description: '1 in the afternoon.',
+                        shows: 'A time at 12:00 or after shows as "pm"', 
+                        expects: {
+                            output: '1pm',
+                            status: 'success'
+                        }
+                    },
+                    {
+                        input: [new Date('2015-04-25T00:00')],
+                        description: 'Midnight',
+                        shows: 'The exact time "midnight", or 12am, shows as "12am" exactly',
+                        expects: {
+                            output: '12am',
+                            status: 'success'
+                        }
+                    },
+                    {
+                        input: [new Date('2014-04-25T12:00')],
+                        description: 'Noon',
+                        shows: 'The exact time "noon", or 12pm, shows as "12pm" exactly',
+                        expects: {
+                            output: '12pm',
+                            status: 'success'
+                        }
+                    },
+                    {
+                        input: [new Date('2014-04-25T12:05')],
+                        description: 'With minutes, less than 10',
+                        shows: 'With a number of minutes fewer than 10, a "0" is prepended to the minutes to ensure that it is two digits long', 
+                        expects: {
+                            output: '12:05pm',
+                            status: 'success'
+                        }
+                    },
+                    {
+                        input: [new Date('2014-04-25T12:33')],
+                        description: 'With minutes, greater than 10',
+                        shows: 'With a number of minutes 10 or greater, no "0" is prepended to the minutes',
+                        expects: {
+                            output: '12:33pm',
+                            status: 'success'
+                        }
+                    }
+
+                ];
+
+                var T = Object.create(Tester).init({
+                    id: 'niceTime',
+                    name: 'Format a nice, compact time',
+                    description: 'Creates a human-(english speaking)-readable time in a compact style, in 12 -hour format with am/pm indicator.',
+                    tests: tests,
+                    object: O,
+                    method: 'niceTime'
+                }).runTests();
+            });
+        </script> 
         
         <h2>niceElapsedTime</h2>
         <div data-test="niceElapsedTime"></div>

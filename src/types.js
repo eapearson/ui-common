@@ -34,5 +34,5 @@
  * with property components separated by dots is a natural and easier form
  * for people.
  * 
- * @typedef {(string|string[])} PropertyPath
+ * @typedef {(string|Array.<string,number>)} PropertyPath
  */

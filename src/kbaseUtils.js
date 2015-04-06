@@ -1,6 +1,8 @@
 /*jslint browser: true,  todo: true, vars: true, nomen: true */
 /**
- * A collection of useful function provided on a single Utils object.
+ * A collection of useful function provided on a single Utils object. All methods
+ * are used as "static" methods.
+ * 
  * @module Utils
  * @author Erik Pearson <eapearson@lbl.gov>
  * @version 0.0.2
@@ -33,8 +35,8 @@
 define(['q'], function (Q) {
     "use strict";
     var Utils = Object.create({}, {
-        version: {
-            value: '0.0.2',
+        version: { 
+           value: '0.0.2',
             writable: false
         },
         /**
@@ -44,9 +46,10 @@ define(['q'], function (Q) {
          * The array of strings forms a "path" into the object. 
          * 
          * @function  getProp
+         * @static
          * 
          * @param {object} obj - The object containing the property
-         * @param {string|string[]} props - The path into the object on 
+         * @param {PropertyPath} path - The path into the object on 
          * which to find the value.
          * @param {Any} defaultValue - A value to return if the property was not 
          * found. Defaults to undefined.
@@ -59,29 +62,33 @@ define(['q'], function (Q) {
          * var color = U.getProp(room, 'livingroom.chair.color');
          * // color === 'red';
          * 
-         * @static
          */
         getProp: {
-            value: function (obj, props, defaultValue) {
-                if (typeof props === 'string') {
-                    props = props.split('.');
-                } else if (!(props instanceof Array)) {
-                    throw new TypeError('Invalid type for key: ' + (typeof props));
+            value: function (obj, path, defaultValue) {
+                if (typeof path === 'string') {
+                    path = this.parsePropertyPath(path);
+                } else if (!(path instanceof Array)) {
+                    throw new TypeError('Invalid type for key: ' + (typeof path));
                 }
                 var i;
-                for (i = 0; i < props.length; i += 1) {
-                    if ((obj === undefined) ||
-                        (typeof obj !== 'object') ||
-                        (obj === null)) {
+                for (i = 0; i < path.length; i += 1) {
+                    // The normal "abnormal" stop condition.
+                    if (obj === undefined) {
                         return defaultValue;
                     }
-                    obj = obj[props[i]];
+                    // To play nice, we also stop if the next item is not ...
+                    /*
+                     ((typeof obj !== 'object') ||
+                     !(obj instanceof Array) ||
+                     (obj === null) )) {
+                     return defaultValue;
+                     */
+                    obj = obj[path[i]];
                 }
                 if (obj === undefined) {
                     return defaultValue;
-                } else {
-                    return obj;
                 }
+                return obj;
             }
         },
         /**
@@ -89,6 +96,7 @@ define(['q'], function (Q) {
          * object.
          * 
          * @function hasProp
+         * @static
          * 
          * @param {object} obj - The object in question
          * @param {PropertyPath} propPath - The property to be 
@@ -102,27 +110,32 @@ define(['q'], function (Q) {
          * var hasUniversity = U.hasProp(obj, 'earth.northamerica.unitedstates.california.berkeley.university');
          * // hasUniversity === true
          * 
-         * @static
          */
         hasProp: {
-            value: function (obj, propPath) {
-                if (typeof propPath === 'string') {
-                    propPath = propPath.split('.');
+            value: function (obj, path) {
+                if (typeof path === 'string') {
+                    path = this.parsePropertyPath(path);
                 }
                 var i;
-                for (i = 0; i < propPath.length; i += 1) {
-                    if ((obj === undefined) ||
-                        (typeof obj !== 'object') ||
-                        (obj === null)) {
+                for (i = 0; i < path.length; i += 1) {
+                    if (obj === undefined) {
                         return false;
                     }
-                    obj = obj[propPath[i]];
+                    // We are more forgiving here about attempting a property
+                    // on something not a property.
+                    /*
+                     if ((obj === undefined) ||
+                     (typeof obj !== 'object') ||
+                     (obj === null)) {
+                     return false;
+                     }
+                     */
+                    obj = obj[path[i]];
                 }
                 if (obj === undefined) {
                     return false;
-                } else {
-                    return true;
                 }
+                return true;
             }
         },
         /**
@@ -133,30 +146,40 @@ define(['q'], function (Q) {
          * property.
          * 
          * @function setProp
+         * @static
          * 
          * @param {object} obj - the object in which to set the property
-         * @param {string|string[]} path - the property path on which to
+         * @param {PropertyPath} path - the property path on which to
          * set the property value
          * @param {any} value - the value to set on the property
-         * 
-         * @static
          */
         setProp: {
             value: function (obj, path, value) {
                 if (typeof path === 'string') {
-                    path = path.split('.');
+                    path = this.parsePropertyPath(path);
                 }
                 if (path.length === 0) {
                     return;
                 }
                 // pop off the last property for setting at the end.
                 var propKey = path.pop(),
-                    key;
+                    key, nextKey;
                 // Walk the path, creating empty objects if need be.
                 while (path.length > 0) {
                     key = path.shift();
                     if (obj[key] === undefined) {
-                        obj[key] = {};
+                        // We know what is needed next by the next path element.
+                        if (path.length > 0) {
+                            nextKey = path.shift();
+                            path.unshift(nextKey);
+                        } else {
+                            nextKey = propKey;
+                        }
+                        if (typeof nextKey === 'string') {
+                            obj[key] = {};
+                        } else {
+                            obj[key] = [];
+                        }
                     }
                     obj = obj[key];
                 }
@@ -171,6 +194,7 @@ define(['q'], function (Q) {
          *  value to the increment value.
          * 
          * @function incrProp
+         * @static
          * 
          * @param {object} obj - the object on which to increment the property
          * @param {string|string[]} path - the property path on which to 
@@ -194,23 +218,29 @@ define(['q'], function (Q) {
          * Utils.incrProp(obj, countdown, -1);
          * // {countdown: 9}
          * 
-         * @static
          */
         incrProp: {
             value: function (obj, path, increment) {
                 if (typeof path === 'string') {
-                    path = path.split('.');
+                    path = this.parsePropertyPath(path);
                 }
                 if (path.length === 0) {
                     return;
                 }
                 increment = (increment === undefined) ? 1 : increment;
                 var propKey = path.pop(),
-                    key;
+                    key, nextKey;
                 while (path.length > 0) {
                     key = path.shift();
                     if (obj[key] === undefined) {
-                        obj[key] = {};
+                        // We know what is needed next by the next path element.
+                        nextKey = path.shift();
+                        if (typeof nextKey === 'string') {
+                            obj[key] = {};
+                        } else {
+                            obj[key] = [];
+                        }
+                        path.unshift(nextKey);
                     }
                     obj = obj[key];
                 }
@@ -227,12 +257,57 @@ define(['q'], function (Q) {
             }
         },
         /**
-         * For a given object delets a property specified by a path 
+         * Split a string formatted as a property path into an Array which 
+         * also represents the property path, but is more directly usable to
+         * locate the property on an object.
+         * 
+         * @function parsePropertyPath
+         * @static
+         * 
+         * @param {string} path - a string representing the property path.
+         * 
+         * @returns {PropertyPath} an array of strings or numbers representing
+         * the property path.
+         * 
+         * @example
+         * var path = "users.erik.pets[1]";
+         * var secondPet = this.splitPropertyPath(path);
+         * // path === ["users", "erik", "pets", 1]
+         */
+        parsePropertyPath: {
+            value: function (path) { 
+                var els = path.split(/[\.\[]/);
+                var normalized = els.map(function (el) {
+                    if (el.charAt(el.length - 1) === ']') {
+                        return parseInt(el.substr(0, el.length - 1), 10);
+                    } else {
+                        return el.trim();
+                    }
+                    return el;
+                });
+                var cleaned = normalized.filter(function (el) {
+                   if (el.length === 0) {
+                       return false;
+                   }  else {
+                       return true;
+                   }
+                });
+                return cleaned;
+            }
+        },
+        /**
+         * For a given object deletes a property specified by a path.
+         * 
+         * It follows the propery pattern employed in all of the other xxxProp
+         * methods -- the "path" is a "propertyPath". A propertyPath may be either
+         * a string, with dots separating the individual path components, or an 
+         * array, in which each path element is an array element.
          * 
          * @function deleteProp
+         * @static
          * 
          * @param {object} - the object on which to remove the property
-         * @param {string|string[]} - the property specified as a path to delete
+         * @param {PropertyPath} - the property specified as a path to delete
          * 
          * @returns {boolean} - true if the deletion was carried out, false
          *  if the property could not be found.
@@ -242,12 +317,11 @@ define(['q'], function (Q) {
          * U.deleteProp(obj, 'pets.spot');
          * // {pets: {fido: {type: 'dog'}}}
          *  
-         * @static
          */
         deleteProp: {
             value: function (obj, path) {
                 if (typeof path === 'string') {
-                    path = path.split('.');
+                    path = this.parsePropertyPath(path);
                 }
                 if (path.length === 0) {
                     return;
@@ -278,6 +352,7 @@ define(['q'], function (Q) {
          * KBaseServiceClientMethodCallPromise, but ...
          * 
          * @function promise
+         * @static
          * 
          * @param {object} client - An instance of a KBase service client
          * @param {string} method - the name of a method on the service client
@@ -289,8 +364,6 @@ define(['q'], function (Q) {
          * the return value from the kbase api call.
          * 
          * @throws {TypeError} - if the method is not found on the client
-         * 
-         * @static
          * 
          * @todo testing
          */
@@ -314,13 +387,12 @@ define(['q'], function (Q) {
          * Get a node from within a json schema specification object.
          * 
          * @function getSchemaNode
+         * @static
          * 
          * @param {object} schema - a json schmea object
          * @param {PropertyPath} propPath - the path to the schema node
          * 
          * @returns {Any} the value at the specified node.
-         * 
-         * @static
          * 
          * @todo is this really used? If so, needs own module
          * @todo testing
@@ -364,13 +436,12 @@ define(['q'], function (Q) {
          * This leaves any number, boolean, or function as non-blank.
          * 
          * @function isBlank
+         * @static
          * 
          * @param {Any} value - any javascript value of any type
          * 
          * @returns {boolean} - true if the object is considered blank,
          * false otherwise.
-         * 
-         * @static
          */
         isBlank: {
             value: function (value) {
@@ -405,6 +476,7 @@ define(['q'], function (Q) {
          * don't know whether it might have a value.
          * 
          * @function merge
+         * @static
          * 
          * @param {object} objA - the target object, will be modified
          * @param {object} objB - the source object
@@ -413,8 +485,6 @@ define(['q'], function (Q) {
          * 
          * @throws {TypeError} if a destination property value cannot 
          * support a sub-property, yet the merge calls for it.
-         * 
-         * @static
          */
         merge: {
             value: function (objA, objB) {
@@ -440,20 +510,20 @@ define(['q'], function (Q) {
                     merge: function (dest, obj) {
                         this.dest = dest;
                         switch (this.getType(obj)) {
-                            case 'string':
-                            case 'integer':
-                            case 'boolean':
-                            case 'null':
-                                throw new TypeError("Can't merge a '" + (typeof obj) + "'");
-                                break;
-                            case 'object':
-                                return this.mergeObject(obj);
-                                break;
-                            case 'array':
-                                return this.mergeArray(obj);
-                                break;
-                            default:
-                                throw new TypeError("Can't merge a '" + (typeof obj) + "'");
+                        case 'string':
+                        case 'integer':
+                        case 'boolean':
+                        case 'null':
+                            throw new TypeError("Can't merge a '" + (typeof obj) + "'");
+                            break;
+                        case 'object':
+                            return this.mergeObject(obj);
+                            break;
+                        case 'array':
+                            return this.mergeArray(obj);
+                            break;
+                        default:
+                            throw new TypeError("Can't merge a '" + (typeof obj) + "'");
                         }
 
                     },
@@ -549,6 +619,7 @@ define(['q'], function (Q) {
          * where the +is + or -, and the : in the timezone is optional. 
          * 
          * @function iso8601ToDate
+         * @static
          * 
          * @param {string} dateString - an string encoding a date-time in iso8601 format
          * 
@@ -557,7 +628,6 @@ define(['q'], function (Q) {
          * @throws {TypeError} if the input date string does not parse strictly as 
          * an ISO8601 full date format.
          * 
-         * @static
          */
         iso8601ToDate: {
             value: function (dateString) {
@@ -584,6 +654,7 @@ define(['q'], function (Q) {
          * between the current date and the subject date.
          * 
          * @function niceElapsedTime
+         * @static
          * 
          * @param {Date|string|integer} - a Javascript date object,
          * a parsable date string or a UTC time in milliseconds (from
@@ -599,8 +670,6 @@ define(['q'], function (Q) {
          * If it is any other date in the past, use the date, with no time.
          * If it is in the past and it is not a date, append "ago", as in "3 hours ago"
          * If it is in the future, prepend "in", as in "in 5 minues"
-         * 
-         * @static
          * 
          */
         niceElapsedTime: {
@@ -679,13 +748,12 @@ define(['q'], function (Q) {
          * down to the minute, in local time.
          * 
          * @function niceTimestamp
+         * @static
          * 
          * @params {string|number|Date} - A date in either a Date object
          * or a form that can be converted by the Date constructor.
          * 
          * @returns {string} a friendly formatted timestamp.
-         * 
-         * @static
          */
         niceTimestamp: {
             value: function (dateObj) {
@@ -727,32 +795,58 @@ define(['q'], function (Q) {
                 return timestamp;
             }
         },
+        /**
+         * Produces a friendly time string from a give date.
+         * 
+         * @function niceTime
+         * @static
+         * 
+         * @param {Date} - an arbitrary date.
+         * 
+         * @returns {String} date - a human-friendly time string.
+         */
         niceTime: {
             value: function (date) {
                 var time;
                 var minutes = date.getMinutes();
-                if (minutes < 10) {
-                    minutes = "0" + minutes;
-                }
-                if (date.getHours() >= 12) {
-                    if (date.getHours() !== 12) {
-                        time = (date.getHours() - 12) + ":" + minutes + "pm";
-                    } else {
-                        time = "12:" + minutes + "pm";
-                    }
+                var minutesPart;
+                if (minutes === 0) {
+                    minutesPart = '';
+                } else if (minutes < 10) {
+                    minutesPart = ':0' + minutes;
                 } else {
-                    time = date.getHours() + ":" + minutes + "am";
+                    minutesPart = ':' + minutes;
+                }
+                var hours = date.getHours();
+                if (hours >= 12) {
+                    if (date.getHours() !== 12) {
+                        time = (date.getHours() - 12) + minutesPart + 'pm';
+                    } else {
+                        time = '12' + minutesPart + 'pm';
+                    }
+                } else if (hours === 0) {
+                    time = '12' + minutesPart + 'am';
+                } else {
+                    time = date.getHours() + minutesPart + 'am';
                 }
                 return time;
             }
         },
+        /**
+         * Produces a friendly date string from a given date. This is a simple,
+         * opinionated, non-adjustable, English-language formatter!
+         * 
+         * @function niceDate
+         * @static
+         * 
+         * @param {Date} - some date
+         * 
+         * @returns {String} date - a human-friendly date
+         */
         niceDate: {
-               
             value: function (date) {
                 var now = new Date();
-
                 var shortMonths = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-
                 var year = '';
                 if (now.getFullYear() !== date.getFullYear()) {
                     year = ', ' + date.getFullYear();
@@ -762,10 +856,37 @@ define(['q'], function (Q) {
                 return datePart;
             }
         },
+        /**
+         * Provides a nice representation of a range of time, from one point in time to
+         * another. It handles all variations of a starting and ending time, including
+         * missing times.
+         * 
+         * Note the difference from elapsed time -- this describes the range not the 
+         * amount of time between the end points.
+         * 
+         * It aims to be accurate and complete, yet concise and compact, and always
+         * readable.
+         * 
+         * @example Given a starting date of January 1, 2015 and January 2, 2015,
+         * the friendly representation would be "Jan 1 to 2, 2015"
+         * 
+         * @example Givena starting date of January 1, 2015 at 12pm and an ending
+         * of January 1, 2015 at 2pm, the representation would be 
+         * "Jan 1, 2015 from 12 to 2pm"
+         * 
+         * @function niceTimerange
+         * @static
+         * @public
+         * 
+         * @param {Date|null} from - a starting time, or null to signify no starting time.
+         * @param {Date|null} to - an ending time, or null to signify no ending time.
+         * 
+         * @returns {String} a human-friendly description of the time range.
+         */
         niceTimerange: {
             value: function (from, to) {
                 var timePart;
-                
+
                 if (from && from !== null) {
                     if (to && to !== null) {
                         if (from.getDate() === to.getDate()) {
@@ -797,13 +918,12 @@ define(['q'], function (Q) {
          * bytes, K, M, G, T and attempts to show at meaningful scale.
          * 
          * @function fileSizeFormat
+         * @static
          * 
          * @params {number} - the size of the file
          * 
          * @returns {string} a formatted string representing the size of the
          * file in recognizable units.
-         * 
-         * @static
          * 
          * @todo complete, test
          * @todo there is a complete version somewhere else 
@@ -827,29 +947,24 @@ define(['q'], function (Q) {
             }
         },
         /**
-         * Do an ajax call wrapped in a promise.
+         * Performs an AJAX call to fetch a given JSON resource identified
+         * by a url. An optional timeout defaults to 30 seconds
          * 
          * @function getJSON
+         * @static
          * 
          * @param {string} path - the url to get
          * @param {integer} timeout - how long to wait before returning an error
          * 
-         * @static
          */
-        // TODO: is this really used? It does not appear to be.
         getJSON: {
             value: function (url, timeout) {
-                // web just wrap the jquery ajax promise in a REAL Q promise.
-                // JQuery ajax config handles the json conversion.
-                // If we want more control, we could just handle the jquery promise
-                // first, and then return a promise.
-
-                return Q.Promise(function (resolve, reject, notify) {
+                return Q.Promise(function (resolve, reject) {
                     $.ajax(url, {
                         type: 'GET',
                         dataType: 'json',
-                        timeout: timeout || 1000,
-                        success: function (data, textStatus, jqXHR) {
+                        timeout: timeout || 30000,
+                        success: function (data) {
                             resolve(data);
                         },
                         error: function (jqHXR, textStatus, errorThrown) {
@@ -868,6 +983,7 @@ define(['q'], function (Q) {
          * into properties of a simple object which becomes the array
          * element values.
          * 
+         * @static 
          * @function object_to_array
          * 
          * @param {object} obj - some object
@@ -879,8 +995,6 @@ define(['q'], function (Q) {
          * @returns {array} an array of simple objects of two proerties,
          * holding the key and value of for each original property of the
          * input object.
-         * 
-         * @static 
          */
         object_to_array: {
             value: function (obj, keyName, valueName) {
@@ -896,9 +1010,11 @@ define(['q'], function (Q) {
             }
         },
         /**
-         * Given an array of objects...
+         * Given an array of objects returns true if the supplied function returns
+         * true for all elements of the array.
          * 
          * @function mapAnd
+         * @static
          * 
          * @param {object[][]} arrs - an array of arrays
          * @param {function} run - apply to each
@@ -928,14 +1044,13 @@ define(['q'], function (Q) {
          * all object properties. 
          * 
          * @function isEqual
+         * @static
          * 
          * @param {Any} v1 - a value to compare to a second
          * @param {Any} v2 - another value to compare to the first
          * 
          * @returns {boolean} true if the two values are equal, false
          * otherwise.
-         * 
-         * @static
          */
         isEqual: {
             value: function (v1, v2) {
@@ -994,6 +1109,14 @@ define(['q'], function (Q) {
                                     path.pop();
                                 }
                             }
+                            break;
+                        case 'function':
+                            if (v1 !== v2) {
+                                return false;
+                            }
+                            break;
+                        default:
+                            throw new Error('Unsupported type "' + t1 + '"');
                     }
                     return true;
                 }.bind(this);
@@ -1002,5 +1125,5 @@ define(['q'], function (Q) {
         }
     });
 
-    return Utils;
+    return Object.create(Utils);
 });

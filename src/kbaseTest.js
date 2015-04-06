@@ -24,6 +24,94 @@
 
 define(['underscore', 'q'], function (_, Q) {
     'use strict';
+    
+    var DOM = Object.create({}, {
+        init: {
+            value: function (cfg) {
+                this.container = cfg.container;
+                return this;
+            }
+        },
+        setNodeTree: {
+            value: function (tree) {
+                this.addNodeTree(this.container, tree);
+            }
+        },
+        addNodeTree: {
+            value: function (context, tree) {
+                var buildNodes;
+                buildNodes = function (parent, nodes) {
+                    var i;
+                    for (i = 0; i < nodes.length; i += 1) {                        
+                        var node = nodes[i];
+                        var el;
+                        if (node.type === 'text') {
+                            el = document.createTextNode(node.data);
+                            parent.appendChild(el);
+                        } else if (node.type === 'html') {
+                            parent.innerHTML = node.data;
+                        } else {
+                            el = document.createElement(node.tag||'div');
+                            el.setAttribute('data-name', node.name);
+                            if (node.attribs) {
+                                var name;
+                                for (name in node.attribs) {
+                                    el.setAttribute(name, node.attribs[name]);
+                                }
+                            }
+                            // A shortcut for a simple text node:
+                            if (node.text) {
+                                node.children = [
+                                    {
+                                        type: 'text',
+                                        data: node.text
+                                    }
+                                ]
+                            }
+                            if (node.children) {
+                                buildNodes(el, node.children);
+                            }
+                            parent.appendChild(el);
+                        }
+                       
+                    }
+                };
+                buildNodes(context, tree);
+            }
+        },
+        findElement: {
+            value: function (path) {
+                var i, next, name;
+                var next = this.container;
+                for (i = 0; i < path.length; i += 1) {
+                    name = '[data-name="' + path[i] + '"]';
+                    next = next.querySelector(name);
+                    if (next === null) {
+                        return null;
+                    }
+                }
+                return next;
+            }
+        },
+        addText: {
+            value: function (path, text) {
+                var el = this.findElement(path);
+                if (el !== null) {
+                    var tn = document.createTextNode(text);
+                    el.appendChild(tn);
+                }
+            }
+        },
+        addNodes: {
+            value: function (path, nodes) {
+                var el = this.findElement(path);
+                if (el !== null) {
+                    this.addNodeTree(el, nodes);
+                }
+            }
+        }
+    });
+    
     return Object.create({}, {
         /**
          * Initialize the object to a sane state. Serves like a constructor
@@ -60,6 +148,7 @@ define(['underscore', 'q'], function (_, Q) {
                 this.testResult = cfg.testResult;
                 
                 this.container = document.querySelector('[data-test="' + this.id + '"]');
+                 this.myDOM = Object.create(DOM).init({container: this.container});
                 this.setupDisplay();
 
                 this.tests = cfg.tests;
@@ -70,7 +159,6 @@ define(['underscore', 'q'], function (_, Q) {
                 this.makeObject = cfg.makeObject;
                 this.object = cfg.object;
                 this.method = cfg.method;
-                
 
                 return this;
             }
@@ -89,74 +177,156 @@ define(['underscore', 'q'], function (_, Q) {
          * @returns {undefined}
          * 
          */
-        showResult: {
+        showError: {
             value: function (context) {
-                var n = document.createElement('div'), color;
-                if (context.status === 'ok') {
-                    color = 'green';
-                } else {
-                    color = 'red';
-                }
-                n.innerHTML = '<div style="border: 1px ' + color + ' solid; marginput: 10px 0 0 0;">' +
-                              '<div>Type: <span data-field="type">' + context.type + '</span></div>' +
-                              '<div>Test: <span data-field="id">' + context.id + '</span></div>' +
-                              '<div>Description: <span data-field="id">' + context.description + '</span></div>' +
-                              '<div>Subtest: <span data-field="subtest">' + context.subtest + '</span></div>' +
-                              '<div>Input: <span data-field="status">' + context.input + '</span></div>' +
-                              '<div>Status: <span data-field="status">' + context.status + '</span></div>' +
-                              '<div>Elapsed: <span data-field="status">' + context.elapsed + '</span></div>' +
-                              '<div>Expecting: <span data-field="expected">' + context.expected + '</span></div>' +
-                              '<div>Actual: <span data-field="result">' + context.actual + '</span></div>' +
-                              '<div>Message <span data-field="result">' + context.message + '</span></div></div>';
-                this.container.appendChild(n);
+                var m = [
+                    {
+                        tag: 'table',
+                        attribs: {
+                            class: 'error'
+                        },
+                        children: (function () {
+                            var table = [
+                                ['Type', context.type],
+                                ['Test', context.id],
+                                ['Description', context.description],
+                                ['Subtest', context.subtest],
+                                ['Input', context.input],
+                                ['Status', context.status],
+                                ['Elapsed', context.elapsed],
+                                ['Expecting', context.expected],
+                                ['Actual', context.actual],
+                                ['Message', context.message]
+                            ];
+                            return table.map(function(row) {
+                                return {
+                                    tag: 'tr',
+                                    children: [
+                                        {
+                                            tag: 'td', text: row[0]
+
+                                        },
+                                        {
+                                            tag: 'td', text: row[1]
+                                        }
+                                    ]
+                                }
+                            });
+                        })()
+                    }
+                ];
+                console.log(this.myDOM.findElement(['layout', 'body', 'results', 'test-'+context.id, 'description', 'error']));
+                this.myDOM.addNodes(['layout', 'body', 'results', 'test-'+context.id, 'description', 'error'], m);
             }
         },
-       
+        
+        
         setupDisplay: {
             value: function () {
-                this.header = document.createElement('div');
-                this.body = document.createElement('div');
-                this.footer = document.createElement('div');
-                this.layout = document.createElement('div');
-                this.layout.appendChild(this.header);
-                this.layout.appendChild(this.body);
-                this.layout.appendChild(this.footer);
-                this.container.appendChild(this.layout);
+                
+                var layout = [
+                    {
+                        tag: 'div',
+                        name: 'layout',
+                        children: [
+                            {
+                                tag: 'div',
+                                name: 'header',
+                                attribs: {
+                                    class: 'title',
+                                    style: 'font-weight: bold; font-size: 150%;'
+                                }
+                            },
+                            {
+                                tag: 'div',
+                                name: 'body',
+                                children: [
+                                    {
+                                        tag: 'table',
+                                        name: 'results',
+                                        attribs: {
+                                            class: 'results'
+                                        }
+                                    }
+                                ]
+                            },
+                            {
+                                tag: 'div',
+                                name: 'footer'
+                            }
+                        ]
+                    }
+                ];
+                this.myDOM.setNodeTree(layout);
             }
         },
         showHeader: {
             value: function () {
-                var c = '';
-                c += '<span class="title" style="font-weight: bold; font-size: 150%;">' + (this.name || '** no name **') + '</span>';
-                c += '<p style="font-style: italic;">' + this.description + '</p>';
-                this.header.innerHTML = c;
+                this.myDOM.addText(['layout', 'header'], this.name);
             }
         },
         showTestLine: {
             value: function (test) {
-                var line = document.createElement('div');
-                line.setAttribute('data-test-id', test.id+'');
-
-                var title = document.createElement('div');
-                var c = '';
-                c += '<span class="test-id" style="font-weight: bold;">Test ' + test.id + ': </span>';
-                c += '<span>' + test.description || '** no desc **' + '</span>';
-                c += '<span data-item="result" style="margin-left: 2em;"></span>';
-                title.innerHTML = c;
-                line.appendChild(title);
-                this.body.appendChild(line);
+                var node = [
+                    {
+                        tag: 'tr',
+                        name: 'test-' + test.id,
+                        children: [
+                            {
+                                tag: 'td',
+                                name: 'name',
+                                children: [
+                                    {
+                                        type: 'text',
+                                        data: 'Test ' + test.id
+                                    }
+                                ]
+                            },
+                            {
+                                tag: 'td',
+                                name: 'result'                                
+                            },
+                            {
+                                tag: 'td',
+                                name: 'description',
+                                children: [
+                                    {
+                                        type: 'html',
+                                        data: (function () {
+                                            var html;
+                                            if (test.description) {
+                                                html = test.description;
+                                                if (test.shows) {
+                                                    html += '<br><i>shows that: ' + test.shows + '</i>';
+                                                }
+                                            } else {
+                                                html = '* no desc *';
+                                            }
+                                            return html;
+                                        }())
+                                    },
+                                    {
+                                        name: 'error'                                        
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ];
+                this.myDOM.addNodes(['layout', 'body', 'results'], node);
             }
         },
         showTestResult: {
             value: function (test, result) {
-                var resultNode = this.body.querySelector('[data-test-id="' + test.id + '"] [data-item="result"]');
-                if (resultNode) {
-                    resultNode.innerHTML = result;
-                }
-                if (result === 'PASS') {
-                    resultNode.style.color = 'green';
-                } else {
-                    resultNode.style.color = 'red';
+                var path = ['layout', 'body', 'results', 'test-'+test.id, 'result'];
+                var el = this.myDOM.findElement(path);
+                if (el) {
+                    el.innerHTML = result;
+                    if (result === 'PASS') {
+                        el.style.color = 'green';
+                    } else {
+                        el.style.color = 'red';
+                    }
                 }
             }
         },
@@ -172,11 +342,58 @@ define(['underscore', 'q'], function (_, Q) {
          */
         showSummary: {
             value: function (context) {
-                var n = document.createElement('div');
-                n.innerHTML = '<div>Successes: ' + context.succeed + '</div>' +
-                              '<div>Fails: ' + context.fail + '</div>' +
-                              '<div>Errors: ' + context.error + '</div>';
-                this.container.appendChild(n);
+                
+                var nodes = [
+                    {
+                        tag: 'table',
+                        attribs: {
+                          border: 1, cellpadding: 4, cellspacing: 0  
+                        },
+                        children: [
+                            {
+                                tag: 'tr',
+                                children: [
+                                    {
+                                        tag: 'td',
+                                        text: context.succeed
+                                    },
+                                    {
+                                        tag: 'td',
+                                        text: 'Successes'
+                                    }
+                                ]
+                            },
+                            {
+                                tag: 'tr',
+                                children: [
+                                    {
+                                        tag: 'td',
+                                        text: context.fail
+                                    },
+                                    {
+                                        tag: 'td',
+                                        text: 'Fails'
+                                    }
+                                ]
+                            },
+                            {
+                                tag: 'tr',
+                                children: [
+                                    {
+                                        tag: 'td',
+                                        text: context.error
+                                    },
+                                    {
+                                        tag: 'td',
+                                        text: 'Errors'
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ];
+                
+                this.myDOM.addNodes(['layout', 'footer'], nodes);               
             }
         },
         /**
@@ -210,7 +427,7 @@ define(['underscore', 'q'], function (_, Q) {
                         result.status = 'failure';
                         result.message = 'output does not match expected';
                     }                
-                } else if (typeof test.expects.output === 'object') {
+                } else if (typeof test.expects.output === 'object' && !(test.expects.output instanceof Array)) {
                     // NB the output value can't be simply the object. If an object
                     // it must be wrapped.
                     if (test.expects.output.value) {
@@ -413,7 +630,14 @@ define(['underscore', 'q'], function (_, Q) {
                     } else {
                         test.whenResult = function (test) {
                             return Q.Promise(function (resolve) {
-                                resolve(test.object[test.method].apply({}, test.input));
+                                // resolve(test.object[test.method].apply(object, test.input));
+                                var method = test.object[test.method];
+                                if (method === undefined) {
+                                    throw new Error('Method ' + test.method + ' not found on object.');
+                                }
+                                var result = method.apply(test.object, test.input);
+                                resolve(result);
+                                // resolve(test.object[test.method](test.input));
                             }.bind(this));
                         }.bind(this);
                     }
@@ -571,11 +795,13 @@ define(['underscore', 'q'], function (_, Q) {
                                     var expectedStatus = test.expects.status || 'success';
                                     if (expectedStatus !== result.status) {
                                         subtestFail = true;
-                                        this.showResult({
-                                            id: this.id,
+                                        this.showError({
+                                            id: test.id,
+                                            // id: this.id,
                                             type: this.type,
                                             tester: this.description,
                                             description: test.description,
+                                            shows: test.shows, 
                                             status: result.status,
                                             elapsed: test.elapsed,
                                             input: JSON.stringify(test.input),
@@ -597,10 +823,11 @@ define(['underscore', 'q'], function (_, Q) {
                                 }
                             } else {
                                 test.status = 'error';
-                                this.showResult({
+                                this.showError({
                                     id: this.id,
                                     type: this.type,
                                     description: this.description,
+                                    shows: this.shows,
                                     status: 'error',
                                     //input: JSON.stringify(test.expects.input),
                                     //expected: JSON.stringify(subtest.expected),
