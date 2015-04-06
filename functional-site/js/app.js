@@ -36,7 +36,7 @@ var app = angular.module('kbase-app',
 
             $stateProvider
                 .state('login', {
-                    url: "/login/?nextPath",
+                    url: "/login/?nextAppURL",
                     templateUrl: 'views/login/login.html',
                     controller: 'Login'
                 });
@@ -740,8 +740,11 @@ function (Postal, Navbar, Logger, Notifications) {
          $rootScope.$apply();
          });
          */
-
-         console.log('setting up login success subscription...');
+        
+        
+        /**
+         * Handle the login.success message.
+         */
         Postal.channel('session').subscribe('login.success', function (data) {
             var kb = new KBCacheClient(data.session.getAuthToken());
             // Overwrite the rootscope kb object so that any users will 
@@ -749,8 +752,8 @@ function (Postal, Navbar, Logger, Notifications) {
             $rootScope.kb = kb;
             window.kb = kb;
             
-            if (data.nextPath && data.nextPath !== '/login/') {
-                $location.url(data.nextPath);
+            if (data.nextAppURL && data.nextAppURL !== '/login/') {
+                $location.url(data.nextAppURL);
             } else if (data.nextURL) {
                 window.location.href = data.nextURL;
             } else {
@@ -788,16 +791,14 @@ function (Postal, Navbar, Logger, Notifications) {
             */
 
             
-            var nextPath = $location.url();
+            var nextAppURL = $location.url();
             
-            var url = '/login/';
             var params = {};
-            if (nextPath) {
-                params.nextPath = nextPath;
-                url += '?nextPath=' + encodeURIComponent(nextPath);
+            if (nextAppURL) {
+                params.nextAppURL = nextAppURL;
             }
+            // NB this comes into the login route like query params
             $state.go('login', params);
-            // $location.url(url);
             $rootScope.$apply();
             
         });

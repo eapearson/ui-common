@@ -21,12 +21,12 @@ define(['postal', 'kb.widget.base', 'kb.session'],
              * @param {object} cfg
              */
             init: {
-                value: function (cfg) {
+                value: function (cfg, params) {
                     // Looks like a widget ... acts like a widget ...
                     cfg.title = 'Login Form Widget';
                     cfg.name = 'LoginForm';
                     cfg.collection = 'login';
-                    this.BaseWidget_init(cfg);
+                    this.BaseWidget_init(cfg, params);
 
                     this.templates.env.addFilter('kbmarkup', function (s) {
                         if (s) {
@@ -86,8 +86,8 @@ define(['postal', 'kb.widget.base', 'kb.session'],
                     
                     var username = this.container.find('form[name="login-form"] input[name="username"]').val();
                     var password = this.container.find('form[name="login-form"] input[name="password"]').val();
-                    var nextPath = this.container.find('form[name="login-form"] input[name="nextPath"]').val();
-                    var nextUrl = this.container.find('form[name="login-form"] input[name="nextUrl"]').val();
+                    var nextAppURL = this.container.find('form[name="login-form"] input[name="nextAppURL"]').val();
+                    var nextURL = this.container.find('form[name="login-form"] input[name="nextUrl"]').val();
                     
                     Session.login({
                         username: username,
@@ -96,13 +96,12 @@ define(['postal', 'kb.widget.base', 'kb.session'],
                     .then(function (session) {
                         Postal.channel('session').publish('login.success', {
                             session: Session,
-                            nextPath: nextPath,
-                            nextURL: nextUrl
+                            nextAppURL: nextAppURL,
+                            nextURL: nextURL
                         });
                     })
                     .catch(function (errorMsg) {
                         // All error handling is handled locally.
-                        console.log(errorMsg);
                         this.container.find('[data-element="loading-indicator"]').hide();
                         if (errorMsg === "LoginFailure: Authentication failed.") {
                             errorMsg = "Login Failed: your username/password is incorrect.";

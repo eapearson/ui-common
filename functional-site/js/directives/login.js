@@ -1,6 +1,6 @@
 angular.module('login-directives', []);
 angular.module('login-directives')
-    .directive('loginform', function ($rootScope) {
+    .directive('loginform', function ($rootScope, $stateParams) {
         "use strict";
         return {
             link: function (scope, ele, attrs) {
@@ -8,7 +8,7 @@ angular.module('login-directives')
                     var widget = Object.create(W).init({
                         container: $(ele),
                         viewState: scope.viewState
-                    }).start();
+                    }, $stateParams).start();
                     scope.$on('$destroy', function () {
                         if (widget && widget.stop) {
                             try {

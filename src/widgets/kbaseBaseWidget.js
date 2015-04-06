@@ -19,7 +19,7 @@ define(['nunjucks', 'jquery', 'q', 'postal', 'kb.session', 'kb.utils', 'kb.logge
              * @property {string} title - a human-meaningful short description of the widget
              */
             BaseWidget_init: {
-                value: function (cfg) {
+                value: function (cfg, params) {
                     this.generatedId = 0;
 
                     // First we get the global config.
@@ -39,7 +39,7 @@ define(['nunjucks', 'jquery', 'q', 'postal', 'kb.session', 'kb.utils', 'kb.logge
                     // Note that params may change. Parameters are information the object
                     // has about its runtime limitations. When a parameter changes, the
                     // widget may need to re-fetch or calculate state and/or re-render.
-                    this.params = {};
+                    this.setupParams(params);
 
                     // AUTH
                     // Auth state can change at any time -- the syncAuth method knows how to 
@@ -103,6 +103,12 @@ define(['nunjucks', 'jquery', 'q', 'postal', 'kb.session', 'kb.utils', 'kb.logge
                     if (!this.hasConfig('title')) {
                         throw 'Widget title is required';
                     }
+                }
+            },
+            setupParams: {
+                value: function (params) {
+                    // Params for now come in on the main config object in init.
+                    this.params = params;
                 }
             },
             setupCoreApp: {

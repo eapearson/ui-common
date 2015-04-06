@@ -1,7 +1,7 @@
 <div class="well well-kbase">
-    <form autofill-fix id="xlogin-form" class="form login-form" xng-submit="loginUser(user, nextPath, nextURL)" name="login-form">
-        <input type="hidden" name="nextPath" value="{{state.nextPath}}">
-        <input type="hidden" name="nextUrl" value="{{state.nextUrl}}">
+    <form autofill-fix id="xlogin-form" class="form login-form" name="login-form">
+        <input type="hidden" name="nextAppURL" value="{{params.nextAppURL}}">
+        <input type="hidden" name="nextURL" value="{{params.nextURL}}">
         <div class="row">
             <div class="col-sm-12">
                 <legend style="text-align: center;">KBase Sign In</legend>

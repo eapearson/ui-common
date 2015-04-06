@@ -332,19 +332,33 @@ app
     $scope.params = { 'ws':$stateParams.ws, 'id': $stateParams.id, 'kbCache' : $rootScope.kb }
 })
 
-.controller('People', function($scope, $stateParams, $location) {
+.controller('People', function($scope, $stateParams, $location, $state) {
     $scope.params = { 'userid':$stateParams.userid}
    
     // NB need to use KBaseSessionSync here and not kb -- because kb is only valid at page load
     // time. On angular path changes, it will not have been updated. So, e.g., after a user logs 
     // out and goes backing over their history...
     if (!$.KBaseSessionSync.isLoggedIn()) {
-        var hash = window.location.hash;
+        /*var hash = window.location.hash;
         var path = '/login/';
         if (hash && hash.length > 0) {
-            path += '?nextPath=' + encodeURIComponent(hash.substr(1));
+            path += '?nextAppURL=' + encodeURIComponent(hash.substr(1));
         } 
         $location.url(path);
+        
+        
+        var hash = window.location.hash;
+        var params = {};
+        if (hash && hash.length > 0) {
+            params.nextAppURL = hash.substr(1);
+        }
+        */
+       
+        var params = {
+            nextAppURL: $location.url()
+        }        
+        $state.go('login', params);
+        
         return;
     }
     
@@ -512,8 +526,8 @@ app
 .controller('Login', function($scope, $stateParams, $location) {
     // If we are logged in and landing here we redirect to the dashboard.
     if ($.KBaseSessionSync.isLoggedIn()) {
-        if ($stateParams.nextPath) {
-            $location.url($stateParams.nextPath);
+        if ($stateParams.nextAppURL) {
+            $location.url($stateParams.nextAppURL);
         } else {
             $location.path('/dashboard');
         }
@@ -533,10 +547,10 @@ app
     $scope.nar_url = configJSON.narrative_url; // used for links to narratives    
     
     // ignore nextPath which is ... the login page.
-    if ($stateParams.nextPath == '/login') {
-        $scope.nextPath = null;
+    if ($stateParams.nextAppURL == '/login') {
+        $scope.nextAppURL = null;
     } else {
-        $scope.nextPath = $stateParams.nextPath;
+        $scope.nextAppURL = $stateParams.nextAppURL;
     }
     
     $scope.$on('$destroy', function () {
@@ -901,14 +915,12 @@ app
 
 
 
-.controller('narrativemanager', function($scope, $stateParams, $location) {
+.controller('narrativemanager', function($scope, $stateParams, $location, $state) {
     if (!$.KBaseSessionSync.isLoggedIn()) {
-        var hash = window.location.hash;
-        var path = '/login/';
-        if (hash && hash.length > 0) {
-            path += '?nextPath=' + encodeURIComponent(hash.substr(1));
-        } 
-        $location.url(path);
+         var params = {
+            nextAppURL: $location.url()
+        }        
+        $state.go('login', params);
     } else {
         $scope.params = $stateParams;
         require(['kb.widget.navbar'], function (NAVBAR) {
