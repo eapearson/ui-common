@@ -56,7 +56,7 @@ define(['q', 'kb.session', 'kb.utils', 'kb.utils.api', 'kb.client.workspace', 'k
                      .then(function (data) {
                         var workspaces = [];
                         for (var i = 0; i < data.length; i++) {
-                           var wsInfo = APIUtils.workspace_metadata_to_object(data[i]);
+                           var wsInfo = APIUtils.workspace_info_to_object(data[i]);
                            if (this.isValidNarrative(wsInfo) && this.applyNarrativeFilter(cfg.filter)) {
                               workspaces.push(wsInfo);
                            }

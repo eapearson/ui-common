@@ -629,24 +629,6 @@ define(['nunjucks', 'jquery', 'q', 'kb.session', 'kb.utils', 'kb.utils.api', 'kb
             }
          },
 
-         // KBase Service Utility Methods
-         // NB: these should really be contained in the service apis, but those are automatically generated.
-         // Maybe a kbase services utility module?
-         workspace_metadata_to_object: {
-            value: function (wsInfo) {
-               return {
-                  id: wsInfo[0],
-                  name: wsInfo[1],
-                  owner: wsInfo[2],
-                  moddate: wsInfo[3],
-                  object_count: wsInfo[4],
-                  user_permission: wsInfo[5],
-                  globalread: wsInfo[6],
-                  lockstat: wsInfo[7],
-                  metadata: wsInfo[8]
-               };
-            }
-         },
          
          /*UnspecifiedObject data;
 		object_info info;

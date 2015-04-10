@@ -505,7 +505,7 @@ define(['kb.widget.dataview.base', 'kb.utils.api', 'kb.utils', 'kb.session', 'kb
                                  workspace: isIntegerId ? null : workspaceId
                               })
                               .then(function (data) {
-                                 this.setState('workspace', APIUtils.workspace_metadata_to_object(data));
+                                 this.setState('workspace', APIUtils.workspace_info_to_object(data));
                               
                                  // Okay, the rest doens't really have to be done here ..
                                  
@@ -522,7 +522,7 @@ define(['kb.widget.dataview.base', 'kb.utils.api', 'kb.utils', 'kb.session', 'kb
                                     })
                                     .then(function (data) {
                                        var objects = data.map(function (x) {
-                                          return APIUtils.workspace_metadata_to_object(x)
+                                          return APIUtils.workspace_info_to_object(x)
                                        });
                                        var narratives = objects.filter(function (obj) {
                                           if (obj.metadata.narrative && (!isNaN(parseInt(obj.metadata.narrative))) &&

@@ -74,7 +74,7 @@ define(['kb.widget.dashboard.base', 'kb.utils', 'kb.utils.api', 'kb.session', 'k
                                 var workspaces = {};
                                 var workspaceList = [];
                                 for (var i = 0; i < data.length; i++) {
-                                    var wsInfo = APIUtils.workspace_metadata_to_object(data[i]);
+                                    var wsInfo = APIUtils.workspace_info_to_object(data[i]);
 
                                     // make sure a modern narrative.
                                     if (wsInfo.metadata.narrative && wsInfo.metadata.is_temporary !== 'true') {

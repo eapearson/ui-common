@@ -1,5 +1,5 @@
-define(['jquery', 'nunjucks', 'kb.utils', 'kb.widget.social.base', 'kb.client.workspace', 'kb.session', 'q'],
-        function ($, nunjucks, Utils, SocialWidget, WorkspaceService, Session, Q) {
+define(['kb.utils', 'kb.utils.api', 'kb.widget.social.base', 'kb.client.workspace', 'kb.session', 'q'],
+        function (Utils, APIUtils, SocialWidget, WorkspaceService, Session, Q) {
             "use strict";
             var RecentActivityWidget = Object.create(SocialWidget, {
                 init: {
@@ -99,7 +99,7 @@ define(['jquery', 'nunjucks', 'kb.utils', 'kb.widget.social.base', 'kb.client.wo
                                         //tuple<ws_id id, ws_name workspace, username owner, timestamp moddate,
                                         //int object, permission user_permission, permission globalread,
                                         //lock_status lockstat, usermeta metadata> workspace_info
-                                        var wsInfo = this.workspace_metadata_to_object(data[i]);
+                                        var wsInfo = APIUtils.workspace_info_to_object(data[i]);
 
                                         // make sure a modern narrative.
                                         if (wsInfo.metadata.narrative && wsInfo.metadata.is_temporary !== 'true') {
