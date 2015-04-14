@@ -460,13 +460,11 @@ define(['jquery', 'kb.session', 'kb.runtime', 'kb.widget.base', 'kb.widget.login
                         // render notifications
                         this.renderNotifications();
                         
-                        // render login
-                        this.renderLogin();
-                        
                         // render buttons
                         this.renderButtons();
                         
-                        
+                        // render login
+                        this.renderLogin();
                     } else {
                         
                         this.places.content.html(this.renderTemplate('unauthorized'));
