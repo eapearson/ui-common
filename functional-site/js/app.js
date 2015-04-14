@@ -826,14 +826,11 @@ function (Postal, Navbar, Logger, Notifications) {
         }.bind(this));
 
         Postal.channel('session').subscribe('logout.success', function (data) {
-            // $rootScope.kb = new KBCacheClient(data.session.getKBaseSession());
             var kb = new KBCacheClient(null);
             $rootScope.kb = kb;
             window.kb = kb;
             $state.go('login');
-            //$location.url('/login/');
             $rootScope.$apply();
-
         });
 
 
