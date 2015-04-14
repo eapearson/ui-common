@@ -17,7 +17,94 @@ define(['kb.utils'],
             // Maybe a kbase services utility module?
             
             /**
-             * Given a Workspace metadata 
+             * @typedef {integer} ws_id
+             */
+            
+            /**
+             * @typedef {string} ws_name
+             */
+            
+            /**
+             * @typedef {string} username
+             */
+            
+            /**
+             * A time in the format YYYY-MM-DDThh:mm:ssZ, where Z is either the
+             *	character Z (representing the UTC timezone) or the difference
+             *	in time to UTC in the format +/-HHMM, eg:
+             *		2012-12-17T23:24:06-0500 (EST time)
+             *	2013-04-03T08:56:32Z (UTC time)
+             * @typedef {string} timestamp
+             */
+            
+            /**
+             * A type string.
+	*	Specifies the type and its version in a single string in the format
+	*	[module].[typename]-[major].[minor]:
+	*	
+	*	module - a string. The module name of the typespec containing the type.
+	*	typename - a string. The name of the type as assigned by the typedef
+	*		statement.
+	*	major - an integer. The major version of the type. A change in the
+	*		major version implies the type has changed in a non-backwards
+	*		compatible way.
+	*	minor - an integer. The minor version of the type. A change in the
+	*		minor version implies that the type has changed in a way that is
+	*		backwards compatible with previous type definitions.
+	*	
+	*	In many cases, the major and minor versions are optional, and if not
+	*	provided the most recent version will be used.
+	*	
+	*	Example: MyModule.MyType-3.1
+        *	
+        *	@typedef {string} type_string
+             */
+            
+            /**
+             * Represents the permissions a user or users have to a workspace:
+	*
+	*	'a' - administrator. All operations allowed.
+	*	'w' - read/write.
+	*	'r' - read.
+	*	'n' - no permissions.
+             * 
+             * @typedef {string} permission
+             */
+            
+            
+            /**
+             * 
+             * The lock status of a workspace.
+	* One of 'unlocked', 'locked', or 'published'.
+             * 
+             * @typedef {string} lock_status
+             */
+            
+            /**
+             * @typedef {object} usermeta
+             */
+            
+            /**
+             * Given a Workspace info array, defined workspace_info in the 
+             * workspace spec, convert into an object in which each of the 
+             * array elements is now stored in a property with the same name as
+             * defined in the workspace spec.
+             * 
+             *  This makes dealing with workspace info much easier to reason 
+             *  about and debug.
+             *  
+             *   Additional elements are added after the specified elements.
+             *   
+             *    @typedef {object} workspace_info
+             *    @property {ws_id} id - the numerical ID of the workspace.
+             *    @property {ws_name} name - name of the workspace.
+             *    @property {username} owner - name of the user who owns (e.g. created) this workspace.
+             *    @property {timestamp} moddate - date when the workspace was last modified.
+             *    @property {int} objects - the approximate number of objects currently stored in the workspace.
+             *    @property {permission} user_permission - permissions for the authenticated user of this workspace.
+             *    @property {permission} globalread - whether this workspace is globally readable.
+             *    @property {lock_status} lockstat - the status of the workspace lock.
+             *    @property {usermeta} metadata - arbitrary user-supplied metadata about the workspace.
              */
             workspace_info_to_object: {
                 value: function (wsInfo) {
