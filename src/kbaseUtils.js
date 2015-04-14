@@ -14,24 +14,6 @@
  * @todo move any kbase api methods into kb.utils.api
  */
 
-/**
- * Any Javsascript type.
- * 
- * @typedef {(object|string|number|boolean|undefined|function)} Any
- */
-
-/**
- * An ordered list of properties that specify a path into an object. Each
- * path item represents a property name of the current object. The first 
- * item represents a property of the immediate object, the second a property
- * of the value of the first property, if that contained an object, and so
- * forth. The canonical representation is an array of strings, but a string
- * with property components separated by dots is a natural and easier form
- * for people.
- * 
- * @typedef {(string|string[])} PropertyPath
- */
-
 define(['q'], function (Q) {
     "use strict";
     var Utils = Object.create({}, {
