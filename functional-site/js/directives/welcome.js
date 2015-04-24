@@ -1,0 +1,25 @@
+var m = angular.module('welcome-directives', []);
+['main', 'help', 'welcome'].forEach(function (directive) {
+    angular.module('welcome-directives').directive(directive, function ($rootScope, $stateParams) {
+        "use strict";
+        return {
+            link: function (scope, ele, attrs) {
+                require(['kb.widget.welcome.' + directive], function (W) {
+                    var widget = Object.create(W).init({
+                        container: $(ele),
+                        viewState: scope.viewState
+                    }, $stateParams).start();
+                    scope.$on('$destroy', function () {
+                        if (widget && widget.stop) {
+                            try {
+                                widget.stop();
+                            } finally {
+                                // What do do here?
+                            }
+                        }
+                    });
+                });
+            }
+        };
+    });
+});

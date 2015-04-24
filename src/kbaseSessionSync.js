@@ -114,12 +114,16 @@
                     return null;
                 }
 
+                /*
+                 * COMMENTED OUT FOR TESTING OAUTH
+                 
                 var storageSessionString = localStorage.getItem(this.cookieName);
                 if (!storageSessionString) {
                     console.log('WARNING: Local Storage Cookie missing -- resetting session');
                     this.removeAuth();
                     return null;
                 }
+                
 
                 var storageSession = JSON.parse(storageSessionString);
                 if (session.token !== storageSession.token) {
@@ -129,6 +133,7 @@
                     this.removeAuth();
                     return null;
                 }
+                */
 
                 return session;
             }
@@ -247,6 +252,20 @@
                     return true;
                 } else {
                     return false;
+                }
+            }
+        },
+        requireAuth: {
+            value: function () {
+                if (!this.getKBaseSession()) {
+                    // capture the path
+                    var url = window.location.href;
+                    var checkAuth = 'https://narrtest4.kbase.us/oauth2/check_auth?return_url=' + encodeURIComponent(url);
+                    
+                    // redirect to the checkauth
+                    window.location.href = checkAuth;
+                    
+                    // that's all for now.
                 }
             }
         }

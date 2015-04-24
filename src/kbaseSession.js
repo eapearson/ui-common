@@ -176,6 +176,8 @@ define(['jquery', 'q', 'kb.cookie', 'kb.runtime', 'kb.logger'],
                     session.token = session.token.replace(/PIPESIGN/g, '|').replace(/EQUALSSIGN/g, '=');
 
                     // Ensure that we have localStorage.
+                    /*
+                 * COMMENTED OUT FOR TESTING OAUTH
                     var storageSessionString = localStorage.getItem(this.cookieName);
                     if (!storageSessionString) {
                         Logger.logWarning('Local Storage Cookie missing -- resetting session');
@@ -191,6 +193,7 @@ define(['jquery', 'q', 'kb.cookie', 'kb.runtime', 'kb.logger'],
                         this.removeSession();
                         return null;
                     }
+                    */
 
                     // now we have a session object equivalent to the one returned by the auth service.
                     var newSession = {
@@ -451,7 +454,10 @@ define(['jquery', 'q', 'kb.cookie', 'kb.runtime', 'kb.logger'],
                         // This is for compatability with the current state of the narrative ui, which uses this
                         // as a flag for being authenticated.
                         kbaseSession.success = 1;
+                        /*
+                 * COMMENTED OUT FOR TESTING OAUTH
                         localStorage.setItem(this.cookieName, JSON.stringify(kbaseSession));
+                        */
                     }
                 }
             },

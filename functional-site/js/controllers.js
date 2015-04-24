@@ -334,11 +334,13 @@ app
 
 .controller('People', function($scope, $stateParams, $location, $state) {
     $scope.params = { 'userid':$stateParams.userid}
+
+    $.KBaseSessionSync.requireAuth();
    
     // NB need to use KBaseSessionSync here and not kb -- because kb is only valid at page load
     // time. On angular path changes, it will not have been updated. So, e.g., after a user logs 
     // out and goes backing over their history...
-    if (!$.KBaseSessionSync.isLoggedIn()) {
+    //if (!$.KBaseSessionSync.isLoggedIn()) {
         /*var hash = window.location.hash;
         var path = '/login/';
         if (hash && hash.length > 0) {
@@ -354,13 +356,13 @@ app
         }
         */
        
-        var params = {
-            nextAppURL: $location.url()
-        }        
-        $state.go('login', params);
+    //    var params = {
+    //        nextAppURL: $location.url()
+    //    }        
+     //   $state.go('login', params);
         
-        return;
-    }
+     //   return;
+    //}
     
     
     // Set the styles for the user page
@@ -402,10 +404,11 @@ app
 .controller('Dashboard', function($scope, $stateParams, $location) {
     $scope.params = {}
     
-    if (!$.KBaseSessionSync.isLoggedIn()) {
-        $location.url('/login/');
-       return;
-    }
+    $.KBaseSessionSync.requireAuth();
+    //if (!$.KBaseSessionSync.isLoggedIn()) {
+    //    $location.url('/login/');
+    //    return;
+    // }
     
     // Set the styles for the dashboard page
     $('<link>')
@@ -949,6 +952,12 @@ app
 .controller('ContigSetDetail', function($scope, $stateParams) {
     window.location.replace("#/dataview/"+$stateParams.ws+'/'+$stateParams.id);
     $scope.params = {'id': $stateParams.id, 'ws':$stateParams.ws}
+})
+
+.controller('Welcome', function ($scope, $stateParams) {
+    // What do do here?
+
+    // Build up state based on some analysis of the ... state.
 })
 
 

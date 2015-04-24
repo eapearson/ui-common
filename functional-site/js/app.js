@@ -24,7 +24,7 @@ var app = angular.module('kbase-app',
         'ws-directives', 'modeling-directives', 'angular-json-rpc',
         'communities-directives', 'narrative-directives',
         'ui.router', 'ngResource', 'kbaseLogin',
-        'ui.bootstrap', 'search', 'login-directives'])
+        'ui.bootstrap', 'search', 'login-directives', 'welcome-directives'])
     .config(['$locationProvider', '$stateProvider', '$httpProvider', '$urlRouterProvider',
         function ($locationProvider, $stateProvider, $httpProvider, $urlRouterProvider) {
             // enable CORS
@@ -93,7 +93,21 @@ var app = angular.module('kbase-app',
                     url: '/dataview/:wsid/:objid?sub&subid',
                     templateUrl: 'views/dataview/dataview.html',
                     controller: 'Dataview'
+                });
+                
+            $stateProvider
+                .state('welcome_help', {
+                    url: '/welcome/help',
+                    templateUrl: 'views/welcome/help.html',
+                    controller: 'Welcome'
                 })
+                .state('welcome', {
+                    url: '/welcome?from',
+                    templateUrl: 'views/welcome/main.html',
+                    controller: 'Welcome'
+                
+                });
+           
 
             // workspace browser routing
             $stateProvider
@@ -571,9 +585,10 @@ var app = angular.module('kbase-app',
                     templateUrl: 'views/objects/contigset.html',
                     controller: 'ContigSetDetail'});
 
-            $urlRouterProvider.when('', '/login/')
-                .when('/', '/login/')
-                .when('#', '/login/');
+            $urlRouterProvider
+                .when('', '/welcome')
+                .when('/', '/welcome')
+                .when('#', '/welcome');
 
             $urlRouterProvider.otherwise('/404/');
 
@@ -791,6 +806,13 @@ function (Postal, Navbar, Logger, Notifications) {
             */
 
             
+            // capture the path
+            var url = window.location.href;
+            var checkAuth = 'https://narrtest4.kbase.us/oauth2/check_auth?redirect_url=' + encodeURIComponent(url);
+
+            // redirect to the checkauth
+            window.location.href = checkAuth;
+            /**
             var nextAppURL = $location.url();
             
             var params = {};
@@ -800,12 +822,18 @@ function (Postal, Navbar, Logger, Notifications) {
             // NB this comes into the login route like query params
             $state.go('login', params);
             $rootScope.$apply();
+            **/
             
         });
 
         Postal.channel('session').subscribe('logout.request', function (data) {
             require(['kb.session'], function (Session) {
-                Session.logout()
+                
+                window.location.href='https://narrtest4.kbase.us/auth/signout?redirect_url=/functional-site/#/welcome';
+                
+                
+                /*
+                 Session.logout()
                     .then(function () {
                         // jigger the kbcacheclient.
                         // NB the token argument needs to be an empty base object,
@@ -822,9 +850,11 @@ function (Postal, Navbar, Logger, Notifications) {
                         console.error(err);
                     })
                     .done();
+                */
             });
         }.bind(this));
-
+        
+     
         Postal.channel('session').subscribe('logout.success', function (data) {
             var kb = new KBCacheClient(null);
             $rootScope.kb = kb;

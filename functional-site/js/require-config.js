@@ -115,7 +115,12 @@ require.config({
       // Login widgets.
       'kb.widget.login.loginform': '/src/widgets/login/LoginForm',
       
-      'kb.test.systemnotifications.loader': '/src/test/kbaseSystemNotificationsLoader'
+      'kb.test.systemnotifications.loader': '/src/test/kbaseSystemNotificationsLoader',
+      
+      'kb.widget.welcome.main': '/src/widgets/welcome/Main',
+      'kb.widget.welcome.help': '/src/widgets/welcome/Help',
+      'kb.widget.welcome.news': '/src/widgets/welcome/News'
+
    },
    shim: {
       // Better standard naming: Prefix with kbc_ (KBase Client), followed
