@@ -1,18 +1,30 @@
 <div class="row">
     <div class="col-md-12">
         <h1>Welcome to KBase!</h1>
-        <p>Here you are, at KBase. Now what?</p>
-        <p>
-            Well, you can log in.
-        </p>
-        
-        <p>
-            <a href="/oauth2/check_auth?redirect_url=/functional-site/#/welcome">Check Auth</a>
-        </p> 
-        
-        <p>
-            <a href="/auth/signout">Sign out</a>
-        </p>
+        <div style="max-width: 60em; width: 100%;">
+            <p>Here you are, at KBase. Now what?</p>
+            <p>
+                This section of the page is static. The widgets below will show different content depending on the whether the browser is authorized or not. 
+            </p>
+            <p>
+                Right now that is just "authorized" or "unauthorized".
+            </p>
+            <p>
+                This "welcome" page is designed as the exit page from KBase. But an exit page poses a dilemma -- if the page is designed as a "logged out" page, then if it is accessed in a mode other than "just having logged out" the messaging on it will be confusing. It is certainly possible to create a view or pop-up that appears immediately after logout and cannot be navigated to. At the moment, this does not seem a worthwhile pursuit.
+            </p>
+            <p>
+                Is there value, then, in a generic exit/entrance, aka "welcome/aloha" page? I think so
+            </p>
+
+            <!-- <p>
+                <a href="/oauth2/check_auth?redirect_url=/functional-site/#/welcome">Check Auth</a>
+            </p> 
+            
+            <p>
+                <a href="/auth/signout">Sign out</a>
+            </p>
+            -->
+        </div>
     </div>
     <div class="row">
     </div>
