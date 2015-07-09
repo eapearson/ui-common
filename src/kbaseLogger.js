@@ -1,11 +1,4 @@
 define(['kb.props'], function (Props) {
-    var Base = Object.create({}, {
-        config: {
-            value: Object.create(Props).init(),
-            writable: false
-        }
-    });
-
     "use strict";
     /**
      A simple logger for the KBase javscript front end.
@@ -18,11 +11,16 @@ define(['kb.props'], function (Props) {
      message:
      data:
      */
-    var Logger = Object.create(Base, {
+    var Logger = Object.create({}, {
         init: {
             value: function (cfg) {
                 this.source = cfg.source;
+                return this;
             }
+        },
+        config: {
+            value: Object.create(Props).init(),
+            writable: false
         },
         log: {
             value: function (msg) {
@@ -88,6 +86,11 @@ define(['kb.props'], function (Props) {
         logError: {
             value: function (msg) {
                 if (this.isLogging('error')) {
+                    if (typeof msg === 'string') {
+                        msg = {
+                            message: msg
+                        };
+                    }                    
                     msg.type = 'ERROR';
                     this.log(msg);
                 }
@@ -97,7 +100,13 @@ define(['kb.props'], function (Props) {
         logWarning: {
             value: function (msg) {
                 if (this.isLogging('warning')) {
+                    if (typeof msg === 'string') {
+                        msg = {
+                            message: msg
+                        };
+                    }
                     msg.type = 'WARNING';
+                    
                     this.log(msg);
                 }
                 return this;
@@ -106,6 +115,12 @@ define(['kb.props'], function (Props) {
         logInfo: {
             value: function (msg) {
                 if (this.isLogging('info')) {
+                    if (typeof msg === 'string') {
+                        msg = {
+                            message: msg
+                        };
+                    }
+
                     msg.type = 'INFO';
                     this.log(msg);
                 }
@@ -115,6 +130,12 @@ define(['kb.props'], function (Props) {
         logDeprecation: {
             value: function (msg) {
                 if (this.isLogging('deprecation')) {
+                    if (typeof msg === 'string') {
+                        msg = {
+                            message: msg
+                        };
+                    }
+
                     msg.type = 'DEPRECATION';
                     this.log(msg);
                 }
@@ -124,6 +145,12 @@ define(['kb.props'], function (Props) {
         logDebug: {
             value: function (msg) {
                 if (this.isLogging('debug')) {
+                    if (typeof msg === 'string') {
+                        msg = {
+                            message: msg
+                        };
+                    }
+                    
                     msg.type = 'DEBUG';
                     this.log(msg);
                 }

@@ -585,10 +585,15 @@ var app = angular.module('kbase-app',
                     templateUrl: 'views/objects/contigset.html',
                     controller: 'ContigSetDetail'});
 
+            //$urlRouterProvider
+            //    .when('', '/welcome')
+            //    .when('/', '/welcome')
+            //    .when('#', '/welcome');
+            
             $urlRouterProvider
-                .when('', '/welcome')
-                .when('/', '/welcome')
-                .when('#', '/welcome');
+                .when('', '/dashboard')
+                .when('/', '/dashboard')
+                .when('#', '/dashboard');
 
             $urlRouterProvider.otherwise('/404/');
 
@@ -808,7 +813,7 @@ function (Postal, Navbar, Logger, Notifications) {
             
             // capture the path
             var url = window.location.href;
-            var checkAuth = 'https://narrtest4.kbase.us/oauth2/check_auth?redirect_url=' + encodeURIComponent(url);
+            var checkAuth = '/oauth2/check_auth?redirect_url=' + encodeURIComponent(url);
 
             // redirect to the checkauth
             window.location.href = checkAuth;
@@ -829,7 +834,11 @@ function (Postal, Navbar, Logger, Notifications) {
         Postal.channel('session').subscribe('logout.request', function (data) {
             require(['kb.session'], function (Session) {
                 
-                window.location.href='https://narrtest4.kbase.us/auth/signout?redirect_url=/functional-site/#/welcome';
+                var redirectURI = window.location.protocol + '//' + window.location.host + window.location.pathname + '#/welcome';
+                
+                // var logout = '/auth/signout?redirect_url=' + encodeURIComponent('/functional-site/#/welcome');
+                var logoutURL = '/auth/signout?redirect_url=' + encodeURIComponent(redirectURI);
+                window.location.href = logoutURL;
                 
                 
                 /*
@@ -854,6 +863,14 @@ function (Postal, Navbar, Logger, Notifications) {
             });
         }.bind(this));
         
+        Postal.channel('session').subscribe('relogin.request', function (data) {
+            require(['kb.session'], function (Session) {
+                // var redirectURI = window.location.protocol + '//' + window.location.host + window.location.pathname + '#/welcome';
+                var redirectURI = window.location.href;
+                var logoutURL = '/auth/signout?redirect_url=' + encodeURIComponent(redirectURI);
+                window.location.href = logoutURL;
+            });
+        }.bind(this));
      
         Postal.channel('session').subscribe('logout.success', function (data) {
             var kb = new KBCacheClient(null);

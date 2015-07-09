@@ -403,8 +403,17 @@ app
 
 .controller('Dashboard', function($scope, $stateParams, $location) {
     $scope.params = {}
+
+    //$scope.$on("$routeChangeError", function(evt,current,previous,rejection){
+    //    alert(rejection);
+    //});
     
-    $.KBaseSessionSync.requireAuth();
+    //var authRedir = $.KBaseSessionSync.re();
+    if ($.KBaseSessionSync.requireAuth()) {
+        //$location.path(authRedir);
+        //$scope.$apply();
+        throw new Error('auth_required');
+    }
     //if (!$.KBaseSessionSync.isLoggedIn()) {
     //    $location.url('/login/');
     //    return;

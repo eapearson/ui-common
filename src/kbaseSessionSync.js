@@ -260,12 +260,32 @@
                 if (!this.getKBaseSession()) {
                     // capture the path
                     var url = window.location.href;
-                    var checkAuth = 'https://narrtest4.kbase.us/oauth2/check_auth?return_url=' + encodeURIComponent(url);
+                    var checkAuth = '/oauth2/check_auth?redirect_url=' + encodeURIComponent(url);
                     
                     // redirect to the checkauth
                     window.location.href = checkAuth;
+                    return true;
                     
                     // that's all for now.
+                } else {
+                    return false;
+                }
+            }
+        },
+        needAuthRedirect: {
+            value: function () {
+                if (!this.getKBaseSession()) {
+                    // capture the path
+                    var url = window.location.href;
+                    return '/oauth2/check_auth?redirect_url=' + encodeURIComponent(url);
+                    
+                    // redirect to the checkauth
+                    //window.location.href = checkAuth;
+                    //return false;
+                    
+                    // that's all for now.
+                } else {
+                    return false;
                 }
             }
         }

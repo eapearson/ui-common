@@ -94,6 +94,10 @@ function (BaseWidget, Session, Postal, AppState, Utils, UserProfile) {
                         e.preventDefault();
                         Postal.channel('session').publish('logout.request');
                     });
+                    this.container.find('[data-menu-item="relogin"]').on('click', function (e) {
+                        e.preventDefault();
+                        Postal.channel('session').publish('relogin.request');
+                    });
                 } else {
                     // just a quick hack until the login widget is incorporated
                     // into the navbar, etc.
