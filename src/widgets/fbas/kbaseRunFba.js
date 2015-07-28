@@ -1,4 +1,11 @@
-(function( $, undefined ) {
+define('kbaseRunFba',
+    [
+        'jquery',
+	'kbwidget',
+	'kbasePanel'
+    ],
+    function ($) {
+
 
 $.KBWidget({
     name: "kbaseRunFba",
@@ -35,4 +42,4 @@ $.KBWidget({
         return this;
     }  //end init
 })
-}( jQuery ) );
+});

@@ -34,9 +34,14 @@
  *        $("#contigStepNext").click(function()  { genomeWidget.moveRightStep(); });
  *        $("#contigZoomIn").click(function()    { genomeWidget.zoomIn(); });
  *        $("#contigZoomOut").click(function()   { genomeWidget.zoomOut(); });
- */ 
+ */define('KBaseMultiContigBrowser',
+    [
+        'jquery',
+	'kbwidget',
+	'kbaseWidget'
+    ],
+    function ($) {
 
-(function( $, undefined ) {
     $.KBWidget({
         name: "KBaseMultiContigBrowser", 
         parent: "kbaseWidget",
@@ -1294,4 +1299,4 @@
         },
     });
 
-})( jQuery );
+});

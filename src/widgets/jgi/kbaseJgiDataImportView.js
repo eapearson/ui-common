@@ -1,4 +1,11 @@
-(function( $, undefined ) { 
+define('KBaseJgiDataImportView',
+    [
+        'jquery',
+	'kbwidget',
+	'kbaseAuthenticatedWidget'
+    ],
+    function ($) {
+ 
     $.KBWidget({ 
         name: "KBaseJgiDataImportView",
         parent: "kbaseAuthenticatedWidget",
@@ -384,4 +391,4 @@
 
 
     });
-})( jQuery );
+});

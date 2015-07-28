@@ -1,4 +1,11 @@
-(function( $, undefined ) {
+define('KBaseWSObjRefUsers',
+    [
+        'jquery',
+	'kbwidget',
+	'kbaseAuthenticatedWidget'
+    ],
+    function ($) {
+
     $.KBWidget({
         name: "KBaseWSObjRefUsers",
         parent: "kbaseAuthenticatedWidget",
@@ -272,4 +279,4 @@
         monthLookup : ["Jan", "Feb", "Mar","Apr", "May", "Jun", "Jul", "Aug", "Sep","Oct", "Nov", "Dec"]
 
     });
-})( jQuery )
+});

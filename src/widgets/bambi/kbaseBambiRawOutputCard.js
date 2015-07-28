@@ -1,4 +1,11 @@
-(function( $, undefined ) { 
+define('KBaseBambiRawOutputCard',
+    [
+        'jquery',
+	'kbwidget',
+	'kbaseWidget'
+    ],
+    function ($) {
+ 
     $.KBWidget({ 
         name: "KBaseBambiRawOutputCard", 
         parent: "kbaseWidget", 
@@ -73,4 +80,4 @@
         }
 	
     });
-})( jQuery );
+});

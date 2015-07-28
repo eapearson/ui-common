@@ -1,7 +1,13 @@
 /**
  * KBase widget to display a Metagenome Collection
- */
-(function($, undefined) {
+ */define('CollectionView',
+    [
+        'jquery',
+	'kbwidget',
+	'kbaseAuthenticatedWidget'
+    ],
+    function ($) {
+
     $.KBWidget({
         name: 'CollectionView',
         parent: "kbaseAuthenticatedWidget",
@@ -108,4 +114,4 @@
             return this;
         }
     });
-})(jQuery);
+});

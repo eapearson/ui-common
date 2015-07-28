@@ -1,4 +1,11 @@
-(function($, undefined) {
+define('KBaseTomtomHitsCard',
+    [
+        'jquery',
+	'kbwidget',
+	'kbaseWidget'
+    ],
+    function ($) {
+
     $.KBWidget({
         name: "KBaseTomtomHitsCard",
         parent: "kbaseWidget",
@@ -77,4 +84,4 @@
         }
 
     });
-})(jQuery);
+});

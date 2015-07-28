@@ -1,4 +1,11 @@
-(function( $, undefined ) {
+define('KBaseNarrativesUsingData',
+    [
+        'jquery',
+	'kbwidget',
+	'kbaseAuthenticatedWidget'
+    ],
+    function ($) {
+
     $.KBWidget({
         name: "KBaseNarrativesUsingData",
         parent: "kbaseAuthenticatedWidget",
@@ -193,4 +200,4 @@
         monthLookup : ["Jan", "Feb", "Mar","Apr", "May", "Jun", "Jul", "Aug", "Sep","Oct", "Nov", "Dec"]
 
     });
-})( jQuery )
+});

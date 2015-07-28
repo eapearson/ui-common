@@ -3,10 +3,14 @@
  *
  * Pavel Novichkov <psnovichkov@lbl.gov>
  * @public
- */
+ */define('kbaseAssemblyInput',
+    [
+        'jquery',
+	'kbwidget',
+	'kbaseSingleObjectBasicWidget'
+    ],
+    function ($) {
 
-
-(function($, undefined) {
     $.KBWidget({
         name: 'kbaseAssemblyInput',
         parent: 'kbaseSingleObjectBasicWidget',
@@ -65,4 +69,4 @@
         }        
 
     });
-})( jQuery );
+});

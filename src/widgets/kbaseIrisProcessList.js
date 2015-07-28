@@ -1,9 +1,15 @@
 /*
 
 
-*/
+*/define('kbaseIrisProcessList',
+    [
+        'jquery',
+	'kbwidget',
+	'kbaseIris',
+	'kbaseBox'
+    ],
+    function ($) {
 
-(function( $, undefined ) {
 
     $.KBWidget({
 
@@ -141,4 +147,4 @@
 
     });
 
-}( jQuery ) );
+});

@@ -1,8 +1,14 @@
 /**
  * Shows info for a workspace object.
  *
- */
-(function( $, undefined ) {
+ */define('KBaseObjectMeta',
+    [
+        'jquery',
+	'kbwidget',
+	'kbaseWidget'
+    ],
+    function ($) {
+
 	$.KBWidget({
 		name: "KBaseObjectMeta",
 		parent: "kbaseWidget",
@@ -145,4 +151,4 @@
 		monthLookup : ["Jan", "Feb", "Mar","Apr", "May", "Jun", "Jul", "Aug", "Sep","Oct", "Nov", "Dec"]
 	
 	});
-})( jQuery );
+});

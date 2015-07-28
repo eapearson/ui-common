@@ -1,4 +1,11 @@
-(function( $, undefined ) { 
+define('KBaseBambiRunParametersCard',
+    [
+        'jquery',
+	'kbwidget',
+	'kbaseWidget'
+    ],
+    function ($) {
+ 
     $.KBWidget({ 
         name: "KBaseBambiRunParametersCard", 
         parent: "kbaseWidget", 
@@ -98,4 +105,4 @@
         }
 	
     });
-})( jQuery );
+});

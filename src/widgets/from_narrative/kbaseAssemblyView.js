@@ -2,9 +2,14 @@
  * Output widget for visualization of assembly reports
  * @author Chris Bun <chrisbun@gmail.com>
  * @public
- */
+ */define('kbaseAssemblyView',
+    [
+        'jquery',
+	'kbwidget',
+	'kbaseAuthenticatedWidget'
+    ],
+    function ($) {
 
-(function( $, undefined ) {
     $.KBWidget({
         name: "kbaseAssemblyView",
         parent: "kbaseAuthenticatedWidget",
@@ -107,4 +112,4 @@
                 });
         }
     });
-})( jQuery );
+});

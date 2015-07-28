@@ -1,4 +1,11 @@
-(function( $, undefined ) { 
+define('KBaseGenomeWideAssemAnnot',
+    [
+        'jquery',
+	'kbwidget',
+	'kbaseWidget'
+    ],
+    function ($) {
+ 
     $.KBWidget({ 
         name: "KBaseGenomeWideAssemAnnot", 
         parent: "kbaseWidget", 
@@ -53,4 +60,4 @@
         }
 
     });
-})( jQuery );
+});

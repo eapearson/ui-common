@@ -1,9 +1,15 @@
 /*
 
 
-*/
+*/define('kbaseIrisFileEditor',
+    [
+        'jquery',
+	'kbwidget',
+	'kbasePrompt',
+	'kbaseAuthenticatedWidget'
+    ],
+    function ($) {
 
-(function( $, undefined ) {
 
 
     $.KBWidget({
@@ -155,4 +161,4 @@
 
     });
 
-}( jQuery ) );
+});

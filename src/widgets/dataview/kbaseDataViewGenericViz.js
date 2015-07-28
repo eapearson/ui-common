@@ -2,8 +2,14 @@
  *
  *
  *
- */ 
-(function( $, undefined ) { 
+ */define('KBaseDataViewGenericViz',
+    [
+        'jquery',
+	'kbwidget',
+	'kbaseAuthenticatedWidget'
+    ],
+    function ($) {
+ 
     $.KBWidget({ 
         name: "KBaseDataViewGenericViz",
         parent: "kbaseAuthenticatedWidget",
@@ -382,4 +388,4 @@
         // no viewer found or there was a bad config, so don't show anything
         return $('<div>');
     }});
-})( jQuery );
+});

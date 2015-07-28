@@ -1,7 +1,13 @@
 /**
  * KBase widget to display table of BIOM data
- */
-(function($, undefined) {
+ */define('AbundanceDataHeatmap',
+    [
+        'jquery',
+	'kbwidget',
+	'kbaseAuthenticatedWidget'
+    ],
+    function ($) {
+
     $.KBWidget({
             name: 'AbundanceDataHeatmap',
             parent: "kbaseAuthenticatedWidget",
@@ -81,4 +87,4 @@
 	        return b;
 	    }
     });
-})(jQuery);
+});

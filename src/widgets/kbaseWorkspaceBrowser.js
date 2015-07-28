@@ -4,8 +4,17 @@
  * A widget for browsing workspaces.
  * 
  * @extends KBWidget
- */
-(function( $, undefined ) {
+ */define('kbaseWorkspaceBrowser',
+    [
+        'jquery',
+	'kbwidget',
+	'kbaseErrorPrompt',
+	'kbasePrompt',
+	'kbaseDeletePrompt',
+	'kbaseFileBrowser'
+    ],
+    function ($) {
+
 
 
     $.KBWidget({
@@ -514,4 +523,4 @@
 
     });
 
-}( jQuery ) );
+});

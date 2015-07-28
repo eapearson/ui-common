@@ -1,4 +1,11 @@
-(function( $, undefined ) { 
+define('KBaseInferelatorHitsCard',
+    [
+        'jquery',
+	'kbwidget',
+	'kbaseWidget'
+    ],
+    function ($) {
+ 
     $.KBWidget({ 
         name: "KBaseInferelatorHitsCard", 
         parent: "kbaseWidget", 
@@ -67,4 +74,4 @@
         }
 
     });
-})( jQuery );
+});

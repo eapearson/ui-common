@@ -1,4 +1,12 @@
-(function( $, undefined ) {
+define('kbaseGenomeComparisonViewer',
+    [
+        'jquery',
+	'kbwidget',
+	'kbaseTabs',
+	'kbaseAuthenticatedWidget'
+    ],
+    function ($) {
+
     $.KBWidget({
         name: "kbaseGenomeComparisonViewer",
         parent: "kbaseAuthenticatedWidget",
@@ -457,4 +465,4 @@
         }
 
     });
-})( jQuery );
+});

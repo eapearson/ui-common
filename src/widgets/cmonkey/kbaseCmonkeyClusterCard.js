@@ -1,4 +1,11 @@
-(function($, undefined) {
+define('KBaseCmonkeyClusterCard',
+    [
+        'jquery',
+	'kbwidget',
+	'kbaseWidget'
+    ],
+    function ($) {
+
     $.KBWidget({
         name: "KBaseCmonkeyClusterCard",
         parent: "kbaseWidget",
@@ -145,6 +152,6 @@
             };
         },
     });
-})(jQuery);
+});
 
 

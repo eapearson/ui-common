@@ -1,4 +1,11 @@
-(function( $, undefined ) {
+define('KBaseGWASTopVariationsTable',
+    [
+        'jquery',
+	'kbwidget',
+	'kbaseAuthenticatedWidget'
+    ],
+    function ($) {
+
     $.KBWidget({
         name: "KBaseGWASTopVariationsTable",
         parent: "kbaseAuthenticatedWidget",
@@ -65,4 +72,4 @@
             };
         }
     });
-})( jQuery )
+});

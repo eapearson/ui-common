@@ -2,8 +2,14 @@
  * Output widget for visualization of JSON.
  * @author Roman Sutormin <rsutormin@lbl.gov>
  * @public
- */
-(function($, undefined) {
+ */define('kbaseJsonView',
+    [
+        'jquery',
+	'kbwidget',
+	'kbaseAuthenticatedWidget'
+    ],
+    function ($) {
+
     $.KBWidget({
         name: 'kbaseJsonView',
         parent: 'kbaseAuthenticatedWidget',
@@ -146,4 +152,4 @@
         }
 
     });
-})( jQuery );
+});

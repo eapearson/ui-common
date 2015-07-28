@@ -1,7 +1,13 @@
 /**
  * Shows gene domains.
- */
-(function( $, undefined ) {
+ */define('KBaseGeneDomains',
+    [
+        'jquery',
+	'kbwidget',
+	'kbaseWidget'
+    ],
+    function ($) {
+
     $.KBWidget({
         name: "KBaseGeneDomains",
         parent: "kbaseWidget",
@@ -351,4 +357,4 @@
             this.$elem.append($errorDiv);
         },
     })
-})( jQuery );
+});

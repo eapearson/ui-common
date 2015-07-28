@@ -1,4 +1,12 @@
-(function( $, undefined ) {
+define('KBaseNarrativeStoreView',
+    [
+        'jquery',
+	'kbwidget',
+	'kbasePrompt',
+	'kbaseAuthenticatedWidget'
+    ],
+    function ($) {
+
     $.KBWidget({
         name: "KBaseNarrativeStoreView",
         parent: "kbaseAuthenticatedWidget",
@@ -815,7 +823,7 @@
             this.$errorPanel.show();
         }
     });
-})( jQuery );
+});
 
 
 

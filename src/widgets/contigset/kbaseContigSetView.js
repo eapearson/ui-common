@@ -2,9 +2,14 @@
  * Output widget for visualization of genome annotation.
  * @author Roman Sutormin <rsutormin@lbl.gov>
  * @public
- */
+ */define('kbaseContigSetView',
+    [
+        'jquery',
+	'kbwidget',
+	'kbaseAuthenticatedWidget'
+    ],
+    function ($) {
 
-(function( $, undefined ) {
     $.KBWidget({
         name: "kbaseContigSetView",
         parent: "kbaseAuthenticatedWidget",
@@ -143,4 +148,4 @@
                 });
         }
     });
-})( jQuery );
+});

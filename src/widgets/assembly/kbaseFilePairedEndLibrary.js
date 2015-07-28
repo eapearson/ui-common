@@ -3,10 +3,14 @@
  * 
  * Pavel Novichkov <psnovichkov@lbl.gov>
  * @public
- */
+ */define('kbaseFilePairedEndLibrary',
+    [
+        'jquery',
+	'kbwidget',
+	'kbaseSingleObjectBasicWidget'
+    ],
+    function ($) {
 
-
-(function($, undefined) {
     $.KBWidget({
         name: 'kbaseFilePairedEndLibrary',
         parent: 'kbaseSingleObjectBasicWidget',
@@ -56,4 +60,4 @@
             return model;            
         }
     });
-})( jQuery );
+});

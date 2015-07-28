@@ -1,4 +1,11 @@
-(function( $, undefined ) {
+define('KBaseGenomeGeneTable',
+    [
+        'jquery',
+	'kbwidget',
+	'kbaseAuthenticatedWidget'
+    ],
+    function ($) {
+
     $.KBWidget({
         name: "KBaseGenomeGeneTable",
         parent: "kbaseAuthenticatedWidget",
@@ -176,4 +183,4 @@
                 });
         }
     });
-})( jQuery );
+});

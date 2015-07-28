@@ -1,4 +1,11 @@
-(function($, undefined) {
+define('KBaseLineChartCard',
+    [
+        'jquery',
+	'kbwidget',
+	'kbaseWidget'
+    ],
+    function ($) {
+
 	$.KBWidget({
 		name: "KBaseLineChartCard",
 		parent: "kbaseWidget",
@@ -324,4 +331,4 @@
 			};
 		},
 	});
-})(jQuery);
+});

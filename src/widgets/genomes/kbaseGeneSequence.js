@@ -4,8 +4,14 @@
  *
  * Gene "instance" info (e.g. coordinates on a particular strain's genome)
  * is in a different widget.
- */
-(function( $, undefined ) {
+ */define('KBaseGeneSequence',
+    [
+        'jquery',
+	'kbwidget',
+	'kbaseWidget'
+    ],
+    function ($) {
+
     $.KBWidget({
         name: "KBaseGeneSequence",
         parent: "kbaseWidget",
@@ -278,4 +284,4 @@
             this.$elem.append($errorDiv);
         },
     })
-})( jQuery );
+});

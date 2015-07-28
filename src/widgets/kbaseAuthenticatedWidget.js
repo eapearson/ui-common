@@ -1,8 +1,12 @@
 /*
 
-*/
+*/define('kbaseAuthenticatedWidget',
+    [
+        'jquery',
+	'kbwidget'
+    ],
+    function ($) {
 
-(function( $, undefined ) {
 
   'use strict';
     $.KBWidget({
@@ -16,6 +20,7 @@
             'authToken',
             'user_id',
             'loggedInCallback',
+            'logInCanceledCallback',
             'loggedOutCallback',
             'loggedInQueryCallback'
         ],
@@ -116,11 +121,10 @@
         */
 
         setAuth : function (newAuth) {
-            if (newAuth === undefined || newAuth === null) {
-              newAuth = {};
-            }
             this.setValueForKey('auth', newAuth);
-           
+            if (newAuth == undefined) {
+                newAuth = {};
+            }
             this.sessionId(newAuth.kbase_sessionid);
             this.authToken(newAuth.token);
             this.user_id(newAuth.user_id);
@@ -134,4 +138,4 @@
 
     });
 
-}( jQuery ) );
+});

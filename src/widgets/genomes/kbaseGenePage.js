@@ -1,4 +1,11 @@
-(function( $, undefined ) { 
+define('KBaseGenePage',
+    [
+        'jquery',
+	'kbwidget',
+	'kbaseWidget'
+    ],
+    function ($) {
+ 
     $.KBWidget({ 
         name: "KBaseGenePage", 
         parent: "kbaseWidget", 
@@ -163,4 +170,4 @@
             });
         }
     });
-})( jQuery );
+});
