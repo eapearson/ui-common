@@ -17,8 +17,14 @@
  * @author Bill Riehl [wjriehl@lbl.gov]
  * @author Mike Sneddon [mwsneddon@lbl.gov]
  * @author Dylan Chivian [dcchivian@lbl.gov]
- */
-(function( $, undefined ) {
+ */define('KBaseWikiDescription',
+    [
+        'jquery',
+	'kbwidget',
+	'kbaseWidget'
+    ],
+    function ($) {
+
     $.KBWidget({
         name: "KBaseWikiDescription",
         parent: "kbaseWidget",
@@ -688,4 +694,4 @@
             });
         },
     })
-})( jQuery );
+});

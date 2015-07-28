@@ -1,4 +1,11 @@
-(function( $, undefined ) {
+define('KBaseGWASPopTable',
+    [
+        'jquery',
+	'kbwidget',
+	'kbaseAuthenticatedWidget'
+    ],
+    function ($) {
+
     $.KBWidget({
         name: "KBaseGWASPopTable",
         parent: "kbaseAuthenticatedWidget",
@@ -125,4 +132,4 @@
 */
         
     });
-})( jQuery )
+});

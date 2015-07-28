@@ -2,9 +2,14 @@
  * Output widget for visualization of comparison between proteomes of two bacterial genomes.
  * @author Roman Sutormin <rsutormin@lbl.gov>
  * @public
- */
+ */define('GenomeComparisonWidget',
+    [
+        'jquery',
+	'kbwidget',
+	'kbaseAuthenticatedWidget'
+    ],
+    function ($) {
 
-(function( $, undefined ) {
 
 $.KBWidget({
     name: "GenomeComparisonWidget",
@@ -558,4 +563,4 @@ $.KBWidget({
             });
     }
 })
-}( jQuery ) );
+});

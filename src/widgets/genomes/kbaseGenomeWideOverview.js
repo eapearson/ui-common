@@ -1,4 +1,11 @@
-(function( $, undefined ) { 
+define('KBaseGenomeWideOverview',
+    [
+        'jquery',
+	'kbwidget',
+	'kbaseWidget'
+    ],
+    function ($) {
+ 
     $.KBWidget({ 
         name: "KBaseGenomeWideOverview", 
         parent: "kbaseWidget", 
@@ -44,4 +51,4 @@
         }
 
     });
-})( jQuery );
+});

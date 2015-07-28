@@ -1,9 +1,17 @@
 /*
 
 
-*/
+*/define('kbaseIrisFileBrowser',
+    [
+        'jquery',
+	'kbwidget',
+	'kbaseButtonControls',
+	'kbaseDeletePrompt',
+	'kbasePrompt',
+	'kbaseDataBrowser'
+    ],
+    function ($) {
 
-(function( $, undefined ) {
 
 
     $.KBWidget({
@@ -1089,4 +1097,4 @@
 
     });
 
-}( jQuery ) );
+});

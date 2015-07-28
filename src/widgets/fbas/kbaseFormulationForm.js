@@ -1,4 +1,10 @@
-(function( $, undefined ) {
+define('kbaseFormulationForm',
+    [
+        'jquery',
+	'kbwidget'
+    ],
+    function ($) {
+
 
 $.KBWidget({
     name: "kbaseFormulationForm",
@@ -119,4 +125,4 @@ $.KBWidget({
         return this;
     }  //end init
 })
-}( jQuery ) );
+});

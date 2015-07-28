@@ -1,4 +1,11 @@
-(function( $, undefined ) {
+define('kbaseMediaEditor',
+    [
+        'jquery',
+	'kbwidget',
+	'kbaseSimpleWSSelect'
+    ],
+    function ($) {
+
 
 $.KBWidget({
     name: "kbaseMediaEditor",
@@ -208,4 +215,4 @@ $.KBWidget({
         return this;
     }  //end init
 })
-}( jQuery ) );
+});

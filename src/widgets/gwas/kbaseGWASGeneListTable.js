@@ -1,4 +1,11 @@
-(function( $, undefined ) {
+define('KBaseGWASGeneListTable',
+    [
+        'jquery',
+	'kbwidget',
+	'kbaseAuthenticatedWidget'
+    ],
+    function ($) {
+
     $.KBWidget({
         name: "KBaseGWASGeneListTable",
         parent: "kbaseAuthenticatedWidget",
@@ -79,4 +86,4 @@
             };
         }
     });
-})( jQuery )
+});

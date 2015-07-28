@@ -2,10 +2,15 @@
  * Output widget to vizualize DomainAnnotation object.
  * Pavel Novichkov <psnovichkov@lbl.gov>
  * @public
- */
+ */define('kbaseDomainAnnotation',
+    [
+        'jquery',
+	'kbwidget',
+	'kbaseTabs',
+	'kbaseAuthenticatedWidget'
+    ],
+    function ($) {
 
-
-(function($, undefined) {
     $.KBWidget({
         name: 'kbaseDomainAnnotation',
         parent: 'kbaseAuthenticatedWidget',
@@ -402,4 +407,4 @@
         }        
 
     });
-})( jQuery );
+});

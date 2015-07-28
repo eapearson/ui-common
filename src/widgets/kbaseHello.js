@@ -1,8 +1,14 @@
 /**
  * Just a simple example widget - makes a div with "Hello world!"
  * in a user-defined color (must be a css color - 'red' or 'yellow' or '#FF0000')
- */
-(function( $, undefined ) {
+ */define('HelloWidget',
+    [
+        'jquery',
+	'kbwidget',
+	'kbaseWidget'
+    ],
+    function ($) {
+
     $.KBWidget({
         name: "HelloWidget",
         parent: "kbaseWidget",
@@ -26,4 +32,4 @@
         }
 
     });
-})( jQuery )
+});

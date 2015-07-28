@@ -1,4 +1,12 @@
-(function( $, undefined ) { 
+define('KBaseGenomeWideTaxonomy',
+    [
+        'jquery',
+	'kbwidget',
+	'kbaseTree',
+	'kbaseWidget'
+    ],
+    function ($) {
+ 
     $.KBWidget({ 
         name: "KBaseGenomeWideTaxonomy", 
         parent: "kbaseWidget", 
@@ -100,4 +108,4 @@
         }
 
     });
-})( jQuery );
+});

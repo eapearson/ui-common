@@ -1,7 +1,12 @@
 /**
  * KBase widget to display table of BIOM data
- */
-(function($, undefined) {
+ */define('AbundanceDataTable',
+    [
+        'jquery',
+	'kbwidget'
+    ],
+    function ($) {
+
     $.KBWidget({
             name: 'AbundanceDataTable',
             version: '1.0.0',
@@ -113,4 +118,4 @@
 	        return b;
 	    }
     });
-})(jQuery);
+});

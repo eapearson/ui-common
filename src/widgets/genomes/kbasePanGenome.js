@@ -2,9 +2,14 @@
  * Ouput widget to display a pangenome object.
  * @author Chris Henry <chrisshenry@gmail.com>, Roman Sutormin <rsutormin@lbl.gov>
  * @public
- */
+ */define('kbasePanGenome',
+    [
+        'jquery',
+	'kbwidget',
+	'kbaseAuthenticatedWidget'
+    ],
+    function ($) {
 
-(function( $, undefined ) {
     $.KBWidget({
         name: "kbasePanGenome",
         parent: "kbaseAuthenticatedWidget",
@@ -465,4 +470,4 @@
 
     });
 
-})( jQuery );
+});

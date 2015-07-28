@@ -1,4 +1,12 @@
-(function( $, undefined ) {
+define('KBaseAppUsageStats',
+    [
+        'jquery',
+	'kbwidget',
+	'kbaseLogin',
+	'kbaseAuthenticatedWidget'
+    ],
+    function ($) {
+
     $.KBWidget({
         name: "KBaseAppUsageStats",
         parent: "kbaseAuthenticatedWidget",
@@ -100,4 +108,4 @@
 	}
 
     });
-})( jQuery )
+});

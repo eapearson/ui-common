@@ -5,8 +5,14 @@
  * @public
  */
 //TODO create the workspace *after* setting everything up
-//TODO handle case when one or more workspaces have had narrative deleted but still have narrative metadata
-(function( $, undefined ) {
+//TODO handle case when one or more workspaces have had narrative deleted but still have narrative metadatadefine('kbaseNarrativeManager',
+    [
+        'jquery',
+	'kbwidget',
+	'kbaseAuthenticatedWidget'
+    ],
+    function ($) {
+
 
     $.KBWidget({
         name: "kbaseNarrativeManager", 
@@ -201,4 +207,4 @@
         }
     });
 
-})( jQuery );
+});

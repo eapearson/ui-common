@@ -1,4 +1,11 @@
-(function( $, undefined ) {
+define('KBaseWSReferenceList',
+    [
+        'jquery',
+	'kbwidget',
+	'kbaseAuthenticatedWidget'
+    ],
+    function ($) {
+
     $.KBWidget({
         name: "KBaseWSReferenceList",
         parent: "kbaseAuthenticatedWidget",
@@ -150,4 +157,4 @@
         monthLookup : ["Jan", "Feb", "Mar","Apr", "May", "Jun", "Jul", "Aug", "Sep","Oct", "Nov", "Dec"]
 
     });
-})( jQuery )
+});

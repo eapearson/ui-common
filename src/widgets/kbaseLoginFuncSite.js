@@ -1,4 +1,10 @@
-(function ($) {
+define('kbaseLogin',
+    [
+        'jquery',
+	'kbwidget'
+    ],
+    function ($) {
+
     'use strict';
     $.KBWidget({
         name: "kbaseLogin",
@@ -247,4 +253,4 @@
 
     });
 
-}(jQuery));
+});

@@ -1,4 +1,11 @@
-(function( $, undefined ) {
+define('KBaseGWASPop',
+    [
+        'jquery',
+	'kbwidget',
+	'kbaseAuthenticatedWidget'
+    ],
+    function ($) {
+
     $.KBWidget({
         name: "KBaseGWASPop",
         parent: "kbaseAuthenticatedWidget",
@@ -50,4 +57,4 @@
             };
         }
     });
-})( jQuery )
+});

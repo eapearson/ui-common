@@ -1,7 +1,13 @@
 /**
    Create a card with a cytoscape.js viewer for a network
- */
-(function( $, undefined ) {
+ */define('KBaseNetworkCard',
+    [
+        'jquery',
+	'kbwidget',
+	'kbaseWidget'
+    ],
+    function ($) {
+
     $.KBWidget({
         name: "KBaseNetworkCard",
         parent: "kbaseWidget",
@@ -89,4 +95,4 @@
         }
 
     });
-})( jQuery )
+});

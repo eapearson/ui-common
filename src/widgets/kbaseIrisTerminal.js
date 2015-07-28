@@ -1,9 +1,19 @@
 /*
 
 
-*/
+*/define('kbaseIrisTerminal',
+    [
+        'jquery',
+	'kbwidget',
+	'kbaseIrisTutorial',
+	'kbaseIrisFileBrowser',
+	'kbaseIrisCommands',
+	'kbaseButtonControls',
+	'kbaseTable',
+	'kbaseAuthenticatedWidget'
+    ],
+    function ($) {
 
-(function( $, undefined ) {
 
 
     $.KBWidget({
@@ -1610,4 +1620,4 @@
 
     });
 
-}( jQuery ) );
+});

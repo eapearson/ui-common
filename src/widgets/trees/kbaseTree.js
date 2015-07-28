@@ -1,9 +1,14 @@
 /**
  * @author Bill Riehl <wjriehl@lbl.gov>, Roman Sutormin <rsutormin@lbl.gov>
  * @public
- */
+ */define('kbaseTree',
+    [
+        'jquery',
+	'kbwidget',
+	'kbaseAuthenticatedWidget'
+    ],
+    function ($) {
 
-(function($, undefined) {
     $.KBWidget({
         name: 'kbaseTree',
         parent: 'kbaseAuthenticatedWidget',
@@ -268,4 +273,4 @@
         }
 
     });
-})( jQuery );
+});

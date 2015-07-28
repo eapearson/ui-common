@@ -1,7 +1,13 @@
 /**
  * KBase widget to display table of BIOM data
- */
-(function($, undefined) {
+ */define('AbundanceDataPcoa',
+    [
+        'jquery',
+	'kbwidget',
+	'kbaseAuthenticatedWidget'
+    ],
+    function ($) {
+
     $.KBWidget({
             name: 'AbundanceDataPcoa',
             parent: "kbaseAuthenticatedWidget",
@@ -140,4 +146,4 @@
 	        return b;
 	    }
     });
-})(jQuery);
+});

@@ -1,4 +1,10 @@
-(function( $, undefined ) {
+define('kbaseCpd',
+    [
+        'jquery',
+	'kbwidget'
+    ],
+    function ($) {
+
 
 $.KBWidget({
     name: "kbaseCpd",
@@ -67,4 +73,4 @@ $.KBWidget({
         return this;
     }  //end init
 })
-}( jQuery ) );
+});

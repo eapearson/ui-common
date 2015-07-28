@@ -1,4 +1,12 @@
-(function( $, undefined ) {
+define('KBaseAppReviews',
+    [
+        'jquery',
+	'kbwidget',
+	'kbaseLogin',
+	'kbaseAuthenticatedWidget'
+    ],
+    function ($) {
+
     $.KBWidget({
         name: "KBaseAppReviews",
         parent: "kbaseAuthenticatedWidget",
@@ -330,4 +338,4 @@
         monthLookup : ["Jan", "Feb", "Mar","Apr", "May", "Jun", "Jul", "Aug", "Sep","Oct", "Nov", "Dec"]
 
     });
-})( jQuery )
+});

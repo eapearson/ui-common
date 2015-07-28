@@ -1,4 +1,11 @@
-(function($, undefined) {
+define('KBaseTomtomRunParametersCard',
+    [
+        'jquery',
+	'kbwidget',
+	'kbaseWidget'
+    ],
+    function ($) {
+
     $.KBWidget({
         name: "KBaseTomtomRunParametersCard",
         parent: "kbaseWidget",
@@ -71,4 +78,4 @@
             };
         },
     });
-})(jQuery);
+});

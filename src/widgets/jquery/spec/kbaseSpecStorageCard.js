@@ -1,4 +1,11 @@
-(function( $, undefined ) { 
+define('KBaseSpecStorageCard',
+    [
+        'jquery',
+	'kbwidget',
+	'kbaseAuthenticatedWidget'
+    ],
+    function ($) {
+ 
     $.KBWidget({ 
         name: "KBaseSpecStorageCard", 
         parent: "kbaseAuthenticatedWidget", 
@@ -66,4 +73,4 @@
             };
         }
     });
-})( jQuery );
+});

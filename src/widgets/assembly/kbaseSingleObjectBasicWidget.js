@@ -5,10 +5,14 @@
  *
  * Pavel Novichkov <psnovichkov@lbl.gov>
  * @public
- */
+ */define('kbaseSingleObjectBasicWidget',
+    [
+        'jquery',
+	'kbwidget',
+	'kbaseAuthenticatedWidget'
+    ],
+    function ($) {
 
-
-(function($, undefined) {
     $.KBWidget({
         name: 'kbaseSingleObjectBasicWidget',
         parent: 'kbaseAuthenticatedWidget',
@@ -182,6 +186,6 @@
             this.$errorPanel.show();
         }      
     });
-})( jQuery );
+});
 
 

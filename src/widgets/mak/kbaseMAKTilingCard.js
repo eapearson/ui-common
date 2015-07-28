@@ -1,4 +1,11 @@
-(function( $, undefined ) { 
+define('KBaseMAKTilingCard',
+    [
+        'jquery',
+	'kbwidget',
+	'kbaseWidget'
+    ],
+    function ($) {
+ 
     $.KBWidget({ 
         name: "KBaseMAKTilingCard", 
         parent: "kbaseWidget", 
@@ -337,4 +344,4 @@
         }
 	
     });
-})( jQuery );
+});

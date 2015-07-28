@@ -1,4 +1,11 @@
-(function($, undefined) {
+define('KBaseMAKBiclusterCard',
+    [
+        'jquery',
+	'kbwidget',
+	'kbaseWidget'
+    ],
+    function ($) {
+
     $.KBWidget({
         name: "KBaseMAKBiclusterCard",
         parent: "kbaseWidget",
@@ -180,6 +187,6 @@
         }
 
     });
-})(jQuery);
+});
 
 

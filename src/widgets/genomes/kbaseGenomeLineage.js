@@ -1,8 +1,14 @@
 /**
  * Shows taxonomic lineage.
  *
- */
-(function ($, undefined) {
+ */define('KBaseGenomeLineage',
+    [
+        'jquery',
+	'kbwidget',
+	'kbaseAuthenticatedWidget'
+    ],
+    function ($) {
+
     $.KBWidget({
         name: "KBaseGenomeLineage",
         parent: "kbaseAuthenticatedWidget",
@@ -274,4 +280,4 @@
                 });
         }
     });
-})(jQuery);
+});

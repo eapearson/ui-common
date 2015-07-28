@@ -1,4 +1,13 @@
-(function( $, undefined ) {
+define('kbaseFbaTabs',
+    [
+        'jquery',
+	'kbwidget',
+	'kbasePathways',
+	'kbaseRxn',
+	'kbaseCpd'
+    ],
+    function ($) {
+
 
 $.KBWidget({
     name: "kbaseFbaTabs",
@@ -200,4 +209,4 @@ $.KBWidget({
     }  //end init
 
 })
-}( jQuery ) );
+});

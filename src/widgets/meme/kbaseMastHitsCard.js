@@ -1,4 +1,11 @@
-(function( $, undefined ) { 
+define('KBaseMastHitsCard',
+    [
+        'jquery',
+	'kbwidget',
+	'kbaseWidget'
+    ],
+    function ($) {
+ 
     $.KBWidget({ 
         name: "KBaseMastHitsCard", 
         parent: "kbaseWidget", 
@@ -75,4 +82,4 @@
         }
 
     });
-})( jQuery );
+});
